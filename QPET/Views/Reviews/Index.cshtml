@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Reviews";
+
 }
 
 
@@ -114,16 +115,9 @@
                         );
 
 
-                        var displayDate =
-                        DateTime.TryParse(
-                        review.CreatedDate,
-                        out var parsedDate
-                        )
-                        ? parsedDate.ToString(
-                        "dd MMM yyyy"
-                        )
-                        : review.CreatedDate;
-
+                       var displayDate =
+                       review.CreatedDate
+                       .ToString("dd MMM yyyy");
 
                         <article class="public-review-card">
 

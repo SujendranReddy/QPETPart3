@@ -1,62 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QPET.Models;
-using QPET.Services;
+using QPET.Services.Interfaces;
 
 namespace QPET.Controllers
 {
     public class ReviewsController : Controller
     {
-        private readonly PrototypeDataService
-            _dataService;
+        private readonly IReviewService
+            _reviewService;
 
+        private readonly IBranchService
+            _branchService;
 
         public ReviewsController(
-            PrototypeDataService dataService)
+            IReviewService reviewService,
+            IBranchService branchService)
         {
-            _dataService =
-                dataService;
+            _reviewService =
+                reviewService;
+
+            _branchService =
+                branchService;
         }
 
-
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View(
-                BuildPageModel()
+                await BuildPageModelAsync()
             );
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SubmitReview(
+        public async Task<IActionResult> SubmitReview(
             ReviewsPageViewModel model)
         {
             model.Review ??=
                 new ReviewViewModel();
 
+            var validBranch =
+                await _branchService
+                    .ExistsAsync(
+                        model.Review.BranchId
+                    );
 
-            ValidateBranch(
-                model.Review.BranchId
-            );
-
+            if (!validBranch)
+            {
+                ModelState.AddModelError(
+                    "Review.BranchId",
+                    "Please select a valid branch."
+                );
+            }
 
             if (!ModelState.IsValid)
             {
                 model.Reviews =
-                    _dataService
-                        .GetReviews()
-                        .OrderByDescending(
-                            review =>
-                                review.ReviewId
-                        )
-                        .ToList();
-
+                    await _reviewService
+                        .GetReviewsAsync();
 
                 model.Branches =
-                    _dataService
-                        .GetBranches();
-
+                    await _branchService
+                        .GetBranchesAsync();
 
                 return View(
                     "Index",
@@ -64,9 +69,8 @@ namespace QPET.Controllers
                 );
             }
 
-
             var review =
-                new Review
+                new QPET.Data.Entities.Review
                 {
                     BranchId =
                         model.Review.BranchId,
@@ -94,66 +98,33 @@ namespace QPET.Controllers
                             .Trim()
                 };
 
-
-            _dataService.AddReview(
-                review
-            );
-
+            await _reviewService
+                .AddReviewAsync(review);
 
             TempData["ReviewMessage"] =
                 "Thank you. Your review has been submitted successfully.";
-
 
             return RedirectToAction(
                 nameof(Index)
             );
         }
 
-
-        private ReviewsPageViewModel
-            BuildPageModel()
+        private async Task<ReviewsPageViewModel>
+            BuildPageModelAsync()
         {
             return new ReviewsPageViewModel
             {
                 Reviews =
-                    _dataService
-                        .GetReviews()
-                        .OrderByDescending(
-                            review =>
-                                review.ReviewId
-                        )
-                        .ToList(),
+                    await _reviewService
+                        .GetReviewsAsync(),
 
                 Branches =
-                    _dataService
-                        .GetBranches(),
+                    await _branchService
+                        .GetBranchesAsync(),
 
                 Review =
                     new ReviewViewModel()
             };
-        }
-
-
-        private void ValidateBranch(
-            int branchId)
-        {
-            var exists =
-                _dataService
-                    .GetBranches()
-                    .Any(
-                        branch =>
-                            branch.BranchId ==
-                            branchId
-                    );
-
-
-            if (!exists)
-            {
-                ModelState.AddModelError(
-                    "Review.BranchId",
-                    "Please select a valid branch."
-                );
-            }
         }
     }
 }

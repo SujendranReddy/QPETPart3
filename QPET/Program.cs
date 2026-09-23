@@ -37,6 +37,11 @@ builder.Services.AddScoped<
     EnquiryService
 >();
 
+builder.Services.AddScoped<
+    IReviewService,
+    ReviewService
+>();
+
 builder.Services
     .AddAuthentication(
         "QPETAdmin"

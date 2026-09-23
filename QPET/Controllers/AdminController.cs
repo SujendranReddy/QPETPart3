@@ -14,17 +14,18 @@ namespace QPET.Controllers
         private readonly PrototypeDataService _dataService;
         private readonly IProductService _productService;
 
+        private readonly IReviewService _reviewService;
         private readonly IBranchService _branchService;
         private readonly IEnquiryService _enquiryService;
 
         public AdminController(
      PrototypeDataService dataService,
      IProductService productService, IBranchService branchService,
-IEnquiryService enquiryService)
+IEnquiryService enquiryService, IReviewService reviewService)
         {
             _branchService = branchService;
             _enquiryService = enquiryService;
-
+            _reviewService = reviewService;
             _dataService = dataService;
             _productService = productService;
         }
@@ -720,6 +721,37 @@ IEnquiryService enquiryService)
                     "Only JPG, JPEG, PNG and WEBP images are allowed."
                 );
             }
+        }
+        public async Task<IActionResult> Reviews()
+        {
+            var reviews =
+                await _reviewService
+                    .GetReviewsAsync();
+
+            ViewBag.Branches =
+                await _branchService
+                    .GetBranchesAsync();
+
+            return View(reviews);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteReview(
+            int id)
+        {
+            var deleted =
+                await _reviewService
+                    .DeleteReviewAsync(id);
+
+            TempData["ReviewMessage"] =
+                deleted
+                    ? "Review deleted successfully."
+                    : "The review could not be found.";
+
+            return RedirectToAction(
+                nameof(Reviews)
+            );
         }
     }
 }

@@ -14,10 +14,17 @@ namespace QPET.Controllers
         private readonly PrototypeDataService _dataService;
         private readonly IProductService _productService;
 
+        private readonly IBranchService _branchService;
+        private readonly IEnquiryService _enquiryService;
+
         public AdminController(
      PrototypeDataService dataService,
-     IProductService productService)
+     IProductService productService, IBranchService branchService,
+IEnquiryService enquiryService)
         {
+            _branchService = branchService;
+            _enquiryService = enquiryService;
+
             _dataService = dataService;
             _productService = productService;
         }
@@ -274,18 +281,17 @@ namespace QPET.Controllers
         }
 
 
-        public IActionResult Enquiries(
-            string? status = null)
+        public async Task<IActionResult> Enquiries(
+    string? status = null)
         {
             var allowedStatuses =
                 new[]
                 {
-                    "New",
-                    "InProgress",
-                    "Resolved",
-                    "Closed"
+            "New",
+            "InProgress",
+            "Resolved",
+            "Closed"
                 };
-
 
             if (
                 !string.IsNullOrWhiteSpace(status) &&
@@ -294,113 +300,82 @@ namespace QPET.Controllers
                 status = null;
             }
 
-
             var enquiries =
-                _dataService
-                    .GetEnquiries()
-                    .OrderByDescending(
-                        enquiry =>
-                            enquiry.EnquiryId
-                    )
-                    .AsEnumerable();
-
+                await _enquiryService
+                    .GetEnquiriesAsync();
 
             if (!string.IsNullOrWhiteSpace(status))
             {
                 enquiries =
-                    enquiries.Where(
-                        enquiry =>
-                            enquiry.Status == status
-                    );
+                    enquiries
+                        .Where(
+                            enquiry =>
+                                enquiry.Status == status
+                        )
+                        .ToList();
             }
 
-
             ViewBag.Customers =
-                _dataService.GetCustomers();
+                await _enquiryService
+                    .GetCustomersAsync();
 
             ViewBag.Branches =
-                _dataService.GetBranches();
-
+                await _branchService
+                    .GetBranchesAsync();
 
             var model =
                 new AdminEnquiryListViewModel
                 {
-                    Enquiries =
-                        enquiries.ToList(),
-
-                    SelectedStatus =
-                        status
+                    Enquiries = enquiries,
+                    SelectedStatus = status
                 };
-
 
             return View(model);
         }
 
-
         [HttpGet]
-        public IActionResult EnquiryDetails(
+        public async Task<IActionResult> EnquiryDetails(
             int id)
         {
             var enquiry =
-                _dataService
-                    .GetEnquiryById(id);
-
+                await _enquiryService
+                    .GetEnquiryByIdAsync(id);
 
             if (enquiry == null)
             {
-                ViewBag.EnquiryNotFound =
-                    true;
+                ViewBag.EnquiryNotFound = true;
 
                 return View(
-                    new Enquiry()
+                    new QPET.Data.Entities.Enquiry()
                 );
             }
 
-
             ViewBag.Customer =
-                _dataService
-                    .GetCustomers()
-                    .FirstOrDefault(
-                        customer =>
-                            customer.CustomerId ==
-                            enquiry.CustomerId
-                    );
-
+                enquiry.Customer;
 
             ViewBag.Branch =
-                _dataService
-                    .GetBranches()
-                    .FirstOrDefault(
-                        branch =>
-                            branch.BranchId ==
-                            enquiry.BranchId
-                    );
-
+                enquiry.Branch;
 
             return View(enquiry);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateEnquiryStatus(
+        public async Task<IActionResult> UpdateEnquiryStatus(
             int id,
             string status)
         {
-            //This service validates that the requested enquiry status change is allowed
             var updated =
-                _dataService
-                    .UpdateEnquiryStatus(
+                await _enquiryService
+                    .UpdateEnquiryStatusAsync(
                         id,
                         status
                     );
-
 
             TempData["EnquiryMessage"] =
                 updated
                     ? "Enquiry status updated successfully."
                     : "The enquiry status could not be updated.";
-
 
             return RedirectToAction(
                 nameof(EnquiryDetails),

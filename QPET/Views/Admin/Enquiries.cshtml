@@ -1,16 +1,15 @@
 ﻿@model QPET.Models.AdminEnquiryListViewModel
-@using QPET.Models
 
 @{
     ViewData["Title"] = "Enquiries";
 
     var customers =
-        ViewBag.Customers as List<Customer>
-        ?? new List<Customer>();
+        ViewBag.Customers as List<QPET.Data.Entities.Customer>
+        ?? new List<QPET.Data.Entities.Customer>();
 
     var branches =
-        ViewBag.Branches as List<Branch>
-        ?? new List<Branch>();
+        ViewBag.Branches as List<QPET.Data.Entities.Branch>
+        ?? new List<QPET.Data.Entities.Branch>();
 
 
     var statuses =
@@ -213,14 +212,8 @@
 
 
                             var displayDate =
-                            DateTime.TryParse(
-                            enquiry.CreatedDate,
-                            out var parsedDate
-                            )
-                            ? parsedDate.ToString(
-                            "dd MMM yyyy"
-                            )
-                            : enquiry.CreatedDate;
+    enquiry.CreatedDate
+        .ToString("dd MMM yyyy");
 
 
                             <tr>

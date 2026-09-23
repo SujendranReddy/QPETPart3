@@ -1,38 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QPET.Data.Entities;
 using QPET.Models;
-using QPET.Services;
+using QPET.Services.Interfaces;
 
 namespace QPET.Controllers
 {
     public class ContactController : Controller
     {
-        private readonly PrototypeDataService
-            _dataService;
-
+        private readonly IBranchService _branchService;
+        private readonly IEnquiryService _enquiryService;
 
         public ContactController(
-            PrototypeDataService dataService)
+            IBranchService branchService,
+            IEnquiryService enquiryService)
         {
-            _dataService =
-                dataService;
+            _branchService = branchService;
+            _enquiryService = enquiryService;
         }
 
-
         [HttpGet]
-        public IActionResult Index(
+        public async Task<IActionResult> Index(
             string? product = null)
         {
-            PopulateBranches();
-
+            await PopulateBranchesAsync();
 
             var model =
                 new EnquiryViewModel();
 
-
-            if (
-                !string.IsNullOrWhiteSpace(
-                    product
-                ))
+            if (!string.IsNullOrWhiteSpace(product))
             {
                 model.Subject =
                     "Enquiry about " +
@@ -44,17 +39,15 @@ namespace QPET.Controllers
                     ", including available commercial quantities and product specifications.";
             }
 
-
             return View(model);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SubmitEnquiry(
+        public async Task<IActionResult> SubmitEnquiry(
             EnquiryViewModel model)
         {
-            ValidateBranch(
+            await ValidateBranchAsync(
                 model.BranchId
             );
 
@@ -62,10 +55,9 @@ namespace QPET.Controllers
                 model.Attachments
             );
 
-
             if (!ModelState.IsValid)
             {
-                PopulateBranches();
+                await PopulateBranchesAsync();
 
                 return View(
                     "Index",
@@ -73,33 +65,31 @@ namespace QPET.Controllers
                 );
             }
 
-            // This reuses existing customers with the same email so one customer can have many enquiries 
             var customer =
-                _dataService
-                    .FindCustomerByEmail(
+                await _enquiryService
+                    .FindCustomerByEmailAsync(
                         model.EmailAddress.Trim()
                     );
-
 
             if (customer == null)
             {
                 customer =
-                    _dataService.AddCustomer(
-                        new Customer
-                        {
-                            FullName =
-                                model.FullName.Trim(),
+                    await _enquiryService
+                        .AddCustomerAsync(
+                            new QPET.Data.Entities.Customer
+                            {
+                                FullName =
+                                    model.FullName.Trim(),
 
-                            EmailAddress =
-                                model.EmailAddress.Trim(),
+                                EmailAddress =
+                                    model.EmailAddress.Trim(),
 
-                            PhoneNumber =
-                                model.PhoneNumber.Trim()
-                        }
-                    );
+                                PhoneNumber =
+                                    model.PhoneNumber.Trim()
+                            }
+                        );
             }
 
-            // The prototype stores attachment metadata instead of  saving physical files
             var attachments =
                 model.Attachments
                     .Where(
@@ -108,7 +98,7 @@ namespace QPET.Controllers
                     )
                     .Select(
                         file =>
-                            new EnquiryAttachment
+                            new QPET.Data.Entities.EnquiryAttachment
                             {
                                 OriginalFileName =
                                     Path.GetFileName(
@@ -130,28 +120,27 @@ namespace QPET.Controllers
                     )
                     .ToList();
 
-
             var enquiry =
-                _dataService.AddEnquiry(
-                    new Enquiry
-                    {
-                        CustomerId =
-                            customer.CustomerId,
+                await _enquiryService
+                    .AddEnquiryAsync(
+                        new QPET.Data.Entities.Enquiry
+                        {
+                            CustomerId =
+                                customer.CustomerId,
 
-                        BranchId =
-                            model.BranchId,
+                            BranchId =
+                                model.BranchId,
 
-                        Subject =
-                            model.Subject.Trim(),
+                            Subject =
+                                model.Subject.Trim(),
 
-                        Message =
-                            model.Message.Trim(),
+                            Message =
+                                model.Message.Trim(),
 
-                        Attachments =
-                            attachments
-                    }
-                );
-
+                            Attachments =
+                                attachments
+                        }
+                    );
 
             return RedirectToAction(
                 nameof(Confirmation),
@@ -162,15 +151,13 @@ namespace QPET.Controllers
             );
         }
 
-
         [HttpGet]
-        public IActionResult Confirmation(
+        public async Task<IActionResult> Confirmation(
             int id)
         {
             var enquiry =
-                _dataService
-                    .GetEnquiryById(id);
-
+                await _enquiryService
+                    .GetEnquiryByIdAsync(id);
 
             if (enquiry == null)
             {
@@ -179,14 +166,11 @@ namespace QPET.Controllers
                 );
             }
 
-
-            PopulateBranches();
-
+            await PopulateBranchesAsync();
 
             ViewBag.EnquiryReference =
                 "ENQ-" +
                 enquiry.EnquiryId;
-
 
             return View(
                 "Index",
@@ -194,27 +178,19 @@ namespace QPET.Controllers
             );
         }
 
-
-        private void PopulateBranches()
+        private async Task PopulateBranchesAsync()
         {
             ViewBag.Branches =
-                _dataService
-                    .GetBranches();
+                await _branchService
+                    .GetBranchesAsync();
         }
 
-
-        private void ValidateBranch(
+        private async Task ValidateBranchAsync(
             int branchId)
         {
             var exists =
-                _dataService
-                    .GetBranches()
-                    .Any(
-                        branch =>
-                            branch.BranchId ==
-                            branchId
-                    );
-
+                await _branchService
+                    .ExistsAsync(branchId);
 
             if (!exists)
             {
@@ -226,7 +202,6 @@ namespace QPET.Controllers
                 );
             }
         }
-
 
         private void ValidateAttachments(
             IEnumerable<IFormFile> attachments)
@@ -240,15 +215,12 @@ namespace QPET.Controllers
                     ".png"
                 };
 
-
-            foreach (
-                var file in attachments)
+            foreach (var file in attachments)
             {
                 if (file.Length == 0)
                 {
                     continue;
                 }
-
 
                 var extension =
                     Path.GetExtension(
@@ -256,15 +228,11 @@ namespace QPET.Controllers
                     )
                     .ToLowerInvariant();
 
-
-                if (
-                    !allowedExtensions
-                        .Contains(extension))
+                if (!allowedExtensions.Contains(extension))
                 {
                     ModelState.AddModelError(
                         nameof(
-                            EnquiryViewModel
-                                .Attachments
+                            EnquiryViewModel.Attachments
                         ),
                         "Only PDF, JPG, JPEG and PNG files are allowed."
                     );

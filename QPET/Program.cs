@@ -27,6 +27,16 @@ builder.Services.AddScoped<
     ProductService
 >();
 
+builder.Services.AddScoped<
+    IBranchService,
+    BranchService
+>();
+
+builder.Services.AddScoped<
+    IEnquiryService,
+    EnquiryService
+>();
+
 builder.Services
     .AddAuthentication(
         "QPETAdmin"

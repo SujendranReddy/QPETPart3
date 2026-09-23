@@ -1,5 +1,4 @@
-﻿@model QPET.Models.Enquiry
-@using QPET.Models
+﻿@model QPET.Data.Entities.Enquiry
 
 @{
     ViewData["Title"] = "Enquiry Details";
@@ -7,12 +6,11 @@
     var notFound =
         ViewBag.EnquiryNotFound == true;
 
-    var customer =
-        ViewBag.Customer as Customer;
+   var customer =
+    ViewBag.Customer as QPET.Data.Entities.Customer;
 
-    var branch =
-        ViewBag.Branch as Branch;
-
+var branch =
+    ViewBag.Branch as QPET.Data.Entities.Branch;
 
     var displayStatus =
         Model.Status == "InProgress"
@@ -260,7 +258,7 @@ else
                         </span>
 
                         <strong>
-                            @Model.CreatedDate
+                            @Model.CreatedDate.ToString("dd MMM yyyy")
                         </strong>
 
                     </div>

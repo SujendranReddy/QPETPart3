@@ -2,8 +2,13 @@ namespace QPET.Models
 {
     public class ProductCatalogueViewModel
     {
-        public List<Product> Products { get; set; } = new List<Product>();
-        public List<Category> Categories { get; set; } = new List<Category>();
-        public List<SubCategory> SubCategories { get; set; } = new List<SubCategory>();
+        public List<QPET.Data.Entities.Product> Products { get; set; }
+            = new List<QPET.Data.Entities.Product>();
+
+        public List<QPET.Data.Entities.Category> Categories { get; set; }
+            = new List<QPET.Data.Entities.Category>();
+
+        public List<QPET.Data.Entities.SubCategory> SubCategories { get; set; }
+            = new List<QPET.Data.Entities.SubCategory>();
     }
 }

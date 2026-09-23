@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using QPET.Data;
 using QPET.Services;
+using QPET.Services.Interfaces;
 
 var builder =
     WebApplication.CreateBuilder(args);
@@ -19,6 +20,11 @@ builder.Services.AddDbContext<QpetDbContext>(
 
 builder.Services.AddScoped<
     PrototypeDataService
+>();
+
+builder.Services.AddScoped<
+    IProductService,
+    ProductService
 >();
 
 builder.Services

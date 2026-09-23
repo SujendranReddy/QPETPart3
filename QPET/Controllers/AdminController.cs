@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using QPET.Models;
 using QPET.Services;
 using System.Security.Claims;
+using QPET.Services.Interfaces;
 
 namespace QPET.Controllers
 {
@@ -11,11 +12,14 @@ namespace QPET.Controllers
     public class AdminController : Controller
     {
         private readonly PrototypeDataService _dataService;
+        private readonly IProductService _productService;
 
         public AdminController(
-            PrototypeDataService dataService)
+     PrototypeDataService dataService,
+     IProductService productService)
         {
             _dataService = dataService;
+            _productService = productService;
         }
 
 
@@ -408,21 +412,23 @@ namespace QPET.Controllers
         }
 
 
-        public IActionResult Products()
+        public async Task<IActionResult> Products()
         {
             var model =
                 new ProductCatalogueViewModel
                 {
                     Products =
-                        _dataService.GetProducts(),
+                        await _productService
+                            .GetProductsAsync(),
 
                     Categories =
-                        _dataService.GetCategories(),
+                        await _productService
+                            .GetCategoriesAsync(),
 
                     SubCategories =
-                        _dataService.GetSubCategories()
+                        await _productService
+                            .GetSubCategoriesAsync()
                 };
-
 
             return View(model);
         }

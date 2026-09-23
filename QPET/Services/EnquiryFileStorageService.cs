@@ -9,14 +9,32 @@ namespace QPET.Services
         private readonly string _storagePath;
 
         public EnquiryFileStorageService(
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IConfiguration configuration)
         {
+            var configuredPath =
+                configuration[
+                    "Storage:EnquiryAttachmentsPath"
+                ];
+
+            if (string.IsNullOrWhiteSpace(
+                configuredPath))
+            {
+                configuredPath =
+                    Path.Combine(
+                        "Data",
+                        "EnquiryAttachments"
+                    );
+            }
+
             _storagePath =
-                Path.Combine(
-                    environment.ContentRootPath,
-                    "Data",
-                    "EnquiryAttachments"
-                );
+                Path.IsPathRooted(
+                    configuredPath)
+                    ? configuredPath
+                    : Path.Combine(
+                        environment.ContentRootPath,
+                        configuredPath
+                    );
 
             Directory.CreateDirectory(
                 _storagePath

@@ -1,0 +1,324 @@
+﻿@model QPET.Models.AdminEnquiryListViewModel
+@using QPET.Models
+
+@{
+    ViewData["Title"] = "Enquiries";
+
+    var customers =
+        ViewBag.Customers as List<Customer>
+        ?? new List<Customer>();
+
+    var branches =
+        ViewBag.Branches as List<Branch>
+        ?? new List<Branch>();
+
+
+    var statuses =
+        new Dictionary<string, string>
+        {
+            { "New", "New" },
+            { "InProgress", "In Progress" },
+            { "Resolved", "Resolved" },
+            { "Closed", "Closed" }
+        };
+}
+
+
+<div id="adminEnquiriesPage">
+
+    <div class="admin-page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                Customer requests
+            </span>
+
+            <h1>
+                Enquiries
+            </h1>
+
+            <p>
+                Review customer enquiries and manage their
+                progress through the QPET enquiry process.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <section class="admin-table-panel">
+
+        <div class="admin-table-toolbar">
+
+            <div>
+
+                <h2>
+                    Customer enquiries
+                </h2>
+
+                <p>
+                    @Model.Enquiries.Count()
+                    @(Model.Enquiries.Count() == 1
+                                        ? "enquiry"
+                                        : "enquiries")
+                </p>
+
+            </div>
+
+
+            <div class="admin-table-toolbar-actions">
+
+                <form asp-controller="Admin"
+                      asp-action="Enquiries"
+                      method="get">
+
+                    <select name="status"
+                            class="admin-filter-control"
+                            onchange="this.form.submit()">
+
+                        @if (string.IsNullOrWhiteSpace(
+                                                Model.SelectedStatus))
+                        {
+                            <option value=""
+                                    selected>
+                                All statuses
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="">
+                                All statuses
+                            </option>
+                        }
+
+
+                        @foreach (var status in statuses)
+                        {
+                            if (
+                            Model.SelectedStatus ==
+                            status.Key)
+                            {
+                                <option value="@status.Key"
+                                        selected>
+
+                                    @status.Value
+
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@status.Key">
+
+                                    @status.Value
+
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        @if (Model.Enquiries.Any())
+        {
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Reference
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Branch
+                            </th>
+
+                            <th>
+                                Subject
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach (
+                                            var enquiry in Model.Enquiries)
+                        {
+                            var customer =
+                            customers.FirstOrDefault(
+                            customer =>
+                            customer.CustomerId ==
+                            enquiry.CustomerId
+                            );
+
+                            var branch =
+                            branches.FirstOrDefault(
+                            branch =>
+                            branch.BranchId ==
+                            enquiry.BranchId
+                            );
+
+
+                            var statusClass =
+                            enquiry.Status switch
+                            {
+                                "New" =>
+                                            "admin-status-new",
+
+                                "InProgress" =>
+                                            "admin-status-inprogress",
+
+                                "Resolved" =>
+                                            "admin-status-resolved",
+
+                                "Closed" =>
+                                            "admin-status-closed",
+
+                                _ =>
+                                            ""
+                            };
+
+
+                            var displayStatus =
+                            enquiry.Status ==
+                            "InProgress"
+                            ? "In Progress"
+                            : enquiry.Status;
+
+
+                            var displayDate =
+                            DateTime.TryParse(
+                            enquiry.CreatedDate,
+                            out var parsedDate
+                            )
+                            ? parsedDate.ToString(
+                            "dd MMM yyyy"
+                            )
+                            : enquiry.CreatedDate;
+
+
+                            <tr>
+
+                                <td>
+
+                                    <strong class="admin-enquiry-reference">
+
+                                        ENQ-@enquiry.EnquiryId
+
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="admin-table-primary">
+
+                                        <strong>
+                                            @(customer?.FullName
+                                                                                ?? "Unknown customer")
+                                                                                                  </strong>
+
+                                        <span>
+                                            @(customer?.EmailAddress
+                                                                                ?? "No email")
+                                </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    @(branch?.BranchName ?? "—")
+                                </td>
+
+
+                                <td>
+
+                                    <div class="admin-table-primary">
+
+                                        <strong>
+                                            @enquiry.Subject
+                                        </strong>
+
+                                        <span>
+                                            @displayDate
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="admin-status-badge @statusClass">
+
+                                        @displayStatus
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <a asp-controller="Admin"
+                                       asp-action="EnquiryDetails"
+                                       asp-route-id="@enquiry.EnquiryId"
+                                       class="admin-action-button">
+
+                                        View
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="admin-table-empty">
+
+                No enquiries match the selected status.
+
+            </div>
+        }
+
+    </section>
+
+</div>

@@ -1,0 +1,227 @@
+﻿@{
+    string currentController =
+        ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+
+    string currentAction =
+        ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <meta name="description"
+          content="QPET South African PET packaging products and company information." />
+
+    <title>@ViewData["Title"] | QPET</title>
+
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+</head>
+
+
+<body>
+
+
+ 
+    <header class="site-header">
+
+        <div class="header-glow"></div>
+
+
+        <div class="container nav-wrap">
+
+
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="brand">
+
+                <div class="brand-mark">
+                    Q
+                </div>
+
+
+                <div class="brand-copy">
+
+                    <span class="brand-title">
+                        QPET
+                    </span>
+
+                    <span class="brand-subtitle">
+                        LIQUID PACKAGING
+                    </span>
+
+                </div>
+
+            </a>
+
+
+
+
+            <button class="menu-toggle"
+                    id="menuToggle"
+                    type="button"
+                    aria-label="Open navigation"
+                    aria-expanded="false"
+                    aria-controls="mainNavigation">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+
+
+
+            <nav class="main-nav"
+                 id="mainNavigation"
+                 aria-label="Main navigation">
+
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="@(currentController == "Home" &&
+                                               currentAction == "Index"
+                                                   ? "active"
+                                                   : "")">
+
+                    Home
+
+                </a>
+
+
+                <a asp-controller="Home"
+                   asp-action="About"
+                   class="@(currentController == "Home" &&
+                                               currentAction == "About"
+                                                   ? "active"
+                                                   : "")">
+
+                    About Us
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   class="@(currentController == "Products"
+                                                   ? "active"
+                                                   : "")">
+
+                    Products
+
+                </a>
+
+
+                <a asp-controller="Reviews"
+                   asp-action="Index"
+                   class="@(currentController == "Reviews"
+                                                   ? "active"
+                                                   : "")">
+
+                    Reviews
+
+                </a>
+
+
+                <a asp-controller="Contact"
+                   asp-action="Index"
+                   class="nav-contact @(currentController == "Contact"
+                                                               ? "active"
+                                                               : "")">
+
+                    Contact
+
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+
+  
+    <main>
+
+        @RenderBody()
+
+    </main>
+
+
+
+
+    <footer class="site-footer">
+
+        <div class="footer-glow"></div>
+
+
+        <div class="container footer-content">
+
+            <div>
+
+                <strong>QPET</strong>
+
+                <p>
+                    Professional PET packaging solutions
+                    for modern businesses.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p>
+                    &copy; @DateTime.Now.Year QPET.
+                    All rights reserved.
+                </p>
+
+                <p>
+                    Interactive System Prototype
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+
+    <script src="~/js/prototype-data.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/prototype-store.js"
+            asp-append-version="true"></script>
+
+
+
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+        )
+
+
+</body>
+
+</html>

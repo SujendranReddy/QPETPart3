@@ -1,0 +1,648 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+
+<section class="home-hero">
+
+    <video class="hero-background-video"
+           autoplay
+           muted
+           loop
+           playsinline
+           preload="metadata"
+           poster="@Url.Content("~/media/images/preforms-production.jpg")"
+           aria-hidden="true">
+
+        <source src="@Url.Content("~/media/videos/hero-bottling.mp4")"
+                type="video/mp4" />
+
+    </video>
+
+
+    <div class="hero-video-overlay"></div>
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-blue-glow"></div>
+    <div class="hero-green-glow"></div>
+
+
+    <div class="container home-hero-content">
+
+
+
+        <div class="hero-copy">
+
+            <span class="eyebrow">
+                South African liquid packaging
+            </span>
+
+
+            <h1>
+                Precision packaging
+
+                <span class="text-gradient">
+                    built for growth.
+                </span>
+            </h1>
+
+
+            <p class="hero-description">
+                QPET combines food-safety standards, advanced manufacturing
+                technology and competitive local production to deliver
+                dependable PET packaging solutions.
+            </p>
+
+
+            <div class="hero-actions">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   class="btn btn-primary">
+
+                    Explore our products
+
+                    <span aria-hidden="true">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Contact"
+                   asp-action="Index"
+                   class="btn btn-secondary">
+
+                    Request an enquiry
+
+                </a>
+
+            </div>
+
+
+            <div class="hero-trust-row">
+
+                <span>
+                    <strong>✓</strong>
+                    FSSC 22000
+                </span>
+
+                <span>
+                    <strong>✓</strong>
+                    Advanced technology
+                </span>
+
+                <span>
+                    <strong>✓</strong>
+                    Local innovation
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+
+        <aside class="hero-information-card">
+
+            <div class="hero-card-top">
+
+                <span class="live-indicator">
+
+                    <span></span>
+
+                    Packaging capability
+
+                </span>
+
+
+                <span class="hero-card-number">
+                    01
+                </span>
+
+            </div>
+
+
+            <div class="hero-card-content">
+
+                <span class="hero-card-kicker">
+                    High-speed manufacturing
+                </span>
+
+
+                <h2>
+                    Advanced technology engineered for quality output.
+                </h2>
+
+
+                <p>
+                    QPET uses the latest production technology to support
+                    high-speed manufacturing while maintaining consistent,
+                    high-quality packaging output.
+                </p>
+
+            </div>
+
+
+            <div class="hero-card-statistics">
+
+                <div>
+
+                    <strong>
+                        FSSC 22000
+                    </strong>
+
+                    <span>
+                        Food safety
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        28 / 38mm
+                    </strong>
+
+                    <span>
+                        Tethered closures
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        SA FIRST
+                    </strong>
+
+                    <span>
+                        Local production
+                    </span>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+
+    <a href="#company-values"
+       class="hero-scroll-indicator"
+       aria-label="Scroll to learn more">
+
+        <span>
+            Scroll to explore
+        </span>
+
+        <span class="scroll-line"></span>
+
+    </a>
+
+</section>
+
+
+
+
+<section class="value-strip"
+         id="company-values">
+
+    <div class="container value-grid">
+
+
+
+        <article class="value-item">
+
+            <div class="value-icon">
+                01
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Food safety
+                </h3>
+
+                <p>
+                    FSSC 22000 food-safety accreditation supports
+                    recognised standards for packaging production.
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+
+        <article class="value-item">
+
+            <div class="value-icon">
+                02
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Latest technology
+                </h3>
+
+                <p>
+                    Modern production technology supports high-speed
+                    manufacturing and high-quality output.
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+
+        <article class="value-item">
+
+            <div class="value-icon">
+                03
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Competitive production
+                </h3>
+
+                <p>
+                    QPET prides itself on being a low-cost producer
+                    able to offer competitive pricing.
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+
+        <article class="value-item">
+
+            <div class="value-icon">
+                04
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Local innovation
+                </h3>
+
+                <p>
+                    First in South Africa to locally produce
+                    28mm and 38mm tethered closures.
+                </p>
+
+            </div>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+
+
+<section class="section responsibility-section">
+
+    <div class="container">
+
+
+        <div class="responsibility-heading">
+
+            <span class="eyebrow">
+                Quality and responsibility
+            </span>
+
+
+            <h2>
+                Packaging backed by
+
+                <span class="text-gradient">
+                    responsible standards.
+                </span>
+            </h2>
+
+
+            <p>
+                QPET combines recognised food-safety standards,
+                responsible plastics practices and efficient
+                production capability.
+            </p>
+
+        </div>
+
+
+
+        <div class="responsibility-grid">
+
+
+
+            <article class="responsibility-card">
+
+                <div class="responsibility-card-top">
+
+                    <span class="responsibility-number">
+                        01
+                    </span>
+
+                    <span class="responsibility-label">
+                        Food safety
+                    </span>
+
+                </div>
+
+
+                <div class="responsibility-icon"
+                     aria-hidden="true">
+
+                    ✓
+
+                </div>
+
+
+                <h3>
+                    FSSC 22000 accredited
+                </h3>
+
+
+                <p>
+                    QPET is food-safety approved through FSSC 22000,
+                    supporting recognised food-safety requirements for
+                    packaging used in food and beverage applications.
+                </p>
+
+
+                <span class="responsibility-note">
+                    Food-safety focused manufacturing
+                </span>
+
+            </article>
+
+
+
+
+            <article class="responsibility-card">
+
+                <div class="responsibility-card-top">
+
+                    <span class="responsibility-number">
+                        02
+                    </span>
+
+                    <span class="responsibility-label">
+                        Responsibility
+                    </span>
+
+                </div>
+
+
+                <div class="responsibility-icon"
+                     aria-hidden="true">
+
+                    ♻
+
+                </div>
+
+
+                <h3>
+                    Responsible Plastics Converter
+                </h3>
+
+
+                <p>
+                    QPET is a Responsible Plastics Converter and is
+                    registered with EWASA, a registered PRO, supporting
+                    responsible plastics and packaging practices.
+                </p>
+
+
+                <span class="responsibility-note">
+                    Supporting responsible plastics management
+                </span>
+
+            </article>
+
+
+
+
+            <article class="responsibility-card">
+
+                <div class="responsibility-card-top">
+
+                    <span class="responsibility-number">
+                        03
+                    </span>
+
+                    <span class="responsibility-label">
+                        Competitive
+                    </span>
+
+                </div>
+
+
+                <div class="responsibility-icon"
+                     aria-hidden="true">
+
+                    ◫
+
+                </div>
+
+
+                <h3>
+                    Low-cost production
+                </h3>
+
+
+                <p>
+                    QPET prides itself on being a low-cost producer,
+                    using efficient manufacturing capability to support
+                    competitive pricing for commercial customers.
+                </p>
+
+
+                <span class="responsibility-note">
+                    Efficient production. Competitive pricing.
+                </span>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+<section class="section introduction-section">
+
+    <div class="container introduction-grid">
+
+
+
+        <div class="introduction-image-card">
+
+            <img src="@Url.Content("~/media/images/preform-closeup.jpg")"
+                 alt="Close-up view of a transparent PET preform" />
+
+
+            <div class="introduction-image-overlay"></div>
+
+
+            <div class="image-card-caption">
+
+                <span>
+                    Engineered detail
+                </span>
+
+                <strong>
+                    Precision begins with every preform.
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="introduction-copy">
+
+            <span class="eyebrow">
+                Why QPET
+            </span>
+
+
+            <h2>
+                Technology, efficiency and
+
+                <span class="text-gradient">
+                    local innovation.
+                </span>
+            </h2>
+
+
+            <p>
+                QPET combines modern technology, efficient production
+                and South African manufacturing capability to provide
+                customers with high-quality packaging at competitive
+                commercial pricing.
+            </p>
+
+
+
+            <div class="introduction-points">
+
+
+
+                <div>
+
+                    <span>
+                        01
+                    </span>
+
+
+                    <div>
+
+                        <strong>
+                            Advanced manufacturing technology
+                        </strong>
+
+                        <p>
+                            The latest production technology supports
+                            high-speed manufacturing and consistent,
+                            high-quality output.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+
+                <div>
+
+                    <span>
+                        02
+                    </span>
+
+
+                    <div>
+
+                        <strong>
+                            South African innovation
+                        </strong>
+
+                        <p>
+                            QPET is the first in South Africa to locally
+                            produce both 28mm and 38mm tethered closures.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+
+                <div>
+
+                    <span>
+                        03
+                    </span>
+
+
+                    <div>
+
+                        <strong>
+                            Professional customer support
+                        </strong>
+
+                        <p>
+                            Customers can explore the product range and
+                            submit enquiries directly to the QPET team.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <a asp-controller="Home"
+               asp-action="About"
+               class="text-link">
+
+                Discover the QPET story
+
+                <span aria-hidden="true">
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>

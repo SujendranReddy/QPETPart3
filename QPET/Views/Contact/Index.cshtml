@@ -1,0 +1,479 @@
+﻿@model QPET.Models.EnquiryViewModel
+@using QPET.Models
+
+@{
+    ViewData["Title"] = "Contact";
+
+    var branches =
+        ViewBag.Branches as List<Branch>
+        ?? new List<Branch>();
+
+    var enquiryReference =
+        ViewBag.EnquiryReference as string;
+}
+
+
+<section class="contact-hero">
+
+    <video class="contact-hero-video"
+           autoplay
+           muted
+           loop
+           playsinline
+           preload="metadata"
+           poster="@Url.Content("~/media/images/preforms-production.jpg")">
+
+        <source src="@Url.Content("~/media/videos/product-components.mp4")"
+                type="video/mp4" />
+
+    </video>
+
+    <div class="contact-hero-overlay"></div>
+
+    <div class="container contact-hero-content">
+
+        <span class="eyebrow">
+            Start a conversation
+        </span>
+
+        <h1>
+            Let’s build packaging around
+
+            <span class="text-gradient">
+                your product.
+            </span>
+        </h1>
+
+        <p>
+            Tell QPET about your packaging requirements,
+            preferred branch and the type of assistance you need.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="section contact-main-section">
+
+    <div class="container contact-page-layout">
+
+
+        <aside class="contact-details-card">
+
+            <span class="contact-card-number">
+                01
+            </span>
+
+            <span class="section-kicker">
+                Contact information
+            </span>
+
+            <h2>
+                Speak to the QPET team.
+            </h2>
+
+            <p class="contact-details-introduction">
+                Submit an enquiry and select the QPET branch
+                most relevant to your request.
+            </p>
+
+
+            <div class="contact-details-list">
+
+                <article class="contact-detail-item">
+
+                    <div class="contact-detail-icon">
+                        ✦
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Branches
+                        </span>
+
+                        <strong>
+                            Durban, Johannesburg & Cape Town
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="contact-detail-item">
+
+                    <div class="contact-detail-icon">
+                        @@
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong>
+                            info@qpet.co.za
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="contact-detail-item">
+
+                    <div class="contact-detail-icon">
+                        ☎
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Telephone
+                        </span>
+
+                        <strong>
+                            +27 00 000 0000
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="contact-detail-item">
+
+                    <div class="contact-detail-icon">
+                        ◷
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Business hours
+                        </span>
+
+                        <strong>
+                            Monday–Friday, 08:00–16:30
+                        </strong>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <div class="contact-information-note">
+
+                <strong>
+                    Helpful information to include
+                </strong>
+
+                <p>
+                    Product type, required capacity,
+                    neck finish, expected quantity and
+                    intended application.
+                </p>
+
+            </div>
+
+        </aside>
+
+
+        <div class="contact-form-card">
+
+            <span class="section-kicker">
+                Product enquiry
+            </span>
+
+            <h2>
+                Tell us what you need.
+            </h2>
+
+            <p class="contact-form-introduction">
+                Complete the form below to demonstrate how a customer
+                enquiry would be captured by the QPET system.
+            </p>
+
+
+            @if (string.IsNullOrWhiteSpace(enquiryReference))
+            {
+                <form asp-controller="Contact"
+                      asp-action="SubmitEnquiry"
+                      method="post"
+                      enctype="multipart/form-data"
+                      class="contact-form">
+
+
+                    <div class="contact-form-row">
+
+                        <div class="contact-form-field">
+
+                            <label asp-for="FullName">
+                                Full Name
+                            </label>
+
+                            <input asp-for="FullName"
+                                   class="contact-control"
+                                   placeholder="Your full name" />
+
+                            <span asp-validation-for="FullName"
+                                  class="field-validation">
+                            </span>
+
+                        </div>
+
+
+                        <div class="contact-form-field">
+
+                            <label asp-for="EmailAddress">
+                                Email Address
+                            </label>
+
+                            <input asp-for="EmailAddress"
+                                   class="contact-control"
+                                   placeholder="name@company.co.za" />
+
+                            <span asp-validation-for="EmailAddress"
+                                  class="field-validation">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="contact-form-row">
+
+                        <div class="contact-form-field">
+
+                            <label asp-for="PhoneNumber">
+                                Phone Number
+                            </label>
+
+                            <input asp-for="PhoneNumber"
+                                   class="contact-control"
+                                   placeholder="+27 00 000 0000" />
+
+                            <span asp-validation-for="PhoneNumber"
+                                  class="field-validation">
+                            </span>
+
+                        </div>
+
+
+                        <div class="contact-form-field">
+
+                            <label asp-for="BranchId">
+                                QPET Branch
+                            </label>
+
+                            <select asp-for="BranchId"
+                                    class="contact-control">
+
+                                <option value="0">
+                                    Select a branch
+                                </option>
+
+                                @foreach (var branch in branches)
+                                {
+                                    <option value="@branch.BranchId">
+                                        @branch.BranchName
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="BranchId"
+                                  class="field-validation">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="Subject">
+                            Subject
+                        </label>
+
+                        <input asp-for="Subject"
+                               class="contact-control"
+                               placeholder="What can QPET assist with?" />
+
+                        <span asp-validation-for="Subject"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="Message">
+                            Message
+                        </label>
+
+                        <textarea asp-for="Message"
+                                  class="contact-control contact-textarea"
+                                  placeholder="Tell us about your product type, required capacity, quantity and packaging requirements.">
+                            </textarea>
+
+                        <span asp-validation-for="Message"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="Attachments">
+                            Attachments
+                        </label>
+
+                        <input asp-for="Attachments"
+                               type="file"
+                               class="contact-control"
+                               multiple
+                               accept=".pdf,.jpg,.jpeg,.png" />
+
+                        <small class="contact-field-note">
+                            Optional. PDF, JPG and PNG files may be
+                            selected in the prototype. File metadata is
+                            recorded but the files are not physically stored.
+                        </small>
+
+                        <span asp-validation-for="Attachments"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn btn-primary contact-submit-button">
+
+                        Submit enquiry
+
+                        <span aria-hidden="true">
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+            }
+            else
+            {
+                <div id="enquiryConfirmation">
+
+                    <div class="contact-success-message"
+                         role="status">
+
+                        <span>
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Enquiry submitted successfully
+                            </strong>
+
+                            <p>
+                                Your enquiry has been recorded
+                                in the QPET prototype.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="contact-information-note">
+
+                        <strong>
+                            Reference
+                        </strong>
+
+                        <p>
+                            @enquiryReference
+                        </p>
+
+                    </div>
+
+
+                    <div class="contact-information-note">
+
+                        <strong>
+                            Current Status
+                        </strong>
+
+                        <p>
+                            New
+                        </p>
+
+                    </div>
+
+
+                    <a asp-controller="Contact"
+                       asp-action="Index"
+                       class="btn btn-secondary">
+
+                        Submit another enquiry
+
+                    </a>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="contact-bottom-banner">
+
+    <div class="container contact-bottom-content">
+
+        <div>
+
+            <span class="eyebrow">
+                Explore the range
+            </span>
+
+            <h2>
+                Still deciding which packaging product you need?
+            </h2>
+
+            <p>
+                Browse the QPET product catalogue before submitting
+                your enquiry.
+            </p>
+
+        </div>
+
+        <a asp-controller="Products"
+           asp-action="Index"
+           class="btn btn-light">
+
+            View products
+
+            <span aria-hidden="true">
+                →
+            </span>
+
+        </a>
+
+    </div>
+
+</section>

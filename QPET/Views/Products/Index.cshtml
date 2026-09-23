@@ -1,0 +1,395 @@
+﻿@model QPET.Models.ProductCatalogueViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<section class="products-hero">
+
+    <video class="products-hero-video"
+           autoplay
+           muted
+           loop
+           playsinline
+           preload="metadata"
+           poster="@Url.Content("~/media/images/preforms-production.jpg")">
+
+        <source src="@Url.Content("~/media/videos/packaged-products.mp4")"
+                type="video/mp4" />
+
+    </video>
+
+    <div class="products-hero-overlay"></div>
+
+    <div class="container products-hero-content">
+
+        <span class="eyebrow">
+            Product catalogue
+        </span>
+
+        <h1>
+            Packaging designed for
+            <span class="text-gradient">
+                real-world applications.
+            </span>
+        </h1>
+
+        <p>
+            Explore QPET PET packaging products and filter the
+            prototype catalogue by category and subcategory.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="section products-section">
+
+    <div class="container">
+
+        <div class="product-filter-panel">
+
+            <div class="filter-panel-heading">
+
+                <div class="filter-icon"
+                     aria-hidden="true">
+                    ◈
+                </div>
+
+                <div>
+
+                    <strong>
+                        Find a product
+                    </strong>
+
+                    <span>
+                        Filter the prototype catalogue
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label for="categoryFilter">
+                    Category
+                </label>
+
+                <select id="categoryFilter"
+                        class="product-filter-control">
+
+                    <option value="">
+                        All categories
+                    </option>
+
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.CategoryId">
+                            @category.CategoryName
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label for="subCategoryFilter">
+                    Subcategory
+                </label>
+
+                <select id="subCategoryFilter"
+                        class="product-filter-control"
+                        disabled>
+
+                    <option value="">
+                        All subcategories
+                    </option>
+
+                    @foreach (var subCategory in Model.SubCategories)
+                    {
+                        <option value="@subCategory.SubCategoryId"
+                                data-category-id="@subCategory.CategoryId">
+                            @subCategory.SubCategoryName
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div class="product-filter-actions">
+
+                <button type="button"
+                        id="clearProductFilters"
+                        class="btn btn-secondary">
+
+                    Clear filters
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="product-results-heading">
+
+            <div>
+
+                <span class="section-kicker">
+                    Catalogue results
+                </span>
+
+                <h2 id="productCount">
+                    @Model.Products.Count
+                    @(Model.Products.Count == 1 ? "product found" : "products found")
+                </h2>
+
+            </div>
+
+            <span id="activeFilterLabel"
+                  class="active-filter-label"
+                  hidden>
+            </span>
+
+        </div>
+
+
+        <div id="productList"
+             class="catalogue-product-grid">
+
+            @foreach (var product in Model.Products)
+            {
+                var category = Model.Categories
+                .FirstOrDefault(category =>
+                category.CategoryId == product.CategoryId);
+
+                var subCategory = Model.SubCategories
+                .FirstOrDefault(subCategory =>
+                subCategory.SubCategoryId == product.SubCategoryId);
+
+                var primaryImage = product.Images
+                .FirstOrDefault(image => image.IsPrimary);
+
+                var imageUrl =
+                primaryImage?.ImageUrl
+                ?? "/media/images/preform-closeup.jpg";
+
+                <article class="catalogue-product-card"
+                         data-category-id="@product.CategoryId"
+                         data-subcategory-id="@product.SubCategoryId">
+
+                    <div class="catalogue-product-image">
+
+                        <img src="@imageUrl"
+                             alt="@product.ProductName"
+                             onerror="this.src='/media/images/preform-closeup.jpg';" />
+
+                        <div class="catalogue-image-overlay"></div>
+
+                        <span class="catalogue-category-pill">
+                            @(category?.CategoryName ?? "Product")
+                        </span>
+
+                        <span class="catalogue-product-number">
+                            @product.ProductId.ToString("00")
+                        </span>
+
+                    </div>
+
+
+                    <div class="catalogue-product-content">
+
+                        <span class="catalogue-subcategory">
+                            @(subCategory?.SubCategoryName ?? "QPET Packaging")
+                        </span>
+
+                        <h3>
+                            @product.ProductName
+                        </h3>
+
+                        <p>
+                            @product.Description
+                        </p>
+
+
+                        <div class="catalogue-sales-notice">
+
+                            <div class="catalogue-sales-icon"
+                                 aria-hidden="true">
+                                ◫
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Commercial supply
+                                </span>
+
+                                <strong>
+                                    Supplied in unit quantities
+                                </strong>
+
+                                <small>
+                                    Contact QPET for applicable
+                                    commercial quantities.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <dl class="catalogue-product-specifications">
+
+                            <div>
+
+                                <dt>
+                                    Capacity
+                                </dt>
+
+                                <dd>
+                                    @product.CapacityVolume
+                                </dd>
+
+                            </div>
+
+                            <div>
+
+                                <dt>
+                                    Neck finish
+                                </dt>
+
+                                <dd>
+                                    @product.NeckFinish
+                                </dd>
+
+                            </div>
+
+                            <div>
+
+                                <dt>
+                                    Category
+                                </dt>
+
+                                <dd>
+                                    @(category?.CategoryName ?? "N/A")
+                                </dd>
+
+                            </div>
+
+                            <div>
+
+                                <dt>
+                                    Subcategory
+                                </dt>
+
+                                <dd>
+                                    @(subCategory?.SubCategoryName ?? "N/A")
+                                </dd>
+
+                            </div>
+
+                        </dl>
+
+
+                        <a asp-controller="Contact"
+                           asp-action="Index"
+                           asp-route-product="@product.ProductName"
+                           class="catalogue-enquiry-link">
+
+                            Enquire about this product
+
+                            <span aria-hidden="true">
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+
+
+        <div id="noProductsMessage"
+             class="products-empty-state"
+             hidden>
+
+            <div class="empty-state-icon">
+                ◇
+            </div>
+
+            <h2>
+                No matching products
+            </h2>
+
+            <p>
+                Try clearing the selected category or
+                subcategory filters.
+            </p>
+
+            <button type="button"
+                    id="emptyStateClearFilters"
+                    class="btn btn-primary">
+
+                View all products
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="product-page-cta">
+
+    <div class="container product-page-cta-content">
+
+        <div>
+
+            <span class="eyebrow">
+                Need assistance?
+            </span>
+
+            <h2>
+                Looking for a specific capacity or neck finish?
+            </h2>
+
+            <p>
+                Contact QPET to discuss your product,
+                capacity and packaging requirements.
+            </p>
+
+        </div>
+
+        <a asp-controller="Contact"
+           asp-action="Index"
+           class="btn btn-light">
+
+            Send an enquiry
+
+        </a>
+
+    </div>
+
+</section>
+
+
+@section Scripts {
+
+    <script src="~/js/products.js"
+            asp-append-version="true"></script>
+
+}

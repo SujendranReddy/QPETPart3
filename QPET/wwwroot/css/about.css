@@ -1,0 +1,243 @@
+.about-hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: -4;
+}
+
+    .about-hero-background img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.about-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background: linear-gradient(90deg, rgba(3, 9, 24, 0.96), rgba(4, 14, 35, 0.75));
+}
+
+.about-story-grid,
+.about-manufacturing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+}
+
+.about-story-copy h2,
+.about-manufacturing-copy h2,
+.about-section-heading h2 {
+    margin: 0 0 1.2rem;
+    font-size: clamp(2.2rem, 4.5vw, 4.2rem);
+    line-height: 1.05;
+}
+
+.about-story-copy > p,
+.about-manufacturing-copy > p {
+    color: var(--muted);
+}
+
+.about-highlight {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1.2rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+}
+
+    .about-highlight span {
+        color: var(--accent);
+        font-size: 3rem;
+    }
+
+    .about-highlight p {
+        margin: 0;
+        color: #fff;
+        font-weight: 700;
+    }
+
+.about-information-panel {
+    padding: 2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.about-panel-number {
+    color: var(--primary-bright);
+    font-size: 3rem;
+    font-weight: 900;
+}
+
+.about-information-panel h3 {
+    margin: 1rem 0;
+    font-size: 1.6rem;
+}
+
+.about-check-list {
+    display: grid;
+    gap: 0.8rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+    .about-check-list li::before {
+        content: "✓";
+        margin-right: 0.7rem;
+        color: var(--accent);
+        font-weight: 800;
+    }
+
+.about-manufacturing-section {
+    border-block: 1px solid var(--line);
+    background: rgba(10, 25, 54, 0.55);
+}
+
+.about-video-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+}
+
+    .about-video-card video {
+        width: 100%;
+        height: 540px;
+        object-fit: cover;
+    }
+
+.about-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(3, 9, 24, 0.9), transparent 60%);
+}
+
+.about-video-caption {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    left: 1.5rem;
+}
+
+    .about-video-caption span {
+        display: block;
+        color: var(--primary-bright);
+        font-size: 0.75rem;
+        font-weight: 800;
+    }
+
+    .about-video-caption strong {
+        display: block;
+        margin-top: 0.3rem;
+        font-size: 1.3rem;
+    }
+
+.about-process-list {
+    margin-top: 2rem;
+    border-top: 1px solid var(--line);
+}
+
+    .about-process-list article {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: 1rem;
+        padding: 1.1rem 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+        .about-process-list article > span {
+            color: var(--primary-bright);
+            font-weight: 800;
+        }
+
+    .about-process-list h3 {
+        margin: 0 0 0.25rem;
+    }
+
+    .about-process-list p {
+        margin: 0;
+        color: var(--muted);
+    }
+
+.about-section-heading {
+    max-width: 750px;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+}
+
+.about-values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.about-value-card {
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+    .about-value-card > span {
+        color: var(--primary-bright);
+        font-size: 2rem;
+        font-weight: 900;
+    }
+
+    .about-value-card h3 {
+        margin: 1rem 0 0.5rem;
+    }
+
+    .about-value-card p {
+        margin: 0;
+        color: var(--muted);
+    }
+
+.about-cta-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+@media (max-width: 1080px) {
+    .about-story-grid,
+    .about-manufacturing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-values-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+    .about-hero {
+        min-height: 540px;
+        padding: 5rem 0 4rem;
+    }
+
+    .about-video-card video {
+        height: 430px;
+    }
+
+    .about-cta-content {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 560px) {
+    .about-values-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-video-card video {
+        height: 350px;
+    }
+
+    .about-cta-actions,
+    .about-cta-actions .btn {
+        width: 100%;
+    }
+}

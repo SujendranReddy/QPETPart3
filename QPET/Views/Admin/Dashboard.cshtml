@@ -1,0 +1,498 @@
+﻿@model QPET.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+<div id="adminDashboard"
+     class="admin-dashboard">
+
+
+    <div class="admin-page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                Administration overview
+            </span>
+
+
+            <h1>
+                Dashboard
+            </h1>
+
+
+            <p>
+                Review the current QPET catalogue, customer enquiries
+                and feedback activity from one management interface.
+            </p>
+
+        </div>
+
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           target="_blank"
+           class="btn btn-secondary">
+
+            View public website
+
+            <span aria-hidden="true">
+                ↗
+            </span>
+
+        </a>
+
+    </div>
+
+
+
+    <section class="admin-stat-grid">
+
+
+        <article class="admin-stat-card">
+
+            <div class="admin-stat-top">
+
+                <span class="admin-stat-label">
+                    Active Products
+                </span>
+
+
+                <span class="admin-stat-icon">
+                    ◫
+                </span>
+
+            </div>
+
+
+            <strong class="admin-stat-value">
+
+                @Model.ActiveProductCount
+
+            </strong>
+
+
+            <div class="admin-stat-footer">
+
+                <span class="admin-stat-indicator"></span>
+
+                Available in public catalogue
+
+            </div>
+
+        </article>
+
+
+
+        <article class="admin-stat-card">
+
+            <div class="admin-stat-top">
+
+                <span class="admin-stat-label">
+                    New Enquiries
+                </span>
+
+
+                <span class="admin-stat-icon">
+                    ✉
+                </span>
+
+            </div>
+
+
+            <strong class="admin-stat-value">
+
+                @Model.NewEnquiryCount
+
+            </strong>
+
+
+            <div class="admin-stat-footer">
+
+                <span class="admin-stat-indicator"></span>
+
+                Awaiting administrator action
+
+            </div>
+
+        </article>
+
+
+
+        <article class="admin-stat-card">
+
+            <div class="admin-stat-top">
+
+                <span class="admin-stat-label">
+                    Open Enquiries
+                </span>
+
+
+                <span class="admin-stat-icon">
+                    ◈
+                </span>
+
+            </div>
+
+
+            <strong class="admin-stat-value">
+
+                @Model.OpenEnquiryCount
+
+            </strong>
+
+
+            <div class="admin-stat-footer">
+
+                <span class="admin-stat-indicator"></span>
+
+                New or currently in progress
+
+            </div>
+
+        </article>
+
+
+
+        <article class="admin-stat-card">
+
+            <div class="admin-stat-top">
+
+                <span class="admin-stat-label">
+                    Customer Reviews
+                </span>
+
+
+                <span class="admin-stat-icon">
+                    ★
+                </span>
+
+            </div>
+
+
+            <strong class="admin-stat-value">
+
+                @Model.ReviewCount
+
+            </strong>
+
+
+            <div class="admin-stat-footer">
+
+                <span class="admin-stat-indicator"></span>
+
+                Published prototype feedback
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+
+    <section class="admin-dashboard-grid">
+
+
+        <div class="admin-panel">
+
+
+            <div class="admin-panel-heading">
+
+                <div>
+
+                    <span class="section-kicker">
+                        Customer activity
+                    </span>
+
+
+                    <h2>
+                        Recent enquiries
+                    </h2>
+
+
+                    <p>
+                        Latest requests submitted through the website.
+                    </p>
+
+                </div>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Enquiries"
+                   class="admin-panel-link">
+
+                    View all →
+
+                </a>
+
+            </div>
+
+
+            @if (Model.RecentEnquiries.Any())
+            {
+                <div class="admin-recent-list">
+
+                    @foreach (
+                                    var enquiry
+                                    in Model.RecentEnquiries)
+                    {
+                        var statusClass =
+                        enquiry.Status switch
+                        {
+                            "New" =>
+                                    "admin-status-new",
+
+                            "InProgress" =>
+                                    "admin-status-inprogress",
+
+                            "Resolved" =>
+                                    "admin-status-resolved",
+
+                            "Closed" =>
+                                    "admin-status-closed",
+
+                            _ =>
+                                    ""
+                        };
+
+
+                        var displayStatus =
+                        enquiry.Status ==
+                        "InProgress"
+                        ? "In Progress"
+                        : enquiry.Status;
+
+
+                        var displayDate =
+                        DateTime.TryParse(
+                        enquiry.CreatedDate,
+                        out var parsedDate
+                        )
+                        ? parsedDate.ToString(
+                        "dd MMM yyyy"
+                        )
+                        : enquiry.CreatedDate;
+
+
+                        <div class="admin-recent-enquiry">
+
+
+                            <div class="admin-enquiry-reference">
+
+                                ENQ-@enquiry.EnquiryId
+
+                            </div>
+
+
+                            <div class="admin-enquiry-customer">
+
+                                <strong>
+                                    @enquiry.CustomerName
+                                </strong>
+
+                                <span>
+                                    @enquiry.CustomerEmail
+                                </span>
+
+                            </div>
+
+
+                            <div class="admin-enquiry-subject">
+
+                                <strong>
+                                    @enquiry.Subject
+                                </strong>
+
+                                <span>
+                                    @enquiry.BranchName · @displayDate
+                                </span>
+
+                            </div>
+
+
+                            <a asp-controller="Admin"
+                               asp-action="EnquiryDetails"
+                               asp-route-id="@enquiry.EnquiryId"
+                               class="admin-status-badge @statusClass">
+
+                                @displayStatus
+
+                            </a>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="admin-empty-message">
+
+                    No enquiries have been submitted.
+
+                </div>
+            }
+
+        </div>
+
+
+
+        <aside class="admin-panel">
+
+
+            <div class="admin-panel-heading">
+
+                <div>
+
+                    <span class="section-kicker">
+                        Quick access
+                    </span>
+
+
+                    <h2>
+                        Management
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="admin-management-list">
+
+
+                <a asp-controller="Admin"
+                   asp-action="Products"
+                   class="admin-management-link">
+
+
+                    <span class="admin-management-icon">
+                        ◫
+                    </span>
+
+
+                    <span class="admin-management-copy">
+
+                        <strong>
+                            Manage Products
+                        </strong>
+
+                        <span>
+                            Create, edit or remove catalogue items.
+                        </span>
+
+                    </span>
+
+
+                    <span class="admin-management-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+
+                <a asp-controller="Admin"
+                   asp-action="Enquiries"
+                   class="admin-management-link">
+
+
+                    <span class="admin-management-icon">
+                        ✉
+                    </span>
+
+
+                    <span class="admin-management-copy">
+
+                        <strong>
+                            Manage Enquiries
+                        </strong>
+
+                        <span>
+                            Review requests and update their status.
+                        </span>
+
+                    </span>
+
+
+                    <span class="admin-management-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+
+                <a asp-controller="Admin"
+                   asp-action="Reviews"
+                   class="admin-management-link">
+
+
+                    <span class="admin-management-icon">
+                        ★
+                    </span>
+
+
+                    <span class="admin-management-copy">
+
+                        <strong>
+                            Moderate Reviews
+                        </strong>
+
+                        <span>
+                            Review and remove customer feedback.
+                        </span>
+
+                    </span>
+
+
+                    <span class="admin-management-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+
+                <a asp-controller="Admin"
+                   asp-action="CreateProduct"
+                   class="admin-management-link">
+
+
+                    <span class="admin-management-icon">
+                        +
+                    </span>
+
+
+                    <span class="admin-management-copy">
+
+                        <strong>
+                            Add Product
+                        </strong>
+
+                        <span>
+                            Add another item to the prototype catalogue.
+                        </span>
+
+                    </span>
+
+
+                    <span class="admin-management-arrow">
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+    </section>
+
+</div>
+
+

@@ -1,0 +1,302 @@
+﻿@{
+    string currentAction =
+        ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] | QPET Admin</title>
+
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+</head>
+
+
+<body class="admin-body">
+
+
+    <div class="admin-shell">
+
+
+        <aside class="admin-sidebar"
+               id="adminSidebar">
+
+
+
+            <a asp-controller="Admin"
+               asp-action="Dashboard"
+               class="admin-brand">
+
+
+                <div class="admin-brand-mark">
+                    Q
+                </div>
+
+
+                <div class="admin-brand-copy">
+
+                    <span class="admin-brand-title">
+                        QPET
+                    </span>
+
+                    <span class="admin-brand-subtitle">
+                        Administration
+                    </span>
+
+                </div>
+
+            </a>
+
+
+
+            <span class="admin-navigation-label">
+                Management
+            </span>
+
+
+
+
+            <nav class="admin-navigation"
+                 aria-label="Administrator navigation">
+
+
+                <a asp-controller="Admin"
+                   asp-action="Dashboard"
+                   class="@(currentAction == "Dashboard"
+                                                   ? "active"
+                                                   : "")">
+
+
+                    <span class="admin-nav-icon">
+                        ◈
+                    </span>
+
+                    Dashboard
+
+                </a>
+
+
+
+                <a asp-controller="Admin"
+                   asp-action="Products"
+                   class="@(currentAction == "Products" ||
+                                               currentAction == "CreateProduct" ||
+                                               currentAction == "EditProduct"
+                                                   ? "active"
+                                                   : "")">
+
+
+                    <span class="admin-nav-icon">
+                        ◫
+                    </span>
+
+                    Products
+
+                </a>
+
+
+
+                <a asp-controller="Admin"
+                   asp-action="Enquiries"
+                   class="@(currentAction == "Enquiries" ||
+                                               currentAction == "EnquiryDetails"
+                                                   ? "active"
+                                                   : "")">
+
+
+                    <span class="admin-nav-icon">
+                        ✉
+                    </span>
+
+                    Enquiries
+
+                </a>
+
+
+
+                <a asp-controller="Admin"
+                   asp-action="Reviews"
+                   class="@(currentAction == "Reviews"
+                                                   ? "active"
+                                                   : "")">
+
+
+                    <span class="admin-nav-icon">
+                        ★
+                    </span>
+
+                    Reviews
+
+                </a>
+
+
+            </nav>
+
+
+
+            <span class="admin-navigation-label">
+                Website
+            </span>
+
+
+            <nav class="admin-navigation">
+
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   target="_blank">
+
+
+                    <span class="admin-nav-icon">
+                        ↗
+                    </span>
+
+                    View Public Site
+
+                </a>
+
+
+            </nav>
+
+
+
+
+            <div class="admin-sidebar-footer">
+
+
+                <span class="admin-prototype-label">
+                    Interactive system prototype
+                </span>
+
+
+                <form asp-controller="Admin"
+                      asp-action="Logout"
+                      method="post">
+
+                    <button type="submit"
+                            class="btn btn-secondary admin-logout-button">
+
+                        Logout
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </aside>
+
+
+
+
+        <div class="admin-sidebar-overlay"
+             id="adminSidebarOverlay">
+        </div>
+
+
+
+ 
+        <div class="admin-main">
+
+
+
+            <header class="admin-topbar">
+
+
+                <div class="admin-topbar-left">
+
+
+                    <button type="button"
+                            class="admin-menu-toggle"
+                            id="adminMenuToggle"
+                            aria-label="Open admin navigation"
+                            aria-expanded="false">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </button>
+
+
+                    <div class="admin-topbar-title">
+
+                        <strong>
+                            QPET Administration
+                        </strong>
+
+                        <span>
+                            Prototype management interface
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="admin-user">
+
+
+                    <div class="admin-user-avatar">
+                        A
+                    </div>
+
+
+                    <div class="admin-user-copy">
+
+                        <strong>
+                            Administrator
+                        </strong>
+
+                        <span>
+                            @(User.Identity?.Name ?? "Administrator")
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+
+
+            <main class="admin-content">
+
+                @RenderBody()
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+
+
+    <script src="~/js/admin-shell.js"
+            asp-append-version="true"></script>
+
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+        )
+
+
+</body>
+
+</html>

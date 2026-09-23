@@ -1,0 +1,61 @@
+/*
+
+    The stylesheet is split into separate files to kep the project easier to maintain and read. 
+    A shared styling is kept in the base.css and components.css, while each main page has its own stylesheet.
+    The project started with one large CSS file, however, it was very long, tedious to update, and to find specific sections etc...
+*/
+
+
+/* The files are iimported here so that the application still loads them
+    through the one main stylesheet.
+*/
+
+@import url("base.css");
+@import url("components.css");
+@import url("home.css");
+@import url("about.css");
+@import url("products.css");
+@import url("contact.css");
+@import url("reviews.css");
+@import url("admin.css");
+
+
+/*
+Some the References used include: 
+
+MDN Web Docs, 2024. CSS: Styling the content - Learn web development.
+[online] MDN Web Docs.
+Available at:
+https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Your_first_website/Styling_the_content
+[Accessed August 2026].
+
+MDN Web Docs, 2025. Using CSS custom properties (variables) - CSS.
+[online] Mozilla.org.
+Available at:
+https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascading_variables/Using_custom_properties
+[Accessed August 2026].
+
+Stack Overflow, 2024. Stack Overflow - Where developers learn, share, and build careers.
+[online] Stack Overflow.
+Available at:
+https://stackoverflow.com/
+[Accessed August 2026].
+
+W3C, 2021. Media Queries Level 5.
+[online] W3.org.
+Available at:
+https://www.w3.org/TR/mediaqueries-5/
+[Accessed August 2026].
+
+W3C, 2022. CSS Custom Properties for Cascading Variables Module Level 1.
+[online] W3.org.
+Available at:
+https://www.w3.org/TR/css-variables-1/
+[Accessed August 2026].
+
+W3C, 2025. CSS Grid Layout Module Level 2.
+[online] W3.org.
+Available at:
+https://www.w3.org/TR/css-grid/
+[Accessed August 2026].
+*/

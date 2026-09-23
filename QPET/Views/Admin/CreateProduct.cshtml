@@ -1,0 +1,261 @@
+﻿@model QPET.Models.AdminProductViewModel
+@using QPET.Models
+
+@{
+    ViewData["Title"] = "Create Product";
+
+    var categories =
+        ViewBag.Categories as List<Category>
+        ?? new List<Category>();
+
+    var subCategories =
+        ViewBag.SubCategories as List<SubCategory>
+        ?? new List<SubCategory>();
+}
+
+<div id="createProductPage">
+
+    <div class="admin-page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                Catalogue management
+            </span>
+
+            <h1>
+                Create Product
+            </h1>
+
+            <p>
+                Add a new product to the QPET prototype catalogue.
+            </p>
+
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Products"
+           class="btn btn-secondary">
+
+            ← Back to Products
+
+        </a>
+
+    </div>
+
+
+    <div class="admin-panel">
+
+        <div class="admin-detail-section">
+
+            <form asp-controller="Admin"
+                  asp-action="CreateProduct"
+                  method="post"
+                  enctype="multipart/form-data"
+                  id="productForm"
+                  class="contact-form">
+
+                <div class="contact-form-field">
+
+                    <label asp-for="ProductName">
+                        Product Name
+                    </label>
+
+                    <input asp-for="ProductName"
+                           class="contact-control"
+                           placeholder="e.g. 500ml PET Water Bottle" />
+
+                    <span asp-validation-for="ProductName"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <div class="contact-form-row">
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="CategoryId">
+                            Category
+                        </label>
+
+                        <select asp-for="CategoryId"
+                                id="productCategory"
+                                class="contact-control">
+
+                            <option value="0">
+                                Select Category
+                            </option>
+
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category.CategoryId">
+                                    @category.CategoryName
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="CategoryId"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="SubCategoryId">
+                            Subcategory
+                        </label>
+
+                        <select asp-for="SubCategoryId"
+                                id="productSubCategory"
+                                data-selected-subcategory="@Model.SubCategoryId"
+                                class="contact-control">
+
+                            <option value="">
+                                Select Subcategory
+                            </option>
+
+                            @foreach (var subCategory in subCategories)
+                            {
+                                <option value="@subCategory.SubCategoryId"
+                                        data-category-id="@subCategory.CategoryId">
+
+                                    @subCategory.SubCategoryName
+
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="SubCategoryId"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-form-row">
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="NeckFinish">
+                            Neck Finish
+                        </label>
+
+                        <input asp-for="NeckFinish"
+                               class="contact-control"
+                               placeholder="e.g. 28mm" />
+
+                        <span asp-validation-for="NeckFinish"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="CapacityVolume">
+                            Capacity / Volume
+                        </label>
+
+                        <input asp-for="CapacityVolume"
+                               class="contact-control"
+                               placeholder="e.g. 500ml" />
+
+                        <span asp-validation-for="CapacityVolume"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-form-field">
+
+                    <label asp-for="Description">
+                        Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="contact-control contact-textarea"
+                              rows="5"
+                              placeholder="Enter a short product description...">
+                    </textarea>
+
+                    <span asp-validation-for="Description"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <div class="contact-form-field">
+
+                    <label>
+
+                        <input asp-for="IsActive" />
+
+                        Active Product
+
+                    </label>
+
+                    <small class="contact-field-note">
+                        Active products are displayed in the public catalogue.
+                    </small>
+
+                </div>
+
+
+                <div class="contact-form-field">
+
+                    <label asp-for="Image">
+                        Product Image
+                    </label>
+
+                    <input asp-for="Image"
+                           type="file"
+                           class="contact-control"
+                           accept=".jpg,.jpeg,.png,.webp" />
+
+                    <small class="contact-field-note">
+                        Prototype only — the selected image is validated
+                        but a placeholder is stored instead.
+                    </small>
+
+                    <span asp-validation-for="Image"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    Create Product
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script src="~/js/admin-product-form.js"
+            asp-append-version="true"></script>
+
+}

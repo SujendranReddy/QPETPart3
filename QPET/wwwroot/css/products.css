@@ -1,0 +1,321 @@
+.products-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background: linear-gradient(90deg, rgba(3, 9, 24, 0.97), rgba(4, 14, 35, 0.7));
+}
+
+.product-filter-panel {
+    display: grid;
+    grid-template-columns: auto 1fr 210px 230px auto;
+    align-items: end;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.filter-panel-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.filter-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(36, 124, 255, 0.12);
+    color: var(--accent-bright);
+}
+
+.filter-panel-heading strong,
+.filter-panel-heading span {
+    display: block;
+}
+
+.filter-panel-heading span {
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+    .filter-field label {
+        color: var(--muted-light);
+        font-size: 0.82rem;
+        font-weight: 800;
+    }
+
+.product-filter-control {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg-deep);
+    color: var(--text);
+    outline: none;
+}
+
+    .product-filter-control:focus {
+        border-color: var(--primary-bright);
+    }
+
+select.product-filter-control {
+    color-scheme: dark;
+}
+
+.product-filter-actions {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.product-results-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+    .product-results-heading h2 {
+        margin: 0.3rem 0 0;
+        font-size: clamp(1.8rem, 3vw, 2.7rem);
+    }
+
+.active-filter-label {
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-bright);
+    font-size: 0.77rem;
+    font-weight: 800;
+}
+
+.catalogue-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+}
+
+.catalogue-product-card {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.catalogue-product-image {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-deep);
+}
+
+    .catalogue-product-image img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+    }
+
+.catalogue-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(3, 9, 24, 0.65), transparent 55%);
+}
+
+.catalogue-category-pill {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: var(--bg-deep);
+    color: var(--accent-bright);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.catalogue-product-number {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+
+.catalogue-product-content {
+    padding: 1.4rem;
+}
+
+.catalogue-subcategory {
+    color: var(--primary-bright);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.catalogue-product-content h3 {
+    margin: 0.5rem 0;
+    font-size: 1.3rem;
+}
+
+.catalogue-product-content > p {
+    margin: 0 0 1.2rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.catalogue-product-specifications {
+    margin: 0;
+    border-top: 1px solid var(--line);
+}
+
+    .catalogue-product-specifications div {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .catalogue-product-specifications dt {
+        color: var(--muted);
+        font-size: 0.82rem;
+    }
+
+    .catalogue-product-specifications dd {
+        margin: 0;
+        color: var(--muted-light);
+        font-size: 0.82rem;
+        font-weight: 800;
+    }
+
+.catalogue-enquiry-link {
+    display: inline-flex;
+    margin-top: 1.2rem;
+    color: var(--accent-bright);
+    font-weight: 800;
+}
+
+    .catalogue-enquiry-link:hover {
+        color: #fff;
+    }
+
+.catalogue-sales-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    padding: 0.8rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+}
+
+.catalogue-sales-icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    color: var(--accent-bright);
+    font-weight: 900;
+}
+
+.catalogue-sales-notice span,
+.catalogue-sales-notice strong,
+.catalogue-sales-notice small {
+    display: block;
+}
+
+.catalogue-sales-notice span {
+    color: var(--accent-bright);
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+.catalogue-sales-notice strong {
+    color: var(--muted-light);
+    font-size: 0.84rem;
+}
+
+.catalogue-sales-notice small {
+    color: var(--muted);
+    font-size: 0.73rem;
+}
+
+.products-empty-state {
+    padding: 3rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    text-align: center;
+}
+
+.empty-state-icon {
+    color: var(--accent-bright);
+    font-size: 1.8rem;
+}
+
+.products-empty-state p {
+    max-width: 520px;
+    margin: 0 auto 1.4rem;
+    color: var(--muted);
+}
+
+@media (max-width: 1180px) {
+    .product-filter-panel {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-panel-heading,
+    .product-filter-actions {
+        grid-column: span 2;
+    }
+
+    .catalogue-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+    .products-hero {
+        min-height: 540px;
+        padding: 5rem 0 4rem;
+    }
+
+    .product-filter-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-panel-heading,
+    .product-filter-actions {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 620px) {
+    .catalogue-product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-results-heading,
+    .product-filter-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .product-filter-actions .btn,
+        .product-page-cta .btn {
+            width: 100%;
+        }
+}

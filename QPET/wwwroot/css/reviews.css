@@ -1,0 +1,231 @@
+.reviews-hero {
+    position: relative;
+    display: flex;
+    align-items: end;
+    min-height: 560px;
+    overflow: hidden;
+    padding: 7rem 0 5rem;
+}
+
+.reviews-hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: -4;
+}
+
+    .reviews-hero-background img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.reviews-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background: linear-gradient(90deg, rgba(3, 9, 24, 0.97), rgba(4, 14, 35, 0.72));
+}
+
+.reviews-hero-grid {
+    display: none;
+}
+
+.reviews-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+    .reviews-hero-content h1 {
+        max-width: 13ch;
+        margin: 0 0 1.3rem;
+        font-size: clamp(3rem, 6vw, 6rem);
+        line-height: 0.96;
+    }
+
+    .reviews-hero-content p {
+        max-width: 680px;
+        margin: 0;
+        color: var(--muted-light);
+        font-size: 1.1rem;
+    }
+
+.reviews-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: start;
+    gap: 4rem;
+}
+
+.reviews-content-heading {
+    margin-bottom: 2rem;
+}
+
+    .reviews-content-heading h2 {
+        margin: 0 0 0.9rem;
+        font-size: clamp(2.2rem, 4vw, 4rem);
+        line-height: 1.05;
+    }
+
+    .reviews-content-heading p {
+        max-width: 620px;
+        color: var(--muted);
+    }
+
+.review-count-label {
+    display: inline-flex;
+    margin-top: 0.6rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-bright);
+    font-size: 0.77rem;
+    font-weight: 800;
+}
+
+.public-review-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.public-review-card {
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.review-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.review-stars {
+    color: var(--accent-bright);
+    font-size: 1rem;
+}
+
+.review-branch {
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(36, 124, 255, 0.10);
+    color: var(--primary-bright);
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+.review-quote-mark {
+    margin-top: 1.3rem;
+    color: var(--accent);
+    font-family: Georgia, serif;
+    font-size: 3rem;
+    line-height: 0.7;
+}
+
+.public-review-message {
+    margin: 1rem 0 1.5rem;
+    color: var(--muted-light);
+}
+
+.review-footer {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+}
+
+    .review-footer strong {
+        color: #fff;
+    }
+
+    .review-footer span {
+        color: var(--muted);
+        font-size: 0.76rem;
+    }
+
+.reviews-form-card {
+    position: sticky;
+    top: 110px;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+    .reviews-form-card h2 {
+        margin: 0.4rem 0 0.75rem;
+        font-size: clamp(1.9rem, 3vw, 2.8rem);
+    }
+
+    .reviews-form-card > p {
+        margin: 0;
+        color: var(--muted);
+    }
+
+.review-form {
+    margin-top: 1.5rem;
+}
+
+.review-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.review-success {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(100, 227, 155, 0.38);
+    border-radius: 10px;
+    background: rgba(100, 227, 155, 0.10);
+    color: #bcffd7;
+}
+
+.reviews-empty-state {
+    padding: 3rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--muted);
+    text-align: center;
+}
+
+@media (max-width: 1080px) {
+    .reviews-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .reviews-form-card {
+        position: static;
+    }
+}
+
+@media (max-width: 800px) {
+    .reviews-hero {
+        min-height: 520px;
+        padding: 5rem 0 4rem;
+    }
+}
+
+@media (max-width: 650px) {
+    .public-review-grid,
+    .review-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .reviews-form-card .btn {
+        width: 100%;
+    }
+
+    .review-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

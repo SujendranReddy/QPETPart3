@@ -1,0 +1,245 @@
+﻿@model QPET.Models.AdminLoginViewModel
+
+@{
+    ViewData["Title"] = "Admin Login";
+
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+
+<section class="section">
+
+    <div class="container">
+
+
+        <div class="contact-page-layout">
+
+
+            <aside class="contact-details-card">
+
+                <div class="contact-card-glow"></div>
+
+
+                <span class="contact-card-number">
+                    01
+                </span>
+
+
+                <span class="section-kicker">
+                    Administration
+                </span>
+
+
+                <h2>
+                    QPET Management Portal
+                </h2>
+
+
+                <p class="contact-details-introduction">
+                    Administrator access provides prototype management
+                    functionality for products, enquiries and customer
+                    reviews.
+                </p>
+
+
+                <div class="contact-details-list">
+
+
+                    <article class="contact-detail-item">
+
+                        <div class="contact-detail-icon">
+                            ◫
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Products
+                            </span>
+
+                            <strong>
+                                Manage catalogue information
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="contact-detail-item">
+
+                        <div class="contact-detail-icon">
+                            ✉
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Enquiries
+                            </span>
+
+                            <strong>
+                                Process customer requests
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="contact-detail-item">
+
+                        <div class="contact-detail-icon">
+                            ★
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Reviews
+                            </span>
+
+                            <strong>
+                                Moderate customer feedback
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </aside>
+
+
+            <div class="contact-form-card">
+
+
+                <span class="section-kicker">
+                    Administrator login
+                </span>
+
+
+                <h2>
+                    Sign in to QPET.
+                </h2>
+
+
+                <p class="contact-form-introduction">
+                    Enter the prototype administrator credentials
+                    to access the management dashboard.
+                </p>
+
+
+                <form asp-controller="Admin"
+                      asp-action="Login"
+                      method="post"
+                      class="contact-form"
+                      novalidate>
+
+
+                    <input asp-for="ReturnUrl"
+                           type="hidden" />
+
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="validation-summary">
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="EmailAddress">
+                            Email Address
+                        </label>
+
+
+                        <input asp-for="EmailAddress"
+                               class="contact-control"
+                               placeholder="admin@qpet.co.za" />
+
+
+                        <span asp-validation-for="EmailAddress"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label asp-for="Password">
+                            Password
+                        </label>
+
+
+                        <input asp-for="Password"
+                               class="contact-control"
+                               placeholder="Enter password" />
+
+
+                        <span asp-validation-for="Password"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="contact-form-field">
+
+                        <label>
+
+                            <input asp-for="RememberMe" />
+
+                            Remember Me
+
+                        </label>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn btn-primary contact-submit-button">
+
+                        Sign In
+
+                        <span aria-hidden="true">
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+
+
+                <div class="contact-information-note">
+
+                    <strong>
+                        Prototype credentials
+                    </strong>
+
+
+                    <p>
+                        Email:
+                        <strong>
+                            admin@qpet.co.za
+                        </strong>
+                    </p>
+
+
+                    <p>
+                        Password:
+                        <strong>
+                            Admin123!
+                        </strong>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

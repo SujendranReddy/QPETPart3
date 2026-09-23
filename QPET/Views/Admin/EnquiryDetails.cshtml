@@ -1,0 +1,390 @@
+﻿@model QPET.Models.Enquiry
+@using QPET.Models
+
+@{
+    ViewData["Title"] = "Enquiry Details";
+
+    var notFound =
+        ViewBag.EnquiryNotFound == true;
+
+    var customer =
+        ViewBag.Customer as Customer;
+
+    var branch =
+        ViewBag.Branch as Branch;
+
+
+    var displayStatus =
+        Model.Status == "InProgress"
+            ? "In Progress"
+            : Model.Status;
+
+
+    string? nextStatus =
+        Model.Status switch
+        {
+            "New" =>
+                "InProgress",
+
+            "InProgress" =>
+                "Resolved",
+
+            "Resolved" =>
+                "Closed",
+
+            _ =>
+                null
+        };
+
+
+    string? buttonText =
+        Model.Status switch
+        {
+            "New" =>
+                "Start Processing",
+
+            "InProgress" =>
+                "Mark as Resolved",
+
+            "Resolved" =>
+                "Close Enquiry",
+
+            _ =>
+                null
+        };
+
+
+    var lifecycle =
+        new[]
+        {
+            "New",
+            "InProgress",
+            "Resolved",
+            "Closed"
+        };
+
+
+    var statusFlow =
+        string.Join(
+            " → ",
+            lifecycle.Select(
+                status =>
+                {
+                    var formatted =
+                        status == "InProgress"
+                            ? "In Progress"
+                            : status;
+
+                    return status == Model.Status
+                        ? $"[{formatted}]"
+                        : formatted;
+                }
+            )
+        );
+}
+
+
+@if (notFound)
+{
+    <div class="admin-page-heading">
+
+        <div>
+
+            <h1>
+                Enquiry Not Found
+            </h1>
+
+            <p>
+                The requested enquiry could not be found.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <a asp-controller="Admin"
+       asp-action="Enquiries"
+       class="btn btn-primary">
+
+        Return to Enquiries
+
+    </a>
+}
+else
+{
+    <div id="adminEnquiryDetailsPage">
+
+        <div class="admin-page-heading">
+
+            <div>
+
+                <span class="eyebrow">
+                    Customer request
+                </span>
+
+                <h1>
+                    Enquiry Details
+                </h1>
+
+                <p>
+                    Review the submitted enquiry and
+                    update its current status.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Admin"
+               asp-action="Enquiries"
+               class="btn btn-secondary">
+
+                ← Back to Enquiries
+
+            </a>
+
+        </div>
+
+
+        <div class="admin-panel">
+
+
+            <div class="admin-detail-section">
+
+                <span class="section-kicker">
+                    Reference
+                </span>
+
+                <h2>
+                    ENQ-@Model.EnquiryId
+                </h2>
+
+            </div>
+
+
+            <div class="admin-detail-section">
+
+                <h2>
+                    Customer
+                </h2>
+
+
+                <div class="admin-detail-list">
+
+                    <div class="admin-detail-row">
+
+                        <span>
+                            Name
+                        </span>
+
+                        <strong>
+                            @(customer?.FullName
+                                                    ?? "Unknown")
+                                                             </strong>
+
+                    </div>
+
+
+                    <div class="admin-detail-row">
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong>
+                            @(customer?.EmailAddress
+                                                    ?? "Not available")
+                                                                   </strong>
+
+                    </div>
+
+
+                    <div class="admin-detail-row">
+
+                        <span>
+                            Phone
+                        </span>
+
+                        <strong>
+                            @(customer?.PhoneNumber
+                                                    ?? "Not available")
+                                                                   </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-detail-section">
+
+                <h2>
+                    Enquiry
+                </h2>
+
+
+                <div class="admin-detail-list">
+
+                    <div class="admin-detail-row">
+
+                        <span>
+                            Branch
+                        </span>
+
+                        <strong>
+                            @(branch?.BranchName
+                                                    ?? "Unknown")
+                    </strong>
+
+                    </div>
+
+
+                    <div class="admin-detail-row">
+
+                        <span>
+                            Subject
+                        </span>
+
+                        <strong>
+                            @Model.Subject
+                        </strong>
+
+                    </div>
+
+
+                    <div class="admin-detail-row">
+
+                        <span>
+                            Date
+                        </span>
+
+                        <strong>
+                            @Model.CreatedDate
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <br />
+
+
+                <span class="section-kicker">
+                    Message
+                </span>
+
+                <p class="admin-enquiry-message">
+                    @Model.Message
+                </p>
+
+            </div>
+
+
+            <div class="admin-detail-section">
+
+                <h2>
+                    Attachments
+                </h2>
+
+
+                <div class="admin-attachment-list">
+
+                @if (
+                                Model.Attachments == null ||
+                                Model.Attachments.Count == 0)
+                    {
+                        <p>
+                            No attachments.
+                        </p>
+                    }
+                    else
+                    {
+                        @foreach (
+                                        var attachment
+                                        in Model.Attachments)
+                        {
+                            <p>
+                                @attachment.OriginalFileName
+                            </p>
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-detail-section">
+
+                <h2>
+                    Enquiry Status
+                </h2>
+
+
+                <p>
+                    Current Status:
+
+                    <strong>
+                        @displayStatus
+                    </strong>
+                </p>
+
+
+                <p>
+                    @statusFlow
+                </p>
+
+
+                @if (
+                            TempData["EnquiryMessage"]
+                            is string statusMessage)
+                {
+                    <p class="admin-status-message">
+
+                        @statusMessage
+
+                    </p>
+                }
+
+
+                @if (nextStatus != null)
+                {
+                    <form asp-controller="Admin"
+                          asp-action="UpdateEnquiryStatus"
+                          method="post">
+
+                        <input type="hidden"
+                               name="id"
+                               value="@Model.EnquiryId" />
+
+                        <input type="hidden"
+                               name="status"
+                               value="@nextStatus" />
+
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            @buttonText
+
+                        </button>
+
+                    </form>
+                }
+                else
+                {
+                    <p class="admin-status-message">
+
+                        This enquiry has been closed.
+
+                    </p>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+}

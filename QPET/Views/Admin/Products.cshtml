@@ -1,0 +1,199 @@
+﻿@model QPET.Models.ProductCatalogueViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div id="adminProductsPage">
+
+    <div class="admin-page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                Catalogue management
+            </span>
+
+            <h1>
+                Products
+            </h1>
+
+            <p>
+                Manage the products displayed in the public
+                QPET catalogue.
+            </p>
+
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="CreateProduct"
+           class="btn btn-primary">
+
+            + Add Product
+
+        </a>
+
+    </div>
+
+
+    @if (TempData["ProductMessage"] is string message)
+    {
+        <div class="contact-success-message">
+            @message
+        </div>
+    }
+
+
+    <section class="admin-table-panel">
+
+        <div class="admin-table-toolbar">
+
+            <div>
+
+                <h2>
+                    Product catalogue
+                </h2>
+
+                <p>
+                    @Model.Products.Count
+                    @(Model.Products.Count == 1 ? "product" : "products")
+                </p>
+
+            </div>
+
+        </div>
+
+
+        @if (Model.Products.Any())
+        {
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Subcategory</th>
+                            <th>Capacity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var product in Model.Products)
+                        {
+                            var category =
+                            Model.Categories.FirstOrDefault(
+                            category =>
+                            category.CategoryId ==
+                            product.CategoryId
+                            );
+
+                            var subCategory =
+                            Model.SubCategories.FirstOrDefault(
+                            subCategory =>
+                            subCategory.SubCategoryId ==
+                            product.SubCategoryId
+                            );
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="admin-table-primary">
+
+                                        <strong>
+                                            @product.ProductName
+                                        </strong>
+
+                                        <span>
+                                            Neck: @product.NeckFinish
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    @(category?.CategoryName ?? "—")
+                                </td>
+
+                                <td>
+                                    @(subCategory?.SubCategoryName ?? "—")
+                                </td>
+
+                                <td>
+                                    @product.CapacityVolume
+                                </td>
+
+                                <td>
+
+                                    <span class="@(product.IsActive
+                                                                                  ? "admin-product-active"
+                                                                                  : "admin-product-inactive")">
+
+                                        @(product.IsActive
+                                                                        ? "Active"
+                                                                        : "Inactive")
+
+                            </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="admin-table-actions">
+
+                                        <a asp-controller="Admin"
+                                           asp-action="EditProduct"
+                                           asp-route-id="@product.ProductId"
+                                           class="admin-action-button">
+
+                                            Edit
+
+                                        </a>
+
+
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteProduct"
+                                              asp-route-id="@product.ProductId"
+                                              method="post"
+                                              onsubmit="return confirm('Delete this product?');">
+
+                                            <button type="submit"
+                                                    class="admin-action-button admin-action-danger">
+
+                                                Delete
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="admin-table-empty">
+                No products are currently available.
+            </div>
+        }
+
+    </section>
+
+</div>

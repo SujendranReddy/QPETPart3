@@ -1,0 +1,252 @@
+﻿@model IEnumerable<QPET.Models.Review>
+@using QPET.Models
+
+@{
+    ViewData["Title"] = "Reviews";
+
+    var reviews =
+        Model.ToList();
+
+    var branches =
+        ViewBag.Branches as List<Branch>
+        ?? new List<Branch>();
+}
+
+
+<div id="adminReviewsPage">
+
+    <div class="admin-page-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                Customer feedback
+            </span>
+
+
+            <h1>
+                Reviews
+            </h1>
+
+
+            <p>
+                View and moderate customer reviews submitted
+                through the public QPET website.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    @if (
+        TempData["ReviewMessage"]
+        is string message)
+    {
+        <div class="contact-success-message">
+
+            @message
+
+        </div>
+    }
+
+
+    <section class="admin-table-panel">
+
+        <div class="admin-table-toolbar">
+
+            <div>
+
+                <h2>
+                    Published reviews
+                </h2>
+
+
+                <p>
+
+                    @reviews.Count
+                    @(reviews.Count == 1
+                                        ? "review"
+                                        : "reviews")
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        @if (reviews.Any())
+        {
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Branch
+                            </th>
+
+                            <th>
+                                Rating
+                            </th>
+
+                            <th>
+                                Review
+                            </th>
+
+                            <th>
+                                Submitted
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach (var review in reviews)
+                        {
+                            var branch =
+                            branches.FirstOrDefault(
+                            branch =>
+                            branch.BranchId ==
+                            review.BranchId
+                            );
+
+
+                            var stars =
+                            new string(
+                            '★',
+                            review.Rating
+                            )
+                            +
+                            new string(
+                            '☆',
+                            5 - review.Rating
+                            );
+
+
+                            var displayDate =
+                            DateTime.TryParse(
+                            review.CreatedDate,
+                            out var parsedDate
+                            )
+                            ? parsedDate.ToString(
+                            "dd MMM yyyy"
+                            )
+                            : review.CreatedDate;
+
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="admin-table-primary">
+
+                                        <strong>
+                                            @review.DisplayName
+                                        </strong>
+
+
+                                        <span>
+
+                                            @(string.IsNullOrWhiteSpace(
+                                                                                review.EmailAddress)
+                                                                                ? "Email not supplied"
+                                                                                : review.EmailAddress)
+
+                                </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    @(branch?.BranchName ?? "—")
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="admin-review-stars">
+
+                                        @stars
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="admin-review-message">
+
+                                        @review.ReviewMessage
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+                                    @displayDate
+                                </td>
+
+
+                                <td>
+
+                                    <form asp-controller="Admin"
+                                          asp-action="DeleteReview"
+                                          asp-route-id="@review.ReviewId"
+                                          method="post"
+                                          onsubmit="return confirm('Delete this review?');">
+
+
+                                        <button type="submit"
+                                                class="admin-action-button admin-action-danger">
+
+                                            Delete
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+                                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="admin-table-empty">
+
+                No customer reviews have been submitted.
+
+            </div>
+        }
+
+    </section>
+
+</div>

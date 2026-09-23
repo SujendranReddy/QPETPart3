@@ -14,6 +14,8 @@ namespace QPET.Controllers
         private readonly PrototypeDataService _dataService;
         private readonly IProductService _productService;
 
+        private readonly IEnquiryFileStorageService
+    _enquiryFileStorageService;
         private readonly IReviewService _reviewService;
         private readonly IBranchService _branchService;
         private readonly IEnquiryService _enquiryService;
@@ -21,13 +23,15 @@ namespace QPET.Controllers
         public AdminController(
      PrototypeDataService dataService,
      IProductService productService, IBranchService branchService,
-IEnquiryService enquiryService, IReviewService reviewService)
+IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorageService enquiryFileStorageService)
         {
             _branchService = branchService;
             _enquiryService = enquiryService;
             _reviewService = reviewService;
             _dataService = dataService;
             _productService = productService;
+            _enquiryFileStorageService =
+    enquiryFileStorageService;
         }
 
 
@@ -257,7 +261,45 @@ IEnquiryService enquiryService, IReviewService reviewService)
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult>
+    DownloadEnquiryAttachment(
+        int id)
+        {
+            var attachment =
+                await _enquiryService
+                    .GetAttachmentByIdAsync(id);
 
+            if (attachment == null)
+            {
+                return NotFound();
+            }
+
+            var filePath =
+                _enquiryFileStorageService
+                    .GetFilePath(
+                        attachment.StoredFileName
+                    );
+
+            if (filePath == null)
+            {
+                return NotFound();
+            }
+
+            var contentType =
+                string.IsNullOrWhiteSpace(
+                    attachment.ContentType
+                ) ||
+                attachment.ContentType == "unknown"
+                    ? "application/octet-stream"
+                    : attachment.ContentType;
+
+            return PhysicalFile(
+                filePath,
+                contentType,
+                attachment.OriginalFileName
+            );
+        }
         public async Task<IActionResult> Enquiries(
     string? status = null)
         {

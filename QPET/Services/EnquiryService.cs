@@ -172,5 +172,24 @@ namespace QPET.Services
 
             return true;
         }
+
+        public async Task<EnquiryAttachment?>
+    GetAttachmentByIdAsync(
+        int attachmentId)
+        {
+            if (attachmentId <= 0)
+            {
+                return null;
+            }
+
+            return await _context
+                .EnquiryAttachments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    attachment =>
+                        attachment.AttachmentId ==
+                        attachmentId
+                );
+        }
     }
 }

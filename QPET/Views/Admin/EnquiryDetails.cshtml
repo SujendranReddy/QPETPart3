@@ -300,13 +300,17 @@ else
                     else
                     {
                         @foreach (
-                                        var attachment
-                                        in Model.Attachments)
-                        {
-                            <p>
-                                @attachment.OriginalFileName
-                            </p>
-                        }
+    var attachment
+    in Model.Attachments)
+{
+    <p>
+        <a asp-controller="Admin"
+           asp-action="DownloadEnquiryAttachment"
+           asp-route-id="@attachment.AttachmentId">
+            @attachment.OriginalFileName
+        </a>
+    </p>
+}
                     }
 
                 </div>

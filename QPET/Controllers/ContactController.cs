@@ -10,12 +10,16 @@ namespace QPET.Controllers
         private readonly IBranchService _branchService;
         private readonly IEnquiryService _enquiryService;
 
+        private readonly IEnquiryFileStorageService
+    _fileStorageService;
         public ContactController(
             IBranchService branchService,
-            IEnquiryService enquiryService)
+            IEnquiryService enquiryService, IEnquiryFileStorageService fileStorageService)
         {
             _branchService = branchService;
             _enquiryService = enquiryService;
+            _fileStorageService =
+    fileStorageService;
         }
 
         [HttpGet]
@@ -91,34 +95,22 @@ namespace QPET.Controllers
             }
 
             var attachments =
-                model.Attachments
+    new List<
+        QPET.Data.Entities.EnquiryAttachment>();
+
+            foreach (
+                var file in model.Attachments
                     .Where(
                         file =>
                             file.Length > 0
-                    )
-                    .Select(
-                        file =>
-                            new QPET.Data.Entities.EnquiryAttachment
-                            {
-                                OriginalFileName =
-                                    Path.GetFileName(
-                                        file.FileName
-                                    ),
+                    ))
+            {
+                var attachment =
+                    await _fileStorageService
+                        .SaveAsync(file);
 
-                                StoredFileName =
-                                    Path.GetFileName(
-                                        file.FileName
-                                    ),
-
-                                ContentType =
-                                    string.IsNullOrWhiteSpace(
-                                        file.ContentType
-                                    )
-                                        ? "unknown"
-                                        : file.ContentType
-                            }
-                    )
-                    .ToList();
+                attachments.Add(attachment);
+            }
 
             var enquiry =
                 await _enquiryService

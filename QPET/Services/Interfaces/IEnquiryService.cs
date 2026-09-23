@@ -23,5 +23,8 @@ namespace QPET.Services.Interfaces
         Task<bool> UpdateEnquiryStatusAsync(
             int enquiryId,
             string newStatus);
+
+        Task<EnquiryAttachment?> GetAttachmentByIdAsync(
+    int attachmentId);
     }
 }

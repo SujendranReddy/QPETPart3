@@ -60,6 +60,15 @@ builder.Services.AddAuthorization();
 var app =
     builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context =
+        scope.ServiceProvider
+            .GetRequiredService<QpetDbContext>();
+
+    await DatabaseSeeder.SeedAsync(context);
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler(

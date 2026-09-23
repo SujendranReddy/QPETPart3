@@ -172,23 +172,19 @@ IEnquiryService enquiryService, IReviewService reviewService)
         }
 
 
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
             var products =
-                _dataService.GetProducts();
+                await _productService
+                    .GetProductsAsync();
 
             var enquiries =
-                _dataService.GetEnquiries();
+                await _enquiryService
+                    .GetEnquiriesAsync();
 
             var reviews =
-                _dataService.GetReviews();
-
-            var customers =
-                _dataService.GetCustomers();
-
-            var branches =
-                _dataService.GetBranches();
-
+                await _reviewService
+                    .GetReviewsAsync();
 
             var recentEnquiries =
                 enquiries
@@ -199,54 +195,35 @@ IEnquiryService enquiryService, IReviewService reviewService)
                     .Take(5)
                     .Select(
                         enquiry =>
-                        {
-                            var customer =
-                                customers.FirstOrDefault(
-                                    customer =>
-                                        customer.CustomerId ==
-                                        enquiry.CustomerId
-                                );
-
-
-                            var branch =
-                                branches.FirstOrDefault(
-                                    branch =>
-                                        branch.BranchId ==
-                                        enquiry.BranchId
-                                );
-
-
-                            return new
-                                AdminDashboardEnquiryViewModel
+                            new AdminDashboardEnquiryViewModel
                             {
                                 EnquiryId =
                                     enquiry.EnquiryId,
 
                                 CustomerName =
-                                    customer?.FullName
+                                    enquiry.Customer?.FullName
                                     ?? "Unknown customer",
 
                                 CustomerEmail =
-                                    customer?.EmailAddress
+                                    enquiry.Customer?.EmailAddress
                                     ?? "Email not available",
 
                                 BranchName =
-                                    branch?.BranchName
+                                    enquiry.Branch?.BranchName
                                     ?? "Unknown branch",
 
                                 Subject =
                                     enquiry.Subject,
 
                                 CreatedDate =
-                                    enquiry.CreatedDate,
+                                    enquiry.CreatedDate
+                                        .ToString("dd MMM yyyy"),
 
                                 Status =
                                     enquiry.Status
-                            };
-                        }
+                            }
                     )
                     .ToList();
-
 
             var model =
                 new AdminDashboardViewModel
@@ -276,7 +253,6 @@ IEnquiryService enquiryService, IReviewService reviewService)
                     RecentEnquiries =
                         recentEnquiries
                 };
-
 
             return View(model);
         }

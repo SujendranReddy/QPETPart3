@@ -435,10 +435,9 @@ namespace QPET.Controllers
 
 
         [HttpGet]
-        public IActionResult CreateProduct()
+        public async Task<IActionResult> CreateProduct()
         {
-            PopulateProductLookups();
-
+            await PopulateProductLookupsAsync();
 
             return View(
                 new AdminProductViewModel
@@ -448,26 +447,23 @@ namespace QPET.Controllers
             );
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateProduct(
+        public async Task<IActionResult> CreateProduct(
             AdminProductViewModel model)
         {
-            ValidateProductSelection(model);
+            await ValidateProductSelectionAsync(model);
             ValidateProductImage(model);
-
 
             if (!ModelState.IsValid)
             {
-                PopulateProductLookups();
+                await PopulateProductLookupsAsync();
 
                 return View(model);
             }
 
-
             var product =
-                new Product
+                new QPET.Data.Entities.Product
                 {
                     CategoryId =
                         model.CategoryId,
@@ -491,31 +487,25 @@ namespace QPET.Controllers
                         model.IsActive
                 };
 
-
             var createdProduct =
-                _dataService.AddProduct(
-                    product
-                );
-
+                await _productService
+                    .AddProductAsync(product);
 
             TempData["ProductMessage"] =
                 $"Product created successfully. Product ID: {createdProduct.ProductId}";
-
 
             return RedirectToAction(
                 nameof(Products)
             );
         }
 
-
         [HttpGet]
-        public IActionResult EditProduct(
+        public async Task<IActionResult> EditProduct(
             int id)
         {
             var product =
-                _dataService
-                    .GetProductById(id);
-
+                await _productService
+                    .GetProductByIdAsync(id);
 
             if (product == null)
             {
@@ -527,9 +517,7 @@ namespace QPET.Controllers
                 );
             }
 
-
-            PopulateProductLookups();
-
+            await PopulateProductLookupsAsync();
 
             var primaryImage =
                 product.Images
@@ -537,7 +525,6 @@ namespace QPET.Controllers
                         image =>
                             image.IsPrimary
                     );
-
 
             var model =
                 new AdminProductViewModel
@@ -570,40 +557,33 @@ namespace QPET.Controllers
                         primaryImage?.ImageUrl
                 };
 
-
             return View(model);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditProduct(
+        public async Task<IActionResult> EditProduct(
             int id,
             AdminProductViewModel model)
         {
             var existingProduct =
-                _dataService
-                    .GetProductById(id);
-
+                await _productService
+                    .GetProductByIdAsync(id);
 
             if (existingProduct == null)
             {
                 return NotFound();
             }
 
-
             model.ProductId =
                 id;
 
-
-            ValidateProductSelection(model);
+            await ValidateProductSelectionAsync(model);
             ValidateProductImage(model);
-
 
             if (!ModelState.IsValid)
             {
-                PopulateProductLookups();
-
+                await PopulateProductLookupsAsync();
 
                 model.ExistingImageUrl =
                     existingProduct
@@ -614,13 +594,11 @@ namespace QPET.Controllers
                         )
                         ?.ImageUrl;
 
-
                 return View(model);
             }
 
-
             var updatedProduct =
-                new Product
+                new QPET.Data.Entities.Product
                 {
                     ProductId =
                         id,
@@ -644,114 +622,65 @@ namespace QPET.Controllers
                         model.Description.Trim(),
 
                     IsActive =
-                        model.IsActive,
-
-                    Images =
-                        existingProduct.Images
+                        model.IsActive
                 };
 
-
-            _dataService.UpdateProduct(
-                updatedProduct
-            );
-
+            var updated =
+                await _productService
+                    .UpdateProductAsync(
+                        updatedProduct
+                    );
 
             TempData["ProductMessage"] =
-                "Product updated successfully.";
-
+                updated
+                    ? "Product updated successfully."
+                    : "The product could not be updated.";
 
             return RedirectToAction(
                 nameof(Products)
             );
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteProduct(
+        public async Task<IActionResult> DeleteProduct(
             int id)
         {
             var deleted =
-                _dataService
-                    .DeleteProduct(id);
-
+                await _productService
+                    .DeleteProductAsync(id);
 
             TempData["ProductMessage"] =
                 deleted
                     ? "Product deleted successfully."
                     : "The product could not be found.";
 
-
             return RedirectToAction(
                 nameof(Products)
             );
         }
 
-
-        public IActionResult Reviews()
-        {
-            var reviews =
-                _dataService
-                    .GetReviews()
-                    .OrderByDescending(
-                        review =>
-                            review.ReviewId
-                    )
-                    .ToList();
-
-
-            ViewBag.Branches =
-                _dataService
-                    .GetBranches();
-
-
-            return View(
-                reviews
-            );
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteReview(
-            int id)
-        {
-            var deleted =
-                _dataService
-                    .DeleteReview(id);
-
-
-            TempData["ReviewMessage"] =
-                deleted
-                    ? "Review deleted successfully."
-                    : "The review could not be found.";
-
-
-            return RedirectToAction(
-                nameof(Reviews)
-            );
-        }
-
-
-        private void PopulateProductLookups()
+        private async Task PopulateProductLookupsAsync()
         {
             ViewBag.Categories =
-                _dataService.GetCategories();
+                await _productService
+                    .GetCategoriesAsync();
 
             ViewBag.SubCategories =
-                _dataService.GetSubCategories();
+                await _productService
+                    .GetSubCategoriesAsync();
         }
 
-
-        private void ValidateProductSelection(
+        private async Task ValidateProductSelectionAsync(
             AdminProductViewModel model)
         {
             var categories =
-                _dataService.GetCategories();
+                await _productService
+                    .GetCategoriesAsync();
 
             var subCategories =
-                _dataService.GetSubCategories();
-
+                await _productService
+                    .GetSubCategoriesAsync();
 
             if (
                 !categories.Any(
@@ -765,7 +694,6 @@ namespace QPET.Controllers
                     "Select a valid category."
                 );
             }
-
 
             if (
                 !model.SubCategoryId.HasValue ||
@@ -784,15 +712,13 @@ namespace QPET.Controllers
             }
         }
 
-
         private void ValidateProductImage(
-            AdminProductViewModel model)
+    AdminProductViewModel model)
         {
             if (model.Image == null)
             {
                 return;
             }
-
 
             var extension =
                 Path.GetExtension(
@@ -800,16 +726,14 @@ namespace QPET.Controllers
                 )
                 .ToLowerInvariant();
 
-
             var allowedExtensions =
                 new[]
                 {
-                    ".jpg",
-                    ".jpeg",
-                    ".png",
-                    ".webp"
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp"
                 };
-
 
             if (
                 !allowedExtensions.Contains(

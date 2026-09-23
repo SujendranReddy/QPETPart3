@@ -1,16 +1,14 @@
 ﻿@model QPET.Models.AdminProductViewModel
-@using QPET.Models
-
 @{
     ViewData["Title"] = "Edit Product";
 
     var categories =
-        ViewBag.Categories as List<Category>
-        ?? new List<Category>();
+        ViewBag.Categories as List<QPET.Data.Entities.Category>
+        ?? new List<QPET.Data.Entities.Category>();
 
     var subCategories =
-        ViewBag.SubCategories as List<SubCategory>
-        ?? new List<SubCategory>();
+        ViewBag.SubCategories as List<QPET.Data.Entities.SubCategory>
+        ?? new List<QPET.Data.Entities.SubCategory>();
 }
 
 

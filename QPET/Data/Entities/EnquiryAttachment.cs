@@ -4,6 +4,7 @@ namespace QPET.Data.Entities
 {
     public class EnquiryAttachment
     {
+        [Key]
         public int AttachmentId { get; set; }
 
         public int EnquiryId { get; set; }

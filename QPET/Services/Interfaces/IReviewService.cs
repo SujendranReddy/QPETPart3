@@ -6,6 +6,9 @@ namespace QPET.Services.Interfaces
     {
         Task<List<Review>> GetReviewsAsync();
 
+        Task<Review?> GetReviewByIdAsync(
+            int reviewId);
+
         Task<Review> AddReviewAsync(
             Review review);
 

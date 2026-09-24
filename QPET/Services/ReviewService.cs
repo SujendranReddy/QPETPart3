@@ -30,6 +30,26 @@ namespace QPET.Services
                 )
                 .ToListAsync();
         }
+        public async Task<Review?> GetReviewByIdAsync(
+    int reviewId)
+        {
+            if (reviewId <= 0)
+            {
+                return null;
+            }
+
+            return await _context.Reviews
+                .AsNoTracking()
+                .Include(
+                    review =>
+                        review.Branch
+                )
+                .FirstOrDefaultAsync(
+                    review =>
+                        review.ReviewId ==
+                        reviewId
+                );
+        }
 
         public async Task<Review> AddReviewAsync(
             Review review)

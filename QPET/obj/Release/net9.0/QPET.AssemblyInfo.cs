@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QPET")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd4af82b135c6340912f70eb820a8e097dc2ad38")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7f8ea7b929831e15b40d6b7a251b75b26038d31e")]
 [assembly: System.Reflection.AssemblyProductAttribute("QPET")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QPET")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QPET.Data.Entities;
 using QPET.DTOs;
 using QPET.Services.Interfaces;
 
@@ -28,56 +30,9 @@ namespace QPET.Controllers.Api
                 await _productService
                     .GetProductsAsync(true);
 
-            var response =
-                products
-                    .Select(
-                        product =>
-                            new ProductResponse
-                            {
-                                ProductId =
-                                    product.ProductId,
-
-                                ProductName =
-                                    product.ProductName,
-
-                                NeckFinish =
-                                    product.NeckFinish,
-
-                                CapacityVolume =
-                                    product.CapacityVolume,
-
-                                Description =
-                                    product.Description,
-
-                                IsActive =
-                                    product.IsActive,
-
-                                CategoryId =
-                                    product.CategoryId,
-
-                                CategoryName =
-                                    product.Category
-                                        .CategoryName,
-
-                                SubCategoryId =
-                                    product.SubCategoryId,
-
-                                SubCategoryName =
-                                    product.SubCategory
-                                        .SubCategoryName,
-
-                                PrimaryImageUrl =
-                                    product.Images
-                                        .FirstOrDefault(
-                                            image =>
-                                                image.IsPrimary
-                                        )
-                                        ?.ImageUrl
-                            }
-                    )
-                    .ToList();
-
-            return Ok(response);
+            return Ok(
+                products.Select(MapProduct)
+            );
         }
 
         [HttpGet("{id:int}")]
@@ -85,6 +40,17 @@ namespace QPET.Controllers.Api
             GetProduct(
                 int id)
         {
+            if (id <= 0)
+            {
+                return BadRequest(
+                    new
+                    {
+                        message =
+                            "Product ID must be greater than zero."
+                    }
+                );
+            }
+
             var product =
                 await _productService
                     .GetProductByIdAsync(id);
@@ -102,51 +68,256 @@ namespace QPET.Controllers.Api
                 );
             }
 
-            var response =
-                new ProductResponse
+            return Ok(
+                MapProduct(product)
+            );
+        }
+
+        [HttpPost]
+        [Authorize(
+            AuthenticationSchemes =
+                "QPETAdmin"
+        )]
+        public async Task<ActionResult<ProductResponse>>
+            CreateProduct(
+                ProductCreateRequest request)
+        {
+            try
+            {
+                var product =
+                    new Product
+                    {
+                        CategoryId =
+                            request.CategoryId,
+
+                        SubCategoryId =
+                            request.SubCategoryId,
+
+                        ProductName =
+                            request.ProductName.Trim(),
+
+                        NeckFinish =
+                            request.NeckFinish.Trim(),
+
+                        CapacityVolume =
+                            request.CapacityVolume.Trim(),
+
+                        Description =
+                            request.Description.Trim(),
+
+                        IsActive =
+                            request.IsActive
+                    };
+
+                var createdProduct =
+                    await _productService
+                        .AddProductAsync(product);
+
+                var result =
+                    await _productService
+                        .GetProductByIdAsync(
+                            createdProduct.ProductId
+                        );
+
+                return CreatedAtAction(
+                    nameof(GetProduct),
+                    new
+                    {
+                        id =
+                            createdProduct.ProductId
+                    },
+                    MapProduct(result!)
+                );
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(
+                    new
+                    {
+                        message =
+                            exception.Message
+                    }
+                );
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        [Authorize(
+            AuthenticationSchemes =
+                "QPETAdmin"
+        )]
+        public async Task<IActionResult> UpdateProduct(
+            int id,
+            ProductUpdateRequest request)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(
+                    new
+                    {
+                        message =
+                            "Product ID must be greater than zero."
+                    }
+                );
+            }
+
+            var existingProduct =
+                await _productService
+                    .GetProductByIdAsync(id);
+
+            if (existingProduct == null)
+            {
+                return NotFound(
+                    new
+                    {
+                        message =
+                            "Product not found."
+                    }
+                );
+            }
+
+            try
+            {
+                var product =
+                    new Product
+                    {
+                        ProductId = id,
+
+                        CategoryId =
+                            request.CategoryId,
+
+                        SubCategoryId =
+                            request.SubCategoryId,
+
+                        ProductName =
+                            request.ProductName.Trim(),
+
+                        NeckFinish =
+                            request.NeckFinish.Trim(),
+
+                        CapacityVolume =
+                            request.CapacityVolume.Trim(),
+
+                        Description =
+                            request.Description.Trim(),
+
+                        IsActive =
+                            request.IsActive
+                    };
+
+                var updated =
+                    await _productService
+                        .UpdateProductAsync(product);
+
+                if (!updated)
                 {
-                    ProductId =
-                        product.ProductId,
+                    return NotFound(
+                        new
+                        {
+                            message =
+                                "Product not found."
+                        }
+                    );
+                }
 
-                    ProductName =
-                        product.ProductName,
+                return NoContent();
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(
+                    new
+                    {
+                        message =
+                            exception.Message
+                    }
+                );
+            }
+        }
 
-                    NeckFinish =
-                        product.NeckFinish,
+        [HttpDelete("{id:int}")]
+        [Authorize(
+            AuthenticationSchemes =
+                "QPETAdmin"
+        )]
+        public async Task<IActionResult> DeleteProduct(
+            int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(
+                    new
+                    {
+                        message =
+                            "Product ID must be greater than zero."
+                    }
+                );
+            }
 
-                    CapacityVolume =
-                        product.CapacityVolume,
+            var deleted =
+                await _productService
+                    .DeleteProductAsync(id);
 
-                    Description =
-                        product.Description,
+            if (!deleted)
+            {
+                return NotFound(
+                    new
+                    {
+                        message =
+                            "Product not found."
+                    }
+                );
+            }
 
-                    IsActive =
-                        product.IsActive,
+            return NoContent();
+        }
 
-                    CategoryId =
-                        product.CategoryId,
+        private static ProductResponse MapProduct(
+            Product product)
+        {
+            return new ProductResponse
+            {
+                ProductId =
+                    product.ProductId,
 
-                    CategoryName =
-                        product.Category
-                            .CategoryName,
+                ProductName =
+                    product.ProductName,
 
-                    SubCategoryId =
-                        product.SubCategoryId,
+                NeckFinish =
+                    product.NeckFinish,
 
-                    SubCategoryName =
-                        product.SubCategory
-                            .SubCategoryName,
+                CapacityVolume =
+                    product.CapacityVolume,
 
-                    PrimaryImageUrl =
-                        product.Images
-                            .FirstOrDefault(
-                                image =>
-                                    image.IsPrimary
-                            )
-                            ?.ImageUrl
-                };
+                Description =
+                    product.Description,
 
-            return Ok(response);
+                IsActive =
+                    product.IsActive,
+
+                CategoryId =
+                    product.CategoryId,
+
+                CategoryName =
+                    product.Category?
+                        .CategoryName
+                    ?? string.Empty,
+
+                SubCategoryId =
+                    product.SubCategoryId,
+
+                SubCategoryName =
+                    product.SubCategory?
+                        .SubCategoryName
+                    ?? string.Empty,
+
+                PrimaryImageUrl =
+                    product.Images
+                        .FirstOrDefault(
+                            image =>
+                                image.IsPrimary
+                        )
+                        ?.ImageUrl
+            };
         }
     }
 }

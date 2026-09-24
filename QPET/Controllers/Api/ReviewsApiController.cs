@@ -159,8 +159,8 @@ namespace QPET.Controllers.Api
 
         [HttpDelete("{id:int}")]
         [Authorize(
-            AuthenticationSchemes =
-                "QPETAdmin"
+            AuthenticationSchemes = "QPETAdmin",
+            Roles = "Admin"
         )]
         public async Task<IActionResult> DeleteReview(
             int id)

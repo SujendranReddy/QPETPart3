@@ -75,8 +75,8 @@ namespace QPET.Controllers.Api
 
         [HttpPost]
         [Authorize(
-            AuthenticationSchemes =
-                "QPETAdmin"
+            AuthenticationSchemes = "QPETAdmin",
+            Roles = "Admin"
         )]
         public async Task<ActionResult<ProductResponse>>
             CreateProduct(
@@ -143,8 +143,8 @@ namespace QPET.Controllers.Api
 
         [HttpPut("{id:int}")]
         [Authorize(
-            AuthenticationSchemes =
-                "QPETAdmin"
+            AuthenticationSchemes = "QPETAdmin",
+            Roles = "Admin"
         )]
         public async Task<IActionResult> UpdateProduct(
             int id,
@@ -181,7 +181,8 @@ namespace QPET.Controllers.Api
                 var product =
                     new Product
                     {
-                        ProductId = id,
+                        ProductId =
+                            id,
 
                         CategoryId =
                             request.CategoryId,
@@ -236,8 +237,8 @@ namespace QPET.Controllers.Api
 
         [HttpDelete("{id:int}")]
         [Authorize(
-            AuthenticationSchemes =
-                "QPETAdmin"
+            AuthenticationSchemes = "QPETAdmin",
+            Roles = "Admin"
         )]
         public async Task<IActionResult> DeleteProduct(
             int id)

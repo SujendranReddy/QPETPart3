@@ -2,53 +2,53 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QPET.Models;
-using QPET.Services;
-using System.Security.Claims;
 using QPET.Services.Interfaces;
+using System.Security.Claims;
 
 namespace QPET.Controllers
 {
-    [Authorize(AuthenticationSchemes = "QPETAdmin")]
+    [Authorize(
+        AuthenticationSchemes = "QPETAdmin",
+        Roles = "Admin"
+    )]
     public class AdminController : Controller
     {
-        private readonly PrototypeDataService _dataService;
+        private readonly IAdminAuthService _adminAuthService;
         private readonly IProductService _productService;
-
-        private readonly IEnquiryFileStorageService
-    _enquiryFileStorageService;
-        private readonly IReviewService _reviewService;
         private readonly IBranchService _branchService;
         private readonly IEnquiryService _enquiryService;
+        private readonly IReviewService _reviewService;
+        private readonly IEnquiryFileStorageService _enquiryFileStorageService;
 
         public AdminController(
-     PrototypeDataService dataService,
-     IProductService productService, IBranchService branchService,
-IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorageService enquiryFileStorageService)
+            IAdminAuthService adminAuthService,
+            IProductService productService,
+            IBranchService branchService,
+            IEnquiryService enquiryService,
+            IReviewService reviewService,
+            IEnquiryFileStorageService enquiryFileStorageService)
         {
+            _adminAuthService = adminAuthService;
+            _productService = productService;
             _branchService = branchService;
             _enquiryService = enquiryService;
             _reviewService = reviewService;
-            _dataService = dataService;
-            _productService = productService;
-            _enquiryFileStorageService =
-    enquiryFileStorageService;
+            _enquiryFileStorageService = enquiryFileStorageService;
         }
-
 
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Login(
-    string? returnUrl = null)
+            string? returnUrl = null)
         {
             if (
-                User.Identity?.IsAuthenticated
-                == true)
+                User.Identity?.IsAuthenticated ==
+                true)
             {
                 return RedirectToAction(
                     nameof(Dashboard)
                 );
             }
-
 
             return View(
                 new AdminLoginViewModel
@@ -58,7 +58,6 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                 }
             );
         }
-
 
         [AllowAnonymous]
         [HttpPost]
@@ -71,13 +70,12 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                 return View(model);
             }
 
-
             var admin =
-                _dataService.AuthenticateAdmin(
-                    model.EmailAddress,
-                    model.Password
-                );
-
+                await _adminAuthService
+                    .AuthenticateAsync(
+                        model.EmailAddress,
+                        model.Password
+                    );
 
             if (admin == null)
             {
@@ -86,25 +84,27 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                     "Invalid email address or password."
                 );
 
-
                 return View(model);
             }
-
 
             var claims =
                 new List<Claim>
                 {
-            new Claim(
-                ClaimTypes.Name,
-                admin.EmailAddress
-            ),
+                    new Claim(
+                        ClaimTypes.NameIdentifier,
+                        admin.AdminUserId.ToString()
+                    ),
 
-            new Claim(
-                ClaimTypes.Role,
-                "Admin"
-            )
+                    new Claim(
+                        ClaimTypes.Name,
+                        admin.EmailAddress
+                    ),
+
+                    new Claim(
+                        ClaimTypes.Role,
+                        "Admin"
+                    )
                 };
-
 
             var identity =
                 new ClaimsIdentity(
@@ -112,12 +112,10 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                     "QPETAdmin"
                 );
 
-
             var principal =
                 new ClaimsPrincipal(
                     identity
                 );
-
 
             var authenticationProperties =
                 new AuthenticationProperties
@@ -133,14 +131,12 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                         )
                 };
 
-
             await HttpContext.SignInAsync(
                 "QPETAdmin",
                 principal,
                 authenticationProperties
             );
 
-            //This reutrns the admin to the requested admin page after a successful login
             if (
                 !string.IsNullOrWhiteSpace(
                     model.ReturnUrl
@@ -154,12 +150,10 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                 );
             }
 
-
             return RedirectToAction(
                 nameof(Dashboard)
             );
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -169,13 +163,12 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                 "QPETAdmin"
             );
 
-
             return RedirectToAction(
                 nameof(Login)
             );
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
             var products =
@@ -221,7 +214,9 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
 
                                 CreatedDate =
                                     enquiry.CreatedDate
-                                        .ToString("dd MMM yyyy"),
+                                        .ToString(
+                                            "dd MMM yyyy"
+                                        ),
 
                                 Status =
                                     enquiry.Status
@@ -262,54 +257,16 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
         }
 
         [HttpGet]
-        public async Task<IActionResult>
-    DownloadEnquiryAttachment(
-        int id)
-        {
-            var attachment =
-                await _enquiryService
-                    .GetAttachmentByIdAsync(id);
-
-            if (attachment == null)
-            {
-                return NotFound();
-            }
-
-            var filePath =
-                _enquiryFileStorageService
-                    .GetFilePath(
-                        attachment.StoredFileName
-                    );
-
-            if (filePath == null)
-            {
-                return NotFound();
-            }
-
-            var contentType =
-                string.IsNullOrWhiteSpace(
-                    attachment.ContentType
-                ) ||
-                attachment.ContentType == "unknown"
-                    ? "application/octet-stream"
-                    : attachment.ContentType;
-
-            return PhysicalFile(
-                filePath,
-                contentType,
-                attachment.OriginalFileName
-            );
-        }
         public async Task<IActionResult> Enquiries(
-    string? status = null)
+            string? status = null)
         {
             var allowedStatuses =
                 new[]
                 {
-            "New",
-            "InProgress",
-            "Resolved",
-            "Closed"
+                    "New",
+                    "InProgress",
+                    "Resolved",
+                    "Closed"
                 };
 
             if (
@@ -329,7 +286,8 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                     enquiries
                         .Where(
                             enquiry =>
-                                enquiry.Status == status
+                                enquiry.Status ==
+                                status
                         )
                         .ToList();
             }
@@ -345,8 +303,11 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
             var model =
                 new AdminEnquiryListViewModel
                 {
-                    Enquiries = enquiries,
-                    SelectedStatus = status
+                    Enquiries =
+                        enquiries,
+
+                    SelectedStatus =
+                        status
                 };
 
             return View(model);
@@ -362,7 +323,8 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
 
             if (enquiry == null)
             {
-                ViewBag.EnquiryNotFound = true;
+                ViewBag.EnquiryNotFound =
+                    true;
 
                 return View(
                     new QPET.Data.Entities.Enquiry()
@@ -405,7 +367,48 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
             );
         }
 
+        [HttpGet]
+        public async Task<IActionResult>
+            DownloadEnquiryAttachment(
+                int id)
+        {
+            var attachment =
+                await _enquiryService
+                    .GetAttachmentByIdAsync(id);
 
+            if (attachment == null)
+            {
+                return NotFound();
+            }
+
+            var filePath =
+                _enquiryFileStorageService
+                    .GetFilePath(
+                        attachment.StoredFileName
+                    );
+
+            if (filePath == null)
+            {
+                return NotFound();
+            }
+
+            var contentType =
+                string.IsNullOrWhiteSpace(
+                    attachment.ContentType
+                ) ||
+                attachment.ContentType ==
+                "unknown"
+                    ? "application/octet-stream"
+                    : attachment.ContentType;
+
+            return PhysicalFile(
+                filePath,
+                contentType,
+                attachment.OriginalFileName
+            );
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Products()
         {
             var model =
@@ -427,7 +430,6 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
             return View(model);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> CreateProduct()
         {
@@ -446,8 +448,13 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
         public async Task<IActionResult> CreateProduct(
             AdminProductViewModel model)
         {
-            await ValidateProductSelectionAsync(model);
-            ValidateProductImage(model);
+            await ValidateProductSelectionAsync(
+                model
+            );
+
+            ValidateProductImage(
+                model
+            );
 
             if (!ModelState.IsValid)
             {
@@ -483,7 +490,9 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
 
             var createdProduct =
                 await _productService
-                    .AddProductAsync(product);
+                    .AddProductAsync(
+                        product
+                    );
 
             TempData["ProductMessage"] =
                 $"Product created successfully. Product ID: {createdProduct.ProductId}";
@@ -572,8 +581,13 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
             model.ProductId =
                 id;
 
-            await ValidateProductSelectionAsync(model);
-            ValidateProductImage(model);
+            await ValidateProductSelectionAsync(
+                model
+            );
+
+            ValidateProductImage(
+                model
+            );
 
             if (!ModelState.IsValid)
             {
@@ -654,6 +668,39 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
             );
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Reviews()
+        {
+            var reviews =
+                await _reviewService
+                    .GetReviewsAsync();
+
+            ViewBag.Branches =
+                await _branchService
+                    .GetBranchesAsync();
+
+            return View(reviews);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteReview(
+            int id)
+        {
+            var deleted =
+                await _reviewService
+                    .DeleteReviewAsync(id);
+
+            TempData["ReviewMessage"] =
+                deleted
+                    ? "Review deleted successfully."
+                    : "The review could not be found.";
+
+            return RedirectToAction(
+                nameof(Reviews)
+            );
+        }
+
         private async Task PopulateProductLookupsAsync()
         {
             ViewBag.Categories =
@@ -707,7 +754,7 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
         }
 
         private void ValidateProductImage(
-    AdminProductViewModel model)
+            AdminProductViewModel model)
         {
             if (model.Image == null)
             {
@@ -723,10 +770,10 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
             var allowedExtensions =
                 new[]
                 {
-            ".jpg",
-            ".jpeg",
-            ".png",
-            ".webp"
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".webp"
                 };
 
             if (
@@ -739,37 +786,6 @@ IEnquiryService enquiryService, IReviewService reviewService, IEnquiryFileStorag
                     "Only JPG, JPEG, PNG and WEBP images are allowed."
                 );
             }
-        }
-        public async Task<IActionResult> Reviews()
-        {
-            var reviews =
-                await _reviewService
-                    .GetReviewsAsync();
-
-            ViewBag.Branches =
-                await _branchService
-                    .GetBranchesAsync();
-
-            return View(reviews);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteReview(
-            int id)
-        {
-            var deleted =
-                await _reviewService
-                    .DeleteReviewAsync(id);
-
-            TempData["ReviewMessage"] =
-                deleted
-                    ? "Review deleted successfully."
-                    : "The review could not be found.";
-
-            return RedirectToAction(
-                nameof(Reviews)
-            );
         }
     }
 }

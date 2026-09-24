@@ -30,8 +30,8 @@ namespace QPET.Controllers.Api
 
         [HttpGet]
         [Authorize(
-            AuthenticationSchemes =
-                "QPETAdmin"
+            AuthenticationSchemes = "QPETAdmin",
+            Roles = "Admin"
         )]
         public async Task<
             ActionResult<IEnumerable<EnquiryResponse>>>
@@ -48,8 +48,8 @@ namespace QPET.Controllers.Api
 
         [HttpGet("{id:int}")]
         [Authorize(
-            AuthenticationSchemes =
-                "QPETAdmin"
+            AuthenticationSchemes = "QPETAdmin",
+            Roles = "Admin"
         )]
         public async Task<ActionResult<EnquiryResponse>>
             GetEnquiry(
@@ -183,8 +183,8 @@ namespace QPET.Controllers.Api
 
         [HttpPatch("{id:int}/status")]
         [Authorize(
-            AuthenticationSchemes =
-                "QPETAdmin"
+            AuthenticationSchemes = "QPETAdmin",
+            Roles = "Admin"
         )]
         public async Task<IActionResult>
             UpdateEnquiryStatus(

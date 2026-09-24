@@ -20,9 +20,6 @@ builder.Services.AddDbContext<QpetDbContext>(
         )
 );
 
-builder.Services.AddScoped<
-    PrototypeDataService
->();
 
 builder.Services.AddScoped<
     IProductService,

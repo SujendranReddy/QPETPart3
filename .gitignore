@@ -2,3 +2,4 @@
 QPET/Data/EnquiryAttachments/
 **/bin/
 **/obj/
+*.csproj.user

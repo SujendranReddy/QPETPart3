@@ -2,9 +2,7 @@
 
 @{
     ViewData["Title"] = "Reviews";
-
 }
-
 
 <section class="reviews-hero">
 
@@ -15,17 +13,14 @@
 
     </div>
 
-
     <div class="reviews-hero-overlay"></div>
     <div class="reviews-hero-grid"></div>
-
 
     <div class="container reviews-hero-content">
 
         <span class="eyebrow">
             Customer experiences
         </span>
-
 
         <h1>
             Feedback that builds
@@ -35,32 +30,26 @@
             </span>
         </h1>
 
-
         <p>
-            Read customer experiences with QPET or submit feedback
-            about the products, service and support received from
-            a QPET branch.
+            Read customer experiences with QPET or share feedback
+            about the products, service and support you received.
         </p>
 
     </div>
 
 </section>
 
-
-
 <section class="section reviews-main-section">
 
     <div class="container reviews-layout">
 
-
-        <div>
+        <div class="reviews-list-column">
 
             <div class="reviews-content-heading">
 
                 <span class="eyebrow">
                     Customer feedback
                 </span>
-
 
                 <h2>
                     What customers say about
@@ -70,24 +59,21 @@
                     </span>
                 </h2>
 
-
                 <p>
-                    Reviews in this interactive prototype demonstrate
-                    how customer feedback can be displayed and moderated.
+                    Read feedback from customers about their
+                    experience with QPET products, service and support.
                 </p>
-
 
                 <span class="review-count-label">
 
                     @Model.Reviews.Count
                     @(Model.Reviews.Count == 1
-                                        ? "customer review"
-                                        : "customer reviews")
+                        ? "customer review"
+                        : "customer reviews")
 
                 </span>
 
             </div>
-
 
             @if (Model.Reviews.Any())
             {
@@ -96,28 +82,26 @@
                     @foreach (var review in Model.Reviews)
                     {
                         var branch =
-                        Model.Branches.FirstOrDefault(
-                        branch =>
-                        branch.BranchId ==
-                        review.BranchId
-                        );
-
+                            Model.Branches.FirstOrDefault(
+                                branch =>
+                                    branch.BranchId ==
+                                    review.BranchId
+                            );
 
                         var stars =
-                        new string(
-                        '★',
-                        review.Rating
-                        )
-                        +
-                        new string(
-                        '☆',
-                        5 - review.Rating
-                        );
+                            new string(
+                                '★',
+                                review.Rating
+                            )
+                            +
+                            new string(
+                                '☆',
+                                5 - review.Rating
+                            );
 
-
-                       var displayDate =
-                       review.CreatedDate
-                       .ToString("dd MMM yyyy");
+                        var displayDate =
+                            review.CreatedDate
+                                .ToString("dd MMM yyyy");
 
                         <article class="public-review-card">
 
@@ -127,26 +111,21 @@
                                     @stars
                                 </span>
 
-
                                 <span class="review-branch">
 
-                                    @(branch?.BranchName
-                                                                ?? "QPET")
+                                    @(branch?.BranchName ?? "QPET")
 
-                        </span>
+                                </span>
 
                             </div>
-
 
                             <div class="review-quote-mark">
                                 “
                             </div>
 
-
                             <p class="public-review-message">
                                 @review.ReviewMessage
                             </p>
-
 
                             <div class="review-footer">
 
@@ -161,7 +140,7 @@
                             </div>
 
                         </article>
-                                }
+                    }
 
                 </div>
             }
@@ -176,29 +155,24 @@
 
         </div>
 
-
-
         <aside class="reviews-form-card">
 
             <span class="section-kicker">
                 Submit a review
             </span>
 
-
             <h2>
                 Tell us about your experience.
             </h2>
 
-
             <p>
-                Select the relevant QPET branch and
-                share your feedback.
+                Select the relevant QPET branch
+                and share your feedback.
             </p>
 
-
             @if (
-                        TempData["ReviewMessage"]
-                        is string successMessage)
+                TempData["ReviewMessage"]
+                is string successMessage)
             {
                 <div class="review-success">
 
@@ -207,12 +181,10 @@
                 </div>
             }
 
-
             <form asp-controller="Reviews"
                   asp-action="SubmitReview"
                   method="post"
                   class="review-form">
-
 
                 <div class="contact-form-field">
 
@@ -220,11 +192,9 @@
                         Display Name
                     </label>
 
-
                     <input asp-for="Review.DisplayName"
                            class="contact-control"
                            placeholder="Name displayed with your review" />
-
 
                     <span asp-validation-for="Review.DisplayName"
                           class="field-validation">
@@ -232,24 +202,19 @@
 
                 </div>
 
-
-
                 <div class="contact-form-field">
 
                     <label asp-for="Review.EmailAddress">
                         Email Address
                     </label>
 
-
                     <input asp-for="Review.EmailAddress"
                            class="contact-control"
                            placeholder="Optional" />
 
-
                     <small class="contact-field-note">
                         Optional and not displayed publicly.
                     </small>
-
 
                     <span asp-validation-for="Review.EmailAddress"
                           class="field-validation">
@@ -257,17 +222,13 @@
 
                 </div>
 
-
-
                 <div class="review-form-row">
-
 
                     <div class="contact-form-field">
 
                         <label asp-for="Review.BranchId">
                             QPET Branch
                         </label>
-
 
                         <select asp-for="Review.BranchId"
                                 class="contact-control">
@@ -276,9 +237,8 @@
                                 Select branch
                             </option>
 
-
                             @foreach (
-                                                        var branch in Model.Branches)
+                                var branch in Model.Branches)
                             {
                                 <option value="@branch.BranchId">
 
@@ -289,21 +249,17 @@
 
                         </select>
 
-
                         <span asp-validation-for="Review.BranchId"
                               class="field-validation">
                         </span>
 
                     </div>
 
-
-
                     <div class="contact-form-field">
 
                         <label asp-for="Review.Rating">
                             Rating
                         </label>
-
 
                         <select asp-for="Review.Rating"
                                 class="contact-control">
@@ -334,7 +290,6 @@
 
                         </select>
 
-
                         <span asp-validation-for="Review.Rating"
                               class="field-validation">
                         </span>
@@ -343,28 +298,22 @@
 
                 </div>
 
-
-
                 <div class="contact-form-field">
 
                     <label asp-for="Review.ReviewMessage">
                         Review
                     </label>
 
-
                     <textarea asp-for="Review.ReviewMessage"
                               class="contact-control contact-textarea review-textarea"
                               placeholder="Share your experience with QPET...">
                     </textarea>
-
 
                     <span asp-validation-for="Review.ReviewMessage"
                           class="field-validation">
                     </span>
 
                 </div>
-
-
 
                 <button type="submit"
                         class="btn btn-primary contact-submit-button">

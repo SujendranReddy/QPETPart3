@@ -5,13 +5,12 @@
     ViewData["Title"] = "Contact";
 
     var branches =
-    ViewBag.Branches as List<QPET.Data.Entities.Branch>
-    ?? new List<QPET.Data.Entities.Branch>();
+        ViewBag.Branches as List<QPET.Data.Entities.Branch>
+        ?? new List<QPET.Data.Entities.Branch>();
 
     var enquiryReference =
         ViewBag.EnquiryReference as string;
 }
-
 
 <section class="contact-hero">
 
@@ -53,11 +52,9 @@
 
 </section>
 
-
 <section class="section contact-main-section">
 
     <div class="container contact-page-layout">
-
 
         <aside class="contact-details-card">
 
@@ -77,7 +74,6 @@
                 Submit an enquiry and select the QPET branch
                 most relevant to your request.
             </p>
-
 
             <div class="contact-details-list">
 
@@ -101,7 +97,6 @@
 
                 </article>
 
-
                 <article class="contact-detail-item">
 
                     <div class="contact-detail-icon">
@@ -122,7 +117,6 @@
 
                 </article>
 
-
                 <article class="contact-detail-item">
 
                     <div class="contact-detail-icon">
@@ -142,7 +136,6 @@
                     </div>
 
                 </article>
-
 
                 <article class="contact-detail-item">
 
@@ -166,7 +159,6 @@
 
             </div>
 
-
             <div class="contact-information-note">
 
                 <strong>
@@ -183,7 +175,6 @@
 
         </aside>
 
-
         <div class="contact-form-card">
 
             <span class="section-kicker">
@@ -195,10 +186,9 @@
             </h2>
 
             <p class="contact-form-introduction">
-                Complete the form below to demonstrate how a customer
-                enquiry would be captured by the QPET system.
+                Complete the form and a member of the QPET team
+                can review your packaging requirements.
             </p>
-
 
             @if (string.IsNullOrWhiteSpace(enquiryReference))
             {
@@ -207,7 +197,6 @@
                       method="post"
                       enctype="multipart/form-data"
                       class="contact-form">
-
 
                     <div class="contact-form-row">
 
@@ -227,7 +216,6 @@
 
                         </div>
 
-
                         <div class="contact-form-field">
 
                             <label asp-for="EmailAddress">
@@ -245,7 +233,6 @@
                         </div>
 
                     </div>
-
 
                     <div class="contact-form-row">
 
@@ -265,7 +252,6 @@
 
                         </div>
 
-
                         <div class="contact-form-field">
 
                             <label asp-for="BranchId">
@@ -282,7 +268,9 @@
                                 @foreach (var branch in branches)
                                 {
                                     <option value="@branch.BranchId">
+
                                         @branch.BranchName
+
                                     </option>
                                 }
 
@@ -295,7 +283,6 @@
                         </div>
 
                     </div>
-
 
                     <div class="contact-form-field">
 
@@ -313,7 +300,6 @@
 
                     </div>
 
-
                     <div class="contact-form-field">
 
                         <label asp-for="Message">
@@ -323,14 +309,13 @@
                         <textarea asp-for="Message"
                                   class="contact-control contact-textarea"
                                   placeholder="Tell us about your product type, required capacity, quantity and packaging requirements.">
-                            </textarea>
+                        </textarea>
 
                         <span asp-validation-for="Message"
                               class="field-validation">
                         </span>
 
                     </div>
-
 
                     <div class="contact-form-field">
 
@@ -345,9 +330,8 @@
                                accept=".pdf,.jpg,.jpeg,.png" />
 
                         <small class="contact-field-note">
-                            Optional. PDF, JPG and PNG files may be
-                            selected in the prototype. File metadata is
-                            recorded but the files are not physically stored.
+                            Optional. Attach PDF, JPG or PNG files
+                            that may help explain your requirements.
                         </small>
 
                         <span asp-validation-for="Attachments"
@@ -355,7 +339,6 @@
                         </span>
 
                     </div>
-
 
                     <button type="submit"
                             class="btn btn-primary contact-submit-button">
@@ -388,14 +371,13 @@
                             </strong>
 
                             <p>
-                                Your enquiry has been recorded
-                                in the QPET prototype.
+                                Thank you. Your enquiry has been
+                                received by QPET.
                             </p>
 
                         </div>
 
                     </div>
-
 
                     <div class="contact-information-note">
 
@@ -409,7 +391,6 @@
 
                     </div>
 
-
                     <div class="contact-information-note">
 
                         <strong>
@@ -421,7 +402,6 @@
                         </p>
 
                     </div>
-
 
                     <a asp-controller="Contact"
                        asp-action="Index"
@@ -440,7 +420,6 @@
 
 </section>
 
-
 <section class="contact-bottom-banner">
 
     <div class="container contact-bottom-content">
@@ -456,8 +435,8 @@
             </h2>
 
             <p>
-                Browse the QPET product catalogue before submitting
-                your enquiry.
+                Browse the QPET product catalogue before
+                submitting your enquiry.
             </p>
 
         </div>

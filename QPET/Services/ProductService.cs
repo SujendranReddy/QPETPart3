@@ -112,14 +112,12 @@ namespace QPET.Services
                 );
             }
 
-            if (!product.Images.Any(
-                    image =>
-                        image.IsPrimary))
+            foreach (var image in product.Images)
             {
-                product.Images
-                    .First()
-                    .IsPrimary = true;
+                image.IsPrimary = false;
             }
+
+            product.Images.First().IsPrimary = true;
 
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
@@ -183,6 +181,43 @@ namespace QPET.Services
 
             existingProduct.IsActive =
                 product.IsActive;
+
+            if (product.Images.Any())
+            {
+                foreach (
+                    var existingImage
+                    in existingProduct.Images.ToList())
+                {
+                    _context.ProductImages.Remove(
+                        existingImage
+                    );
+                }
+
+                foreach (
+                    var image
+                    in product.Images)
+                {
+                    image.ProductId =
+                        existingProduct.ProductId;
+
+                    image.ProductImageId = 0;
+
+                    _context.ProductImages.Add(
+                        image
+                    );
+                }
+            }
+            else if (!existingProduct.Images.Any())
+            {
+                existingProduct.Images.Add(
+                    new ProductImage
+                    {
+                        ImageUrl =
+                            "/images/products/product-placeholder.jpg",
+                        IsPrimary = true
+                    }
+                );
+            }
 
             await _context.SaveChangesAsync();
 

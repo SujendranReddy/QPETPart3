@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using QPET.Models;
 using QPET.Services.Interfaces;
 using System.Security.Claims;
+using QPET.Data.Entities;
 
 namespace QPET.Controllers
 {
@@ -19,14 +20,16 @@ namespace QPET.Controllers
         private readonly IEnquiryService _enquiryService;
         private readonly IReviewService _reviewService;
         private readonly IEnquiryFileStorageService _enquiryFileStorageService;
+        private readonly IWebHostEnvironment _environment;
 
         public AdminController(
-            IAdminAuthService adminAuthService,
-            IProductService productService,
-            IBranchService branchService,
-            IEnquiryService enquiryService,
-            IReviewService reviewService,
-            IEnquiryFileStorageService enquiryFileStorageService)
+    IAdminAuthService adminAuthService,
+    IProductService productService,
+    IBranchService branchService,
+    IEnquiryService enquiryService,
+    IReviewService reviewService,
+    IEnquiryFileStorageService enquiryFileStorageService,
+    IWebHostEnvironment environment)
         {
             _adminAuthService = adminAuthService;
             _productService = productService;
@@ -34,6 +37,7 @@ namespace QPET.Controllers
             _enquiryService = enquiryService;
             _reviewService = reviewService;
             _enquiryFileStorageService = enquiryFileStorageService;
+            _environment = environment;
         }
 
         [AllowAnonymous]
@@ -446,21 +450,27 @@ namespace QPET.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProduct(
-            AdminProductViewModel model)
+    AdminProductViewModel model)
         {
-            await ValidateProductSelectionAsync(
-                model
-            );
+            await ValidateProductSelectionAsync(model);
 
-            ValidateProductImage(
-                model
-            );
+            ValidateProductImage(model);
 
             if (!ModelState.IsValid)
             {
                 await PopulateProductLookupsAsync();
 
                 return View(model);
+            }
+
+            string? imageUrl = null;
+
+            if (model.Image != null)
+            {
+                imageUrl =
+                    await SaveProductImageAsync(
+                        model.Image
+                    );
             }
 
             var product =
@@ -488,18 +498,39 @@ namespace QPET.Controllers
                         model.IsActive
                 };
 
-            var createdProduct =
-                await _productService
-                    .AddProductAsync(
-                        product
+            if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                product.Images.Add(
+                    new QPET.Data.Entities.ProductImage
+                    {
+                        ImageUrl = imageUrl,
+                        IsPrimary = true
+                        }
                     );
+            }
 
-            TempData["ProductMessage"] =
-                $"Product created successfully. Product ID: {createdProduct.ProductId}";
+            try
+            {
+                var createdProduct =
+                    await _productService
+                        .AddProductAsync(product);
 
-            return RedirectToAction(
-                nameof(Products)
-            );
+                TempData["ProductMessage"] =
+                    $"Product created successfully. Product ID: {createdProduct.ProductId}";
+
+                return RedirectToAction(
+                    nameof(Products)
+                );
+            }
+            catch
+            {
+                if (!string.IsNullOrWhiteSpace(imageUrl))
+                {
+                    DeleteProductImageFile(imageUrl);
+                }
+
+                throw;
+            }
         }
 
         [HttpGet]
@@ -566,8 +597,8 @@ namespace QPET.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProduct(
-            int id,
-            AdminProductViewModel model)
+    int id,
+    AdminProductViewModel model)
         {
             var existingProduct =
                 await _productService
@@ -578,16 +609,13 @@ namespace QPET.Controllers
                 return NotFound();
             }
 
-            model.ProductId =
-                id;
+            model.ProductId = id;
 
             await ValidateProductSelectionAsync(
                 model
             );
 
-            ValidateProductImage(
-                model
-            );
+            ValidateProductImage(model);
 
             if (!ModelState.IsValid)
             {
@@ -603,6 +631,16 @@ namespace QPET.Controllers
                         ?.ImageUrl;
 
                 return View(model);
+            }
+
+            string? newImageUrl = null;
+
+            if (model.Image != null)
+            {
+                newImageUrl =
+                    await SaveProductImageAsync(
+                        model.Image
+                    );
             }
 
             var updatedProduct =
@@ -633,20 +671,83 @@ namespace QPET.Controllers
                         model.IsActive
                 };
 
-            var updated =
-                await _productService
-                    .UpdateProductAsync(
-                        updatedProduct
+            if (!string.IsNullOrWhiteSpace(newImageUrl))
+            {
+                updatedProduct.Images.Add(
+                    new QPET.Data.Entities.ProductImage
+                    {
+                        ImageUrl = newImageUrl,
+                        IsPrimary = true
+                    }
+                );
+            }
+
+            var oldImageUrl =
+                existingProduct
+                    .Images
+                    .FirstOrDefault(
+                        image =>
+                            image.IsPrimary
+                    )
+                    ?.ImageUrl;
+
+            try
+            {
+                var updated =
+                    await _productService
+                        .UpdateProductAsync(
+                            updatedProduct
+                        );
+
+                if (!updated)
+                {
+                    if (!string.IsNullOrWhiteSpace(newImageUrl))
+                    {
+                        DeleteProductImageFile(
+                            newImageUrl
+                        );
+                    }
+
+                    TempData["ProductMessage"] =
+                        "The product could not be updated.";
+
+                    return RedirectToAction(
+                        nameof(Products)
                     );
+                }
 
-            TempData["ProductMessage"] =
-                updated
-                    ? "Product updated successfully."
-                    : "The product could not be updated.";
+                if (
+                    !string.IsNullOrWhiteSpace(
+                        newImageUrl
+                    ) &&
+                    !string.IsNullOrWhiteSpace(
+                        oldImageUrl
+                    )
+                )
+                {
+                    DeleteProductImageFile(
+                        oldImageUrl
+                    );
+                }
 
-            return RedirectToAction(
-                nameof(Products)
-            );
+                TempData["ProductMessage"] =
+                    "Product updated successfully.";
+
+                return RedirectToAction(
+                    nameof(Products)
+                );
+            }
+            catch
+            {
+                if (!string.IsNullOrWhiteSpace(newImageUrl))
+                {
+                    DeleteProductImageFile(
+                        newImageUrl
+                    );
+                }
+
+                throw;
+            }
         }
 
         [HttpPost]
@@ -752,7 +853,108 @@ namespace QPET.Controllers
                 );
             }
         }
+        private async Task<string> SaveProductImageAsync(
+    IFormFile image)
+        {
+            var imageDirectory =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "media",
+                    "images"
+                );
 
+            Directory.CreateDirectory(
+                imageDirectory
+            );
+
+            var extension =
+                Path.GetExtension(
+                    image.FileName
+                )
+                .ToLowerInvariant();
+
+            var fileName =
+                $"{Guid.NewGuid():N}{extension}";
+
+            var physicalPath =
+                Path.Combine(
+                    imageDirectory,
+                    fileName
+                );
+
+            await using (
+                var stream =
+                    new FileStream(
+                        physicalPath,
+                        FileMode.CreateNew
+                    ))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            return $"/media/images/{fileName}";
+        }
+
+        private void DeleteProductImageFile(
+     string imageUrl)
+        {
+            if (
+                string.IsNullOrWhiteSpace(
+                    imageUrl
+                )
+            )
+            {
+                return;
+            }
+
+            if (
+                !imageUrl.StartsWith(
+                    "/media/images/",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            {
+                return;
+            }
+
+            var fileName =
+                Path.GetFileName(
+                    imageUrl
+                );
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    fileName
+                )
+            )
+            {
+                return;
+            }
+
+            var imageDirectory =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "media",
+                    "images"
+                );
+
+            var physicalPath =
+                Path.Combine(
+                    imageDirectory,
+                    fileName
+                );
+
+            if (
+                System.IO.File.Exists(
+                    physicalPath
+                )
+            )
+            {
+                System.IO.File.Delete(
+                    physicalPath
+                );
+            }
+        }
         private void ValidateProductImage(
             AdminProductViewModel model)
         {

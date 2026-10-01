@@ -125,31 +125,33 @@ If the packages are not restored automatically:
 3.	Select Restore NuGet Packages.
 4.	Wait for the package restoration to complete.
 5.	Ensure there are no package or dependency errors in the Error List.
+
 ---------------------
 ### 5.4	CONFIGURE THE DATABASE 
-The application uses a database to store and manage the systems required data, 
-Before running the application, ensure that the required database server is available and that the database has been created and configured. 
+The application uses a database to store and manage the systems required data.  
 
-[ add steps !!!!]
-
----------------------
-### 5.5	CONFIGURE CONNECTION STRINGS 
-
----------------------
-
-### 5.6	RUN MIGRATIONS
+After cloning the repository and completing the Git LFS setup, the local database must be created and configured before running the application.
+To create or update the local database: 
+1.	Open the QPet solution in Visual Studio.
+2.	Select Tools → NuGet Package Manager → Package Manager Console.
+3.	In the Package Manager Console, run:
+`Update-Database`
+4.	Wait for the command to complete successfully.
+5.	The required database and database tables should now be created or updated.
+   
+Note: Ensure the correct project is selected as the Default Project in the Package Manager Console before running the command.
 
 --------------------- 
-
-### 5.7	 RUN THE APPLICATION 
+### 5.5	 RUN THE APPLICATION 
 To run the application using Visual Studio:
 1.	Open the QPet solution in Visual Studio.
 2.	Ensure the correct project is selected as the Startup Project.
 3.	Select the **HTTPS** launch profile.
 4.	Click the green **Run** button or press **Ctrl + F5**.
 5.	The application will open in the default web browser.
+
 ---------------------
-### 5.8	 RUN AUTOMATED TESTS 
+### 5.6	 RUN AUTOMATED TESTS 
 The solution includes a dedicated test project containing unit and integration tests for the application's services, security, models, database persistence, infrastructure, and API controllers.
 
 Automated tests can be run directly through Visual Studio.
@@ -159,16 +161,16 @@ Automated tests can be run directly through Visual Studio.
 4.	Wait for Visual Studio to discover the available tests.
 5.	Click **Run All Tests**.
 6.	The results will be displayed in the Test Explorer window.
----------------------
 
+---------------------
 ## 6. HOW THE API WORKS 
 
----------------------
 
+---------------------
 ## 7. IMPORTANT API ENDPOINTS 
 
----------------------
 
+---------------------
 ## 8. AUTHENTICATION/ADMIN INFORMATION
 (WITHOUT EXPOSING ACTUAL PASSWORDS) 
 

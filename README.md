@@ -15,21 +15,14 @@ The website is focused on providing information and facilitating communication w
 ---------------------
 
 ## 2.	MAIN FEATURES 
-### Product Catalogue
-•	Browse QPET's available products. <br/>
-•	Filter and explore product listings.<br/>
-•	View approved product information and images.
-### Contact Us
-•	Submit enquiries and questions through the website.<br/>
-•	Enquiries are stored in the database and routed to the designated QPET sales contact.
-### Customer Reviews
-•	Users can submit reviews through the website.
-### About Us
-•	Provides information about QPET, including its background and operations
-### Admin Dashboard
-•	Add and manage products.<br/>
-•	View submitted enquiries.<br/>
-•	View and manage submitted reviews.
+
+| Feature | Description | 
+|---|---|
+| **Product Catalogue** | •	Browse QPET's available products. <br/> •	Filter and explore product listings.<br/> •	View approved product information and images. |
+| **Contact Us** | •	Submit enquiries and questions through the website.<br/> •	Enquiries are stored in the database and routed to the designated QPET sales contact. |
+| **Customer Reviews** | •	Users can submit reviews through the website. |
+| **About Us** | •	Provides information about QPET, including its background and operations |
+| **Admin Dashboard** | •	Add and manage products.<br/> •	View submitted enquiries.<br/> •	View and manage submitted reviews. |
 
 ---------------------
 
@@ -164,30 +157,102 @@ Automated tests can be run directly through Visual Studio.
 
 ---------------------
 ## 6. HOW THE API WORKS 
+The QPet backend uses ASP.NET Core API controllers to expose REST API endpoints.  <br/>
+No external API service is used. <br/>
+The API controllers receive HTTP requests and communicate with the application's service layer, which handles the business logic and database operations through Entity Framework Core.
 
+_The API is organised into four main controllers:_ <br/>
+•	`BranchesApiController` – handles branch information.  <br/>
+•	`EnquiriesApiController` – handles customer enquiries.  <br/>
+•	`ProductsApiController` – handles product information and administration.   <br/>
+•	`ReviewsApiController` – handles customer reviews.  <br/>
+
+The API currently provides 15 endpoints using standard HTTP methods such as:
+`GET`, `POST`, `PUT`, `PATCH` and `DELETE`.
 
 ---------------------
 ## 7. IMPORTANT API ENDPOINTS 
 
+The QPet backend currently exposes 15 API endpoints across 4 API controllers.
+
+### Branches API
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/api/branches` | Retrieves all QPet branches, including contact and location information. | Public |
+| `GET` | `/api/branches/{id}` | Retrieves a specific branch using its branch ID. | Public |
+
+### Enquiries API
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/api/enquiries` | Retrieves all customer enquiries. | Admin |
+| `GET` | `/api/enquiries/{id}` | Retrieves a specific customer enquiry. | Admin |
+| `POST` | `/api/enquiries` | Creates a new customer enquiry and validates the selected branch. | Public |
+| `PATCH` | `/api/enquiries/{id}/status` | Updates the status of an existing enquiry. | Admin |
+
+### Products API
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/api/products` | Retrieves all active products, including category, subcategory and primary image information. | Public |
+| `GET` | `/api/products/{id}` | Retrieves a specific active product using its product ID. | Public |
+| `POST` | `/api/products` | Creates a new product. | Admin |
+| `PUT` | `/api/products/{id}` | Updates an existing product. | Admin |
+| `DELETE` | `/api/products/{id}` | Deletes an existing product. | Admin |
+
+### Reviews API
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/api/reviews` | Retrieves all customer reviews. | Public |
+| `GET` | `/api/reviews/{id}` | Retrieves a specific customer review. | Public |
+| `POST` | `/api/reviews` | Creates a new customer review and validates the selected branch. | Public |
+| `DELETE` | `/api/reviews/{id}` | Deletes an existing customer review. | Admin |
 
 ---------------------
 ## 8. AUTHENTICATION/ADMIN INFORMATION
-(WITHOUT EXPOSING ACTUAL PASSWORDS) 
+Some API endpoints are restricted to authenticated administrators. 
+
+These endpoints use the application's QPETAdmin cookie authentication scheme and require the user to have the Admin role.
+
+_**Public Endpoints**_ <br/>
+The following operations are publicly accessible: <br/>
+•	Viewing branches  <br/>
+•	Viewing products  <br/>
+•	Submitting enquiries  <br/> 
+•	Viewing reviews  <br/>
+•	Submitting reviews <br/>
+
+_**Admin-Only Endpoints**_ <br/>
+Administrator authentication is required for:  <br/>
+•	Viewing all enquiries  <br/>
+•	Viewing individual enquiries  <br/>
+•	Updating enquiry statuses  <br/>
+•	Creating products  <br/>
+•	Updating products  <br/>
+•	Deleting products  <br/>
+•	Deleting reviews
+
+The API does not expose administrator passwords or other sensitive credentials in the repository. 
+
+Administrator accounts are seeded through the application's database seeding process.
+
+For security, actual login credentials have not been stored in or shared through this README.
 
 ---------------------
-
 ## 9. ENVIRONMENTAL VARIABLES REQUIRED 
 
----------------------
 
+---------------------
 ## 10. BRANCHING STRATEGY 
 
----------------------
 
+---------------------
 ## 11. CI/CD EXPLANATION 
 
----------------------
 
+---------------------
 ## 12. HOSTING/DEPLOYMENT EXPLANATION 
 
 ---------------------

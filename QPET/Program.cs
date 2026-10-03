@@ -304,6 +304,47 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+// Provides a basic deployment health check without exposing database connection details.
+app.MapGet(
+    "/health",
+    async (QpetDbContext context) =>
+    {
+        var databaseConnected =
+            false;
+
+        try
+        {
+            databaseConnected =
+                await context.Database
+                    .CanConnectAsync();
+        }
+        catch
+        {
+            databaseConnected =
+                false;
+        }
+
+        return Results.Json(
+            new
+            {
+                status =
+                    databaseConnected
+                        ? "Healthy"
+                        : "Unhealthy",
+
+                database =
+                    databaseConnected
+                        ? "Connected"
+                        : "Unavailable"
+            },
+            statusCode:
+                databaseConnected
+                    ? StatusCodes.Status200OK
+                    : StatusCodes.Status503ServiceUnavailable
+        );
+    }
+);
+
 app.MapControllers();
 
 app.MapStaticAssets();

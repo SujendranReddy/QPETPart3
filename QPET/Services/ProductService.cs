@@ -8,10 +8,14 @@ namespace QPET.Services
     public class ProductService : IProductService
     {
         private readonly QpetDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public ProductService(QpetDbContext context)
+        public ProductService(
+            QpetDbContext context,
+            IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         public async Task<List<Product>> GetProductsAsync(
@@ -234,6 +238,10 @@ namespace QPET.Services
 
             var product =
                 await _context.Products
+                    .Include(
+                        current =>
+                            current.Images
+                    )
                     .FirstOrDefaultAsync(
                         product =>
                             product.ProductId ==
@@ -245,11 +253,88 @@ namespace QPET.Services
                 return false;
             }
 
+            var imageUrls =
+                product.Images
+                    .Select(
+                        image =>
+                            image.ImageUrl
+                    )
+                    .ToList();
+
             _context.Products.Remove(product);
 
             await _context.SaveChangesAsync();
 
+            // Removes uploaded product image files after a product is deleted to prevent orphaned files.
+            foreach (var imageUrl in imageUrls)
+            {
+                DeleteProductImageFile(
+                    imageUrl
+                );
+            }
+
             return true;
+        }
+
+        private void DeleteProductImageFile(
+            string imageUrl)
+        {
+            if (
+                string.IsNullOrWhiteSpace(
+                    imageUrl
+                )
+            )
+            {
+                return;
+            }
+
+            if (
+                !imageUrl.StartsWith(
+                    "/media/images/",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            {
+                return;
+            }
+
+            var fileName =
+                Path.GetFileName(
+                    imageUrl
+                );
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    fileName
+                )
+            )
+            {
+                return;
+            }
+
+            var imageDirectory =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "media",
+                    "images"
+                );
+
+            var physicalPath =
+                Path.Combine(
+                    imageDirectory,
+                    fileName
+                );
+
+            if (
+                System.IO.File.Exists(
+                    physicalPath
+                )
+            )
+            {
+                System.IO.File.Delete(
+                    physicalPath
+                );
+            }
         }
 
         private async Task<bool> IsValidProductSelectionAsync(

@@ -333,8 +333,7 @@ The deployment process also supports safer redeployment by retaining the previou
 The `/health` endpoint is used to verify that the application has started successfully and can communicate with the production database.
 
 **GitHub Actions:** <br/>
-<img width="1247" height="732" alt="image" src="https://github.com/user-attachments/assets/ecec8756-8f2f-43bc-b1b4-9353cf910811" />
-
+<img width="959" height="542" alt="image" src="https://github.com/user-attachments/assets/65c17dc7-4731-418f-a468-a37e8c2361ae" /> <br/>
 Figure 2: Proof of successful GitHub Actions
 
 ---------------------

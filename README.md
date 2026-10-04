@@ -468,6 +468,8 @@ As the hosted website and Admin Dashboard are password protected, the Admin Dash
 
 The hosted application is a separate project environment and does not replace QPet's existing public website or domain.
 
+(Login details were submitted on Arc for lecturer preview, if needed)
+
 ---------------------
 ## 14. DEMONSTRATION VIDEO ON YOUTUBE
 PowerPoint Presentation posted on YouTube:  

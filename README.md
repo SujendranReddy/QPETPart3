@@ -274,7 +274,9 @@ The project uses a GitHub branching strategy to allow team members to work on di
 
 This approach helps prevent unfinished or untested changes from being deployed to the production environment.
 
-[insert image]
+**Different feature branches:** <br/>
+<img width="575" height="509" alt="image" src="https://github.com/user-attachments/assets/a7d743f5-d0f3-49d5-92db-8349a55a28f1" />
+
 Figure 1: Proof of different branches being used
 
 ---------------------
@@ -329,6 +331,11 @@ A dedicated deployment account and protected GitHub repository secrets are used 
 The deployment process also supports safer redeployment by retaining the previous production release. If the new application fails to start or does not pass the production health check, the previous release can be restored.
 
 The `/health` endpoint is used to verify that the application has started successfully and can communicate with the production database.
+
+**GitHub Actions:** <br/>
+<img width="1247" height="732" alt="image" src="https://github.com/user-attachments/assets/ecec8756-8f2f-43bc-b1b4-9353cf910811" />
+
+Figure 2: Proof of successful GitHub Actions
 
 ---------------------
 ## 12. HOSTING/DEPLOYMENT EXPLANATION 

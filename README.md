@@ -29,7 +29,7 @@ The website is focused on providing information and facilitating communication w
 ## 3.	TECHNOLOGY STACK 
 **Frontend:** ASP.NET Core MVC, HTML, CSS, JavaScript  <br/>
 **Backend:** C#, ASP.NET Core, Entity Framework Core <br/>
-**Database:**                                        <br/>
+**Database:** Microsoft SQL Server, Entity Framework Core  <br/>
 **Testing:** Unit testing and integration testing     <br/>
 **Version Control:** Git/ GitHub                       <br/>
 **CI/CD:** GitHub Actions
@@ -121,7 +121,7 @@ If the packages are not restored automatically:
 
 ---------------------
 ### 5.4	CONFIGURE THE DATABASE 
-The application uses a database to store and manage the systems required data.  
+The application uses a database to store and manage the system's required data.  
 
 After cloning the repository and completing the Git LFS setup, the local database must be created and configured before running the application.
 To create or update the local database: 
@@ -243,29 +243,231 @@ For security, actual login credentials have not been stored in or shared through
 ---------------------
 ## 9. ENVIRONMENTAL VARIABLES REQUIRED 
 
+The production application uses environment variables to keep configuration and sensitive information separate from the application source code.
+
+The following environment variables are required for the production environment:
+
+| Variable | Purpose |
+|---|---|
+| `ASPNETCORE_ENVIRONMENT` | Specifies the application environment, such as `Production`. |
+| `ASPNETCORE_URLS` | Defines the internal URL and port on which the ASP.NET Core application listens. |
+| `ConnectionStrings__DefaultConnection` | Provides the connection string used to connect the application to the production SQL Server database. |
+| `AdminSeed__Email` | Defines the administrator email used during the database seeding process. |
+| `AdminSeed__Password` | Defines the administrator password used during the database seeding process. |
+| `Storage__EnquiryAttachmentsPath` | Defines the persistent server directory used to store uploaded enquiry attachments. |
+
+Production values are stored in protected server-side environment configuration and are not committed to GitHub.
+
+Sensitive values, including database credentials, administrator passwords, SSH private keys and deployment credentials, are intentionally excluded from this README.
+
+GitHub repository secrets are also used where sensitive values are required by the CI/CD deployment workflow.
 
 ---------------------
 ## 10. BRANCHING STRATEGY 
 
+The project uses a GitHub branching strategy to allow team members to work on different features without directly affecting the main `master` branch.
+
+* **`master`** – The main stable branch containing the approved version of the project.
+* **Feature branches** – Team members create separate branches when developing or modifying specific features.
+* **Pull Requests** – Completed changes are reviewed and tested before being merged into `master`.
+* **Merging** – Only tested and working changes are merged into `master`.
+
+This approach helps prevent unfinished or untested changes from being deployed to the production environment.
+
+[insert image]
+Figure 1: Proof of different branches being used
 
 ---------------------
 ## 11. CI/CD EXPLANATION 
 
+The project uses **GitHub Actions** to automate the build, testing and production deployment process.
+
+The CI/CD workflow runs when changes are merged into the `master` branch. Pull requests can be built and tested without deploying changes to the production server.
+
+The production deployment process follows these steps:
+
+```
+Checkout Repository
+        |
+        v
+Set Up .NET 10
+        |
+        v
+Restore Dependencies
+        |
+        v
+Build Solution
+        |
+        v
+Run Automated Tests
+        |
+        v
+Publish Linux Release
+        |
+        v
+Package Application
+        |
+        v
+Secure SSH Connection
+        |
+        v
+Upload Release to Server
+        |
+        v
+Deploy Application
+        |
+        v
+Restart qpet.service
+        |
+        v
+Run Production Health Check
+```
+Deployment only continues when the build and automated tests complete successfully.
+
+A dedicated deployment account and protected GitHub repository secrets are used for production deployment rather than storing private credentials directly in the workflow file.
+
+The deployment process also supports safer redeployment by retaining the previous production release. If the new application fails to start or does not pass the production health check, the previous release can be restored.
+
+The `/health` endpoint is used to verify that the application has started successfully and can communicate with the production database.
 
 ---------------------
 ## 12. HOSTING/DEPLOYMENT EXPLANATION 
 
----------------------
+The QPet application is deployed to a **HostAfrica Linux VPS** located in South Africa. A VPS was selected because the application requires a server environment capable of running the ASP.NET Core application, production database, APIs and persistent uploaded files.
 
+The production environment consists of:
+
+- **Ubuntu 22.04 LTS**
+- **.NET 10 ASP.NET Core**
+- **Microsoft SQL Server 2022 Express**
+- **Nginx reverse proxy**
+- **systemd application service**
+- **Let's Encrypt SSL certificate**
+- Persistent storage for product images and enquiry attachments
+
+#### Production Architecture
+
+```
+User Browser
+     |
+   HTTPS
+     |
+     v
+Nginx Reverse Proxy
+     |
+     v
+QPET ASP.NET Core Application
+(.NET 10 / qpet.service)
+     |
+     v
+Microsoft SQL Server
+QPETDatabase
+
+Persistent Storage:
+- Product Images
+- Enquiry Attachments
+```
+
+Nginx handles public HTTPS traffic and forwards requests to the ASP.NET Core application, which runs internally on `127.0.0.1:5000`. SQL Server is not directly exposed to the public Internet.
+
+The application database is named `QPETDatabase` and was created using the project's Entity Framework Core migrations. Production database operations were verified through the live website and API, including reading and writing products, branches, reviews and enquiries.
+
+#### HTTPS and Security
+
+The hosted application uses HTTPS through a **Let's Encrypt SSL certificate**. Nginx manages the external HTTPS connection and forwards requests to the application.
+
+The server firewall allows only the required services:
+
+```
+22   SSH
+80   HTTP
+443  HTTPS
+```
+
+#### Persistent Storage
+
+Uploaded files are stored outside the application deployment directory so that they are not lost when a new application version is deployed.
+
+The following persistent directories are used:
+
+```text
+/var/lib/qpet/product-images
+/var/lib/qpet/enquiry-attachments
+```
+
+These directories are separate from `/opt/qpet`, which contains the deployed application files.
+
+#### Application Service
+
+The ASP.NET Core application runs as a Linux `systemd` service named `qpet.service`.
+
+The production server was verified to have the required services running:
+
+* `qpet.service` – QPet application
+* `nginx` – Web server and reverse proxy
+* `mssql-server` – Production database server
+
+#### Database Backup
+
+A SQL Server backup of the production `QPETDatabase` was created and verified using `RESTORE VERIFYONLY` to confirm that the backup file could be successfully read.
+
+#### Production Health Check
+
+The application provides a `/health` endpoint that is used after deployment to confirm that the application has started successfully and can communicate with the production database.
+
+A successful health check returns:
+
+```json
+{
+  "status": "Healthy",
+  "database": "Connected"
+}
+```
+
+#### Final Production Verification
+
+After deployment, the following functionality was verified:
+
+* Public website loads successfully over HTTPS.
+* Administrator authentication works correctly.
+* Products, branches and reviews can be retrieved from the database.
+* Enquiries can be submitted and managed by administrators.
+* Product management operations work correctly.
+* Uploaded files remain available after redeployment.
+* API endpoints respond correctly.
+* HTTPS and the SSL certificate function correctly.
+* The application restarts successfully after deployment.
+* The production database remains accessible to the application.
+
+
+---------------------
 ## 13. HOSTED APPLICATION URL 
 
----------------------
+The QPet application is hosted in a controlled production/demo environment.
 
+**Main Website:**
+`  `
+
+**Health Check:**
+`   `
+
+**Products API:**
+`  `
+
+**Branches API:**
+`  `
+
+**Reviews API:**
+`  `
+
+The hosted application is a separate project environment and does not replace QPet's existing public website or domain.
+
+---------------------
 ## 14. YOUTUBE VIDEO LINK
 
 ## 15. KNOWN LIMITATIONS 
 ### Product Images
-Product images have not yet been fully implemented, as the development team is still awaiting the required images from QPET. This functionality is expected to be implemented before the final project submission.
+Product image upload and storage functionality has been implemented. However, the development team is still awaiting the final approved product images from QPET. The available images may therefore be replaced with the client's final images before the project is handed over.
 ### About Us Content
 The About Us section currently contains general company information. The final, more detailed content is still pending from QPET and will be updated before the final project submission.
 

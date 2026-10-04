@@ -452,25 +452,26 @@ After deployment, the following functionality was verified:
 
 The QPet application is hosted in a controlled production/demo environment.
 
-**Main Website:**
-`  `
+**Hosted Website:**
+https://102-209-117-83.sslip.io/
 
-**Health Check:**
-`   `
+**Admin Portal:**
+https://102-209-117-83.sslip.io/Admin/Login
 
-**Products API:**
-`  `
+**Health Check Endpoint:**
+https://102-209-117-83.sslip.io/health
 
-**Branches API:**
-`  `
+The hosted website is password protected and requires the provided preview credentials to access the application (for testing purposes). Administrator access to the Admin Portal requires separate QPet administrator credentials.
 
-**Reviews API:**
-`  `
+**Login credentials are not included in this README for security reasons and are provided separately where required.**
+
+As the hosted website and Admin Dashboard are password protected, the Admin Dashboard and its functionality are demonstrated in the project video. **Please refer to the YouTube Video Link in Section 14 to view the website and administrator functionality in action.**
 
 The hosted application is a separate project environment and does not replace QPet's existing public website or domain.
 
 ---------------------
 ## 14. YOUTUBE VIDEO LINK
+PowerPoint Presentation posted on YouTube: 
 
 ## 15. KNOWN LIMITATIONS 
 ### Product Images

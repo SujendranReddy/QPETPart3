@@ -471,7 +471,10 @@ The hosted application is a separate project environment and does not replace QP
 
 ---------------------
 ## 14. YOUTUBE VIDEO LINK
-PowerPoint Presentation posted on YouTube: 
+PowerPoint Presentation posted on YouTube:  
+
+[![Watch the video](https://img.youtube.com/vi/lHch9V8LOxA/0.jpg)](https://youtu.be/lHch9V8LOxA)
+
 
 ## 15. KNOWN LIMITATIONS 
 ### Product Images

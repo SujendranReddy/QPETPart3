@@ -289,40 +289,18 @@ The CI/CD workflow runs when changes are merged into the `master` branch. Pull r
 The production deployment process follows these steps:
 
 ```
-Checkout Repository
-        |
-        v
-Set Up .NET 10
-        |
-        v
-Restore Dependencies
-        |
-        v
-Build Solution
-        |
-        v
-Run Automated Tests
-        |
-        v
-Publish Linux Release
-        |
-        v
-Package Application
-        |
-        v
-Secure SSH Connection
-        |
-        v
-Upload Release to Server
-        |
-        v
-Deploy Application
-        |
-        v
-Restart qpet.service
-        |
-        v
-Run Production Health Check
+1. Checkout Repository   
+2. Set Up .NET 10   
+3. Restore Dependencies   
+4. Build Solution     
+5. Run Automated Tests
+6. Publish Linux Release
+7. Package Application
+8. Secure SSH Connection
+9. Upload Release to Server
+10. Deploy Application
+11. Restart qpet.service
+12. Run Production Health Check
 ```
 Deployment only continues when the build and automated tests complete successfully.
 
@@ -353,26 +331,8 @@ The production environment consists of:
 
 #### Production Architecture
 
-```
-User Browser
-     |
-   HTTPS
-     |
-     v
-Nginx Reverse Proxy
-     |
-     v
-QPET ASP.NET Core Application
-(.NET 10 / qpet.service)
-     |
-     v
-Microsoft SQL Server
-QPETDatabase
-
-Persistent Storage:
-- Product Images
-- Enquiry Attachments
-```
+<img width="178" height="300" alt="Screenshot 2026-10-05 120539" src="https://github.com/user-attachments/assets/90c5edfe-9d60-4dc9-b51f-be89f55dfe9b" />
+<br/>
 
 Nginx handles public HTTPS traffic and forwards requests to the ASP.NET Core application, which runs internally on `127.0.0.1:5000`. SQL Server is not directly exposed to the public Internet.
 

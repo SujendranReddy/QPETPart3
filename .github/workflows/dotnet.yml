@@ -1,5 +1,4 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# This workflow will build, test and deploy the QPET .NET application
 
 name: .NET
 
@@ -16,14 +15,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 10.0.x
+
     - name: Restore dependencies
       run: dotnet restore QPET.sln
+
     - name: Build
       run: dotnet build QPET.sln --no-restore
+
     - name: Test
       run: dotnet test QPET.sln --no-build --verbosity normal
 
@@ -38,7 +41,36 @@ jobs:
       cancel-in-progress: false
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository with Git LFS
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+
+    - name: Verify production media files
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        echo "Checking Git LFS video files..."
+
+        for file in QPET/wwwroot/media/videos/*.mp4; do
+          size=$(stat -c%s "$file")
+          echo "$file -> $size bytes"
+
+          if [ "$size" -lt 1000000 ]; then
+            echo "::error::$file is too small and may still be a Git LFS pointer."
+            exit 1
+          fi
+        done
+
+        echo "Checking QPET logo..."
+
+        if [ ! -s "QPET/wwwroot/media/images/qpet-logo.png" ]; then
+          echo "::error::QPET logo is missing or empty."
+          exit 1
+        fi
+
+        echo "Production media verification passed."
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -63,7 +95,7 @@ jobs:
         printf '%s\n' "$QPET_SSH_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
         chmod 600 ~/.ssh/known_hosts
 
-    - name: Upload deployment package
+        - name: Upload deployment package
       env:
         QPET_DEPLOY_HOST: ${{ secrets.QPET_DEPLOY_HOST }}
         QPET_DEPLOY_USER: ${{ secrets.QPET_DEPLOY_USER }}
@@ -74,15 +106,3 @@ jobs:
           -o StrictHostKeyChecking=yes \
           qpet-publish.tar.gz \
           "$QPET_DEPLOY_USER@$QPET_DEPLOY_HOST:/home/$QPET_DEPLOY_USER/qpet-publish.tar.gz"
-
-    - name: Deploy application
-      env:
-        QPET_DEPLOY_HOST: ${{ secrets.QPET_DEPLOY_HOST }}
-        QPET_DEPLOY_USER: ${{ secrets.QPET_DEPLOY_USER }}
-      run: |
-        ssh \
-          -i ~/.ssh/qpet_github_deploy \
-          -o IdentitiesOnly=yes \
-          -o StrictHostKeyChecking=yes \
-          "$QPET_DEPLOY_USER@$QPET_DEPLOY_HOST" \
-          "sudo /usr/local/sbin/qpet-deploy"

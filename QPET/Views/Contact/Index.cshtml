@@ -12,447 +12,654 @@
         ViewBag.EnquiryReference as string;
 }
 
-<section class="contact-hero">
+<div class="qct-page">
 
-    <video class="contact-hero-video"
-           autoplay
-           muted
-           loop
-           playsinline
-           preload="metadata"
-           poster="@Url.Content("~/media/images/preforms-production.jpg")">
+    <section class="qct-hero">
+        <video class="qct-hero-video"
+               autoplay
+               muted
+               loop
+               playsinline
+               preload="metadata"
+               poster="@Url.Content("~/media/images/preforms-production.jpg")"
+               aria-hidden="true">
 
-        <source src="@Url.Content("~/media/videos/product-components.mp4")"
-                type="video/mp4" />
+            <source src="@Url.Content("~/media/videos/product-components.mp4")"
+                    type="video/mp4" />
+        </video>
 
-    </video>
+        <div class="qct-hero-overlay"></div>
 
-    <div class="contact-hero-overlay"></div>
+        <div class="qct-container qct-hero-content">
 
-    <div class="container contact-hero-content">
-
-        <span class="eyebrow">
-            Start a conversation
-        </span>
-
-        <h1>
-            Let’s build packaging around
-
-            <span class="text-gradient">
-                your product.
-            </span>
-        </h1>
-
-        <p>
-            Tell QPET about your packaging requirements,
-            preferred branch and the type of assistance you need.
-        </p>
-
-    </div>
-
-</section>
-
-<section class="section contact-main-section">
-
-    <div class="container contact-page-layout">
-
-        <aside class="contact-details-card">
-
-            <span class="contact-card-number">
-                01
+            <span class="qct-eyebrow qct-eyebrow-light">
+                GET IN TOUCH
             </span>
 
-            <span class="section-kicker">
-                Contact information
-            </span>
+            <h1>
+                Let's build packaging around
+                <span>your product.</span>
+            </h1>
 
-            <h2>
-                Speak to the QPET team.
-            </h2>
-
-            <p class="contact-details-introduction">
-                Submit an enquiry and select the QPET branch
-                most relevant to your request.
+            <p>
+                Whether you're exploring our product range, requesting
+                a quotation or looking for packaging advice, our team
+                is here to help.
             </p>
 
-            <div class="contact-details-list">
+            <a href="#contactBranches" class="qct-button">
+                Find your nearest branch
+                <span aria-hidden="true">↓</span>
+            </a>
 
-                <article class="contact-detail-item">
+        </div>
+    </section>
 
-                    <div class="contact-detail-icon">
-                        ✦
-                    </div>
+    <section class="qct-section qct-branches" id="contactBranches">
 
-                    <div>
+        <div class="qct-container">
 
-                        <span>
-                            Branches
-                        </span>
+            <div class="qct-section-heading">
 
-                        <strong>
-                            Durban, Johannesburg & Cape Town
-                        </strong>
+                <span class="qct-eyebrow">
+                    CONTACT INFORMATION
+                </span>
 
-                    </div>
-
-                </article>
-
-                <article class="contact-detail-item">
-
-                    <div class="contact-detail-icon">
-                        @@
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Email
-                        </span>
-
-                        <strong>
-                            info@qpet.co.za
-                        </strong>
-
-                    </div>
-
-                </article>
-
-                <article class="contact-detail-item">
-
-                    <div class="contact-detail-icon">
-                        ☎
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Telephone
-                        </span>
-
-                        <strong>
-                            +27 00 000 0000
-                        </strong>
-
-                    </div>
-
-                </article>
-
-                <article class="contact-detail-item">
-
-                    <div class="contact-detail-icon">
-                        ◷
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Business hours
-                        </span>
-
-                        <strong>
-                            Monday–Friday, 08:00–16:30
-                        </strong>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-            <div class="contact-information-note">
-
-                <strong>
-                    Helpful information to include
-                </strong>
+                <h2>
+                    Connect with our
+                    <span class="qct-gradient">local teams.</span>
+                </h2>
 
                 <p>
-                    Product type, required capacity,
-                    neck finish, expected quantity and
-                    intended application.
+                    With a presence across South Africa, QPET is ready
+                    to assist with your packaging requirements.
+                    Contact the branch most convenient for you.
                 </p>
 
             </div>
 
-        </aside>
+            <div class="qct-branch-grid">
 
-        <div class="contact-form-card">
+                <article class="qct-branch-card">
 
-            <span class="section-kicker">
-                Product enquiry
-            </span>
-
-            <h2>
-                Tell us what you need.
-            </h2>
-
-            <p class="contact-form-introduction">
-                Complete the form and a member of the QPET team
-                can review your packaging requirements.
-            </p>
-
-            @if (string.IsNullOrWhiteSpace(enquiryReference))
-            {
-                <form asp-controller="Contact"
-                      asp-action="SubmitEnquiry"
-                      method="post"
-                      enctype="multipart/form-data"
-                      class="contact-form">
-
-                    <div class="contact-form-row">
-
-                        <div class="contact-form-field">
-
-                            <label asp-for="FullName">
-                                Full Name
-                            </label>
-
-                            <input asp-for="FullName"
-                                   class="contact-control"
-                                   placeholder="Your full name" />
-
-                            <span asp-validation-for="FullName"
-                                  class="field-validation">
-                            </span>
-
-                        </div>
-
-                        <div class="contact-form-field">
-
-                            <label asp-for="EmailAddress">
-                                Email Address
-                            </label>
-
-                            <input asp-for="EmailAddress"
-                                   class="contact-control"
-                                   placeholder="name@company.co.za" />
-
-                            <span asp-validation-for="EmailAddress"
-                                  class="field-validation">
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="contact-form-row">
-
-                        <div class="contact-form-field">
-
-                            <label asp-for="PhoneNumber">
-                                Phone Number
-                            </label>
-
-                            <input asp-for="PhoneNumber"
-                                   class="contact-control"
-                                   placeholder="+27 00 000 0000" />
-
-                            <span asp-validation-for="PhoneNumber"
-                                  class="field-validation">
-                            </span>
-
-                        </div>
-
-                        <div class="contact-form-field">
-
-                            <label asp-for="BranchId">
-                                QPET Branch
-                            </label>
-
-                            <select asp-for="BranchId"
-                                    class="contact-control">
-
-                                <option value="0">
-                                    Select a branch
-                                </option>
-
-                                @foreach (var branch in branches)
-                                {
-                                    <option value="@branch.BranchId">
-
-                                        @branch.BranchName
-
-                                    </option>
-                                }
-
-                            </select>
-
-                            <span asp-validation-for="BranchId"
-                                  class="field-validation">
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="contact-form-field">
-
-                        <label asp-for="Subject">
-                            Subject
-                        </label>
-
-                        <input asp-for="Subject"
-                               class="contact-control"
-                               placeholder="What can QPET assist with?" />
-
-                        <span asp-validation-for="Subject"
-                              class="field-validation">
+                    <div class="qct-branch-top">
+                        <span class="qct-region">
+                            KWAZULU-NATAL
                         </span>
 
+                        <span class="qct-branch-badge">
+                            HEAD OFFICE
+                        </span>
                     </div>
 
-                    <div class="contact-form-field">
+                    <h3>Pietermaritzburg</h3>
 
-                        <label asp-for="Message">
-                            Message
-                        </label>
+                    <p class="qct-branch-description">
+                        Head office and main production facility
+                    </p>
 
-                        <textarea asp-for="Message"
-                                  class="contact-control contact-textarea"
-                                  placeholder="Tell us about your product type, required capacity, quantity and packaging requirements.">
-                        </textarea>
+                    <input type="checkbox"
+                           id="qct-expand-pmb"
+                           class="qct-branch-toggle" />
 
-                        <span asp-validation-for="Message"
-                              class="field-validation">
-                        </span>
+                    <label for="qct-expand-pmb"
+                           class="qct-mobile-toggle">
+                        <span class="qct-toggle-open">View contact details</span>
+                        <span class="qct-toggle-close">Hide contact details</span>
+                        <span class="qct-toggle-arrow" aria-hidden="true">⌄</span>
+                    </label>
 
-                    </div>
 
-                    <div class="contact-form-field">
+                    <div class="qct-branch-divider"></div>
 
-                        <label asp-for="Attachments">
-                            Attachments
-                        </label>
+                    <div class="qct-detail-group">
 
-                        <input asp-for="Attachments"
-                               type="file"
-                               class="contact-control"
-                               multiple
-                               accept=".pdf,.jpg,.jpeg,.png" />
-
-                        <small class="contact-field-note">
-                            Optional. Attach PDF, JPG or PNG files
-                            that may help explain your requirements.
-                        </small>
-
-                        <span asp-validation-for="Attachments"
-                              class="field-validation">
-                        </span>
-
-                    </div>
-
-                    <button type="submit"
-                            class="btn btn-primary contact-submit-button">
-
-                        Submit enquiry
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-
-                    </button>
-
-                </form>
-            }
-            else
-            {
-                <div id="enquiryConfirmation">
-
-                    <div class="contact-success-message"
-                         role="status">
-
-                        <span>
-                            ✓
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                Enquiry submitted successfully
-                            </strong>
-
-                            <p>
-                                Thank you. Your enquiry has been
-                                received by QPET.
-                            </p>
-
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">⌖</span>
+                            <strong>Physical Address</strong>
                         </div>
 
-                    </div>
-
-                    <div class="contact-information-note">
-
-                        <strong>
-                            Reference
-                        </strong>
-
-                        <p>
-                            @enquiryReference
-                        </p>
+                        <address>
+                            1 Du Toit Viljoen Rd<br />
+                            Willowton<br />
+                            Pietermaritzburg<br />
+                            KwaZulu-Natal<br />
+                            3201
+                        </address>
 
                     </div>
 
-                    <div class="contact-information-note">
+                    <div class="qct-detail-group">
 
-                        <strong>
-                            Current Status
-                        </strong>
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">☎</span>
+                            <strong>Telephone</strong>
+                        </div>
 
-                        <p>
-                            New
-                        </p>
+                        <a href="tel:+27333873212"
+                           class="qct-contact-link">
+                            033 387 3212/3
+                        </a>
 
                     </div>
 
-                    <a asp-controller="Contact"
-                       asp-action="Index"
-                       class="btn btn-secondary">
+                    <div class="qct-detail-group qct-email-group">
 
-                        Submit another enquiry
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">✉</span>
+                            <strong>Email Addresses</strong>
+                        </div>
 
+                        <a href="mailto:salespmb@qpet.co.za"
+                           class="qct-contact-link">
+                            salespmb@qpet.co.za
+                        </a>
+
+                        <a href="mailto:info@qpet.co.za"
+                           class="qct-contact-link">
+                            info@qpet.co.za
+                        </a>
+
+                        <a href="mailto:arshud@qpet.co.za"
+                           class="qct-contact-link">
+                            arshud@qpet.co.za
+                        </a>
+
+                    </div>
+
+                    <a href="mailto:salespmb@qpet.co.za"
+                       class="qct-branch-action">
+                        Email Pietermaritzburg
+                        <span aria-hidden="true">↗</span>
                     </a>
 
+                </article>
+
+                <article class="qct-branch-card">
+
+                    <div class="qct-branch-top">
+                        <span class="qct-region">
+                            GAUTENG
+                        </span>
+                    </div>
+
+                    <h3>Johannesburg</h3>
+
+                    <p class="qct-branch-description">
+                        Isando production facility
+                    </p>
+
+                    
+                    <input type="checkbox"
+                           id="qct-expand-jhb"
+                           class="qct-branch-toggle" />
+
+                    <label for="qct-expand-jhb"
+                           class="qct-mobile-toggle">
+                        <span class="qct-toggle-open">View contact details</span>
+                        <span class="qct-toggle-close">Hide contact details</span>
+                        <span class="qct-toggle-arrow" aria-hidden="true">⌄</span>
+                    </label>
+
+
+                    <div class="qct-branch-divider"></div>
+
+                    <div class="qct-detail-group">
+
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">⌖</span>
+                            <strong>Physical Address</strong>
+                        </div>
+
+                        <address>
+                            17 Foundry Street<br />
+                            Isando<br />
+                            Johannesburg<br />
+                            1600
+                        </address>
+
+                    </div>
+
+                    <div class="qct-detail-group">
+
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">☎</span>
+                            <strong>Telephone &amp; Mobile</strong>
+                        </div>
+
+                        <a href="tel:+27113921356"
+                           class="qct-contact-link">
+                            011 392 1356
+                        </a>
+
+                        <a href="tel:+27717867345"
+                           class="qct-contact-link">
+                            Mobile: 071 786 7345
+                        </a>
+
+                    </div>
+
+                    <div class="qct-detail-group qct-email-group">
+
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">✉</span>
+                            <strong>Email Addresses</strong>
+                        </div>
+
+                        <a href="mailto:isando@qpet.co.za"
+                           class="qct-contact-link">
+                            isando@qpet.co.za
+                        </a>
+
+                        <a href="mailto:sales.jhb@qpet.co.za"
+                           class="qct-contact-link">
+                            sales.jhb@qpet.co.za
+                        </a>
+
+                        <a href="mailto:isando.admin@qpet.co.za"
+                           class="qct-contact-link">
+                            isando.admin@qpet.co.za
+                        </a>
+
+                    </div>
+
+                    <a href="mailto:isando@qpet.co.za"
+                       class="qct-branch-action">
+                        Email Johannesburg
+                        <span aria-hidden="true">↗</span>
+                    </a>
+
+                </article>
+
+                <article class="qct-branch-card">
+
+                    <div class="qct-branch-top">
+                        <span class="qct-region">
+                            WESTERN CAPE
+                        </span>
+                    </div>
+
+                    <h3>Cape Town</h3>
+
+                    <p class="qct-branch-description">
+                        Maitland distribution facility
+                    </p>
+
+                    
+                    <input type="checkbox"
+                           id="qct-expand-cpt"
+                           class="qct-branch-toggle" />
+
+                    <label for="qct-expand-cpt"
+                           class="qct-mobile-toggle">
+                        <span class="qct-toggle-open">View contact details</span>
+                        <span class="qct-toggle-close">Hide contact details</span>
+                        <span class="qct-toggle-arrow" aria-hidden="true">⌄</span>
+                    </label>
+
+                    <div class="qct-branch-divider"></div>
+
+                    <div class="qct-detail-group">
+
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">⌖</span>
+                            <strong>Physical Address</strong>
+                        </div>
+
+                        <address>
+                            10 Product Street<br />
+                            Ndabeni, Maitland<br />
+                            Cape Town<br />
+                            7405
+                        </address>
+
+                    </div>
+
+                    <div class="qct-detail-group">
+
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">☎</span>
+                            <strong>Telephone &amp; Mobile</strong>
+                        </div>
+
+                        <a href="tel:+27215116022"
+                           class="qct-contact-link">
+                            021 511 6022
+                        </a>
+
+                        <a href="tel:+27828031786"
+                           class="qct-contact-link">
+                            Mobile: 082 803 1786
+                        </a>
+
+                    </div>
+
+                    <div class="qct-detail-group qct-email-group">
+
+                        <div class="qct-detail-heading">
+                            <span class="qct-detail-icon" aria-hidden="true">✉</span>
+                            <strong>Email Addresses</strong>
+                        </div>
+
+                        <a href="mailto:maitland@qpet.co.za"
+                           class="qct-contact-link">
+                            maitland@qpet.co.za
+                        </a>
+
+                        <a href="mailto:cape@qpet.co.za"
+                           class="qct-contact-link">
+                            cape@qpet.co.za
+                        </a>
+
+                    </div>
+
+                    <a href="mailto:maitland@qpet.co.za"
+                       class="qct-branch-action">
+                        Email Cape Town
+                        <span aria-hidden="true">↗</span>
+                    </a>
+
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="qct-section qct-enquiry-section" id="sendEnquiry">
+
+        <div class="qct-container qct-enquiry-layout">
+
+            <div class="qct-enquiry-intro">
+
+                <span class="qct-eyebrow">
+                    PRODUCT ENQUIRIES
+                </span>
+
+                <h2>
+                    Tell us
+                    <span class="qct-gradient">what you need.</span>
+                </h2>
+
+                <p>
+                    Looking for the right PET packaging solution?
+                    Complete the enquiry form and let our team
+                    know how we can assist.
+                </p>
+
+                <div class="qct-enquiry-help">
+
+                    <span class="qct-help-icon" aria-hidden="true">✦</span>
+
+                    <h3>Helpful information to include</h3>
+
+                    <p>
+                        Providing a few product details helps our
+                        team understand your requirements.
+                    </p>
+
+                    <ul>
+                        <li>Product type and intended application</li>
+                        <li>Required capacity or bottle size</li>
+                        <li>Preferred neck finish</li>
+                        <li>Expected order quantity</li>
+                        <li>Any special packaging requirements</li>
+                    </ul>
+
                 </div>
-            }
+
+            </div>
+
+            <div class="qct-form-card">
+
+                @if (string.IsNullOrWhiteSpace(enquiryReference))
+                {
+                    <div class="qct-form-heading">
+                        <span class="qct-eyebrow">
+                            SEND AN ENQUIRY
+                        </span>
+
+                        <h3>How can we help?</h3>
+
+                        <p>
+                            Fill in your details below and select
+                            your preferred QPET branch.
+                        </p>
+                    </div>
+
+                    <form asp-controller="Contact"
+                          asp-action="SubmitEnquiry"
+                          method="post"
+                          enctype="multipart/form-data"
+                          class="qct-form">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="qct-validation-summary">
+                        </div>
+
+                        <div class="qct-form-row">
+
+                            <div class="qct-field">
+
+                                <label asp-for="FullName">
+                                    Full Name
+                                </label>
+
+                                <input asp-for="FullName"
+                                       class="qct-control"
+                                       placeholder="Your full name"
+                                       autocomplete="name" />
+
+                                <span asp-validation-for="FullName"
+                                      class="qct-field-validation">
+                                </span>
+
+                            </div>
+
+                            <div class="qct-field">
+
+                                <label asp-for="EmailAddress">
+                                    Email Address
+                                </label>
+
+                                <input asp-for="EmailAddress"
+                                       class="qct-control"
+                                       placeholder="name@company.co.za"
+                                       autocomplete="email" />
+
+                                <span asp-validation-for="EmailAddress"
+                                      class="qct-field-validation">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="qct-form-row">
+
+                            <div class="qct-field">
+
+                                <label asp-for="PhoneNumber">
+                                    Phone Number
+                                </label>
+
+                                <input asp-for="PhoneNumber"
+                                       class="qct-control"
+                                       placeholder="Your contact number"
+                                       autocomplete="tel" />
+
+                                <span asp-validation-for="PhoneNumber"
+                                      class="qct-field-validation">
+                                </span>
+
+                            </div>
+
+                            <div class="qct-field">
+
+                                <label asp-for="BranchId">
+                                    QPET Branch
+                                </label>
+
+                                <select asp-for="BranchId"
+                                        class="qct-control">
+
+                                    <option value="0">
+                                        Select a branch
+                                    </option>
+
+                                    @foreach (var branch in branches)
+                                    {
+                                        <option value="@branch.BranchId">
+                                            @branch.BranchName
+                                        </option>
+                                    }
+
+                                </select>
+
+                                <span asp-validation-for="BranchId"
+                                      class="qct-field-validation">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="qct-field">
+
+                            <label asp-for="Subject">
+                                Subject
+                            </label>
+
+                            <input asp-for="Subject"
+                                   class="qct-control"
+                                   placeholder="What can QPET assist with?" />
+
+                            <span asp-validation-for="Subject"
+                                  class="qct-field-validation">
+                            </span>
+
+                        </div>
+
+                        <div class="qct-field">
+
+                            <label asp-for="Message">
+                                Message
+                            </label>
+
+                            <textarea asp-for="Message"
+                                      class="qct-control qct-textarea"
+                                      placeholder="Tell us about your packaging requirements.">
+                            </textarea>
+
+                            <span asp-validation-for="Message"
+                                  class="qct-field-validation">
+                            </span>
+
+                        </div>
+
+                        <div class="qct-field">
+
+                            <label asp-for="Attachments">
+                                Attachments
+                            </label>
+
+                            <input asp-for="Attachments"
+                                   type="file"
+                                   multiple
+                                   accept=".pdf,.jpg,.jpeg,.png"
+                                   class="qct-control qct-file-control" />
+
+                            <small class="qct-field-note">
+                                Optional. Upload PDF, JPG or PNG files
+                                to help explain your requirements.
+                            </small>
+
+                            <span asp-validation-for="Attachments"
+                                  class="qct-field-validation">
+                            </span>
+
+                        </div>
+
+                        <button type="submit"
+                                class="qct-button qct-submit">
+                            Submit enquiry
+                            <span aria-hidden="true">→</span>
+                        </button>
+
+                    </form>
+                }
+                else
+                {
+                    <div id="enquiryConfirmation"
+                         class="qct-confirmation">
+
+                        <div class="qct-success-icon"
+                             aria-hidden="true">
+                            ✓
+                        </div>
+
+                        <h3>Enquiry submitted successfully!</h3>
+
+                        <p>
+                            Thank you for contacting QPET.
+                            Your enquiry has been received.
+                        </p>
+
+                        <div class="qct-confirmation-details">
+
+                            <div>
+                                <span>Enquiry Reference</span>
+                                <strong>@enquiryReference</strong>
+                            </div>
+
+                            <div>
+                                <span>Current Status</span>
+                                <strong>New</strong>
+                            </div>
+
+                        </div>
+
+                        <a asp-controller="Contact"
+                           asp-action="Index"
+                           class="qct-button">
+                            Submit another enquiry
+                            <span aria-hidden="true">→</span>
+                        </a>
+
+                    </div>
+                }
+
+            </div>
 
         </div>
+    </section>
 
-    </div>
+    <section class="qct-bottom-banner">
 
-</section>
+        <div class="qct-container qct-bottom-content">
 
-<section class="contact-bottom-banner">
+            <div>
+                <span class="qct-eyebrow qct-eyebrow-light">
+                    EXPLORE OUR RANGE
+                </span>
 
-    <div class="container contact-bottom-content">
+                <h2>
+                    Still exploring your packaging options?
+                </h2>
 
-        <div>
+                <p>
+                    Browse our PET preforms, bottles, jars and
+                    closures to find what your business needs.
+                </p>
+            </div>
 
-            <span class="eyebrow">
-                Explore the range
-            </span>
-
-            <h2>
-                Still deciding which packaging product you need?
-            </h2>
-
-            <p>
-                Browse the QPET product catalogue before
-                submitting your enquiry.
-            </p>
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="qct-button qct-button-light">
+                Explore our products
+                <span aria-hidden="true">→</span>
+            </a>
 
         </div>
+    </section>
 
-        <a asp-controller="Products"
-           asp-action="Index"
-           class="btn btn-light">
-
-            View products
-
-            <span aria-hidden="true">
-                →
-            </span>
-
-        </a>
-
-    </div>
-
-</section>
+</div>

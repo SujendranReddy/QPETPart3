@@ -3,3 +3,5 @@ QPET/Data/EnquiryAttachments/
 **/bin/
 **/obj/
 *.csproj.user
+
+/publish-check/

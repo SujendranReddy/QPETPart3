@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     string currentController =
         ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
 
@@ -39,23 +40,15 @@
 
             <a asp-controller="Home"
                asp-action="Index"
-               class="brand">
+               class="brand brand-logo-link"
+               aria-label="QPET Home">
 
-                <div class="brand-mark">
-                    Q
-                </div>
-
-                <div class="brand-copy">
-
-                    <span class="brand-title">
-                        QPET
-                    </span>
-
-                    <span class="brand-subtitle">
-                        LIQUID PACKAGING
-                    </span>
-
-                </div>
+                <img src="~/media/images/qpet-logo.png"
+                     asp-append-version="true"
+                     alt="QPET"
+                     class="qpet-logo qpet-header-logo"
+                     width="166"
+                     height="85" />
 
             </a>
 
@@ -153,11 +146,21 @@
 
         <div class="container footer-content">
 
-            <div>
+            <div class="qpet-footer-brand">
 
-                <strong>
-                    QPET
-                </strong>
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="qpet-footer-logo-link"
+                   aria-label="QPET Home">
+
+                    <img src="~/media/images/qpet-logo.png"
+                         asp-append-version="true"
+                         alt="QPET"
+                         class="qpet-logo qpet-footer-logo"
+                         width="166"
+                         height="85" />
+
+                </a>
 
                 <p>
                     Professional PET packaging solutions
@@ -166,7 +169,7 @@
 
             </div>
 
-            <div>
+            <div class="qpet-footer-copyright">
 
                 <p>
                     &copy; @DateTime.Now.Year QPET.

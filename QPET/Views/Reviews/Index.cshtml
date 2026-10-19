@@ -1,335 +1,329 @@
-﻿@model QPET.Models.ReviewsPageViewModel
+﻿
+@model QPET.Models.ReviewsPageViewModel
 
 @{
     ViewData["Title"] = "Reviews";
 }
 
-<section class="reviews-hero">
+<div class="qrv-page">
 
-    <div class="reviews-hero-background">
-
+    <section class="qrv-hero">
         <img src="@Url.Content("~/media/images/preforms-production.jpg")"
-             alt="QPET PET packaging manufacturing" />
+             alt=""
+             class="qrv-hero-image"
+             aria-hidden="true" />
 
-    </div>
-
-    <div class="reviews-hero-overlay"></div>
-    <div class="reviews-hero-grid"></div>
-
-    <div class="container reviews-hero-content">
-
-        <span class="eyebrow">
-            Customer experiences
-        </span>
-
-        <h1>
-            Feedback that builds
-
-            <span class="text-gradient">
-                confidence.
+        <div class="qrv-container qrv-hero-content">
+            <span class="qrv-eyebrow qrv-eyebrow-light">
+                CUSTOMER EXPERIENCES
             </span>
-        </h1>
 
-        <p>
-            Read customer experiences with QPET or share feedback
-            about the products, service and support you received.
-        </p>
+            <h1>
+                Feedback that builds
+                <span>confidence.</span>
+            </h1>
 
-    </div>
+            <p>
+                Discover what customers have to say about QPET's
+                packaging, service and support, or share your
+                own experience with our team.
+            </p>
 
-</section>
+            <a href="#shareReview" class="qrv-hero-link">
+                Share your experience
+                <span aria-hidden="true">↓</span>
+            </a>
+        </div>
+    </section>
 
-<section class="section reviews-main-section">
+    <section class="qrv-main">
+        <div class="qrv-container">
 
-    <div class="container reviews-layout">
+            <div class="qrv-layout">
 
-        <div class="reviews-list-column">
+                <div class="qrv-reviews-column">
 
-            <div class="reviews-content-heading">
+                    <div class="qrv-section-heading">
+                        <span class="qrv-eyebrow">
+                            CUSTOMER FEEDBACK
+                        </span>
 
-                <span class="eyebrow">
-                    Customer feedback
-                </span>
+                        <h2>
+                            What our customers
+                            <span class="qrv-gradient">are saying.</span>
+                        </h2>
 
-                <h2>
-                    What customers say about
+                        <p>
+                            Every review helps us understand what matters
+                            most to the businesses we serve.
+                        </p>
 
-                    <span class="text-gradient">
-                        QPET.
-                    </span>
-                </h2>
+                        <span class="qrv-count">
+                            @Model.Reviews.Count
+                            @(Model.Reviews.Count == 1
+                                ? "customer review"
+                                : "customer reviews")
+                        </span>
+                    </div>
 
-                <p>
-                    Read feedback from customers about their
-                    experience with QPET products, service and support.
-                </p>
-
-                <span class="review-count-label">
-
-                    @Model.Reviews.Count
-                    @(Model.Reviews.Count == 1
-                        ? "customer review"
-                        : "customer reviews")
-
-                </span>
-
-            </div>
-
-            @if (Model.Reviews.Any())
-            {
-                <div class="public-review-grid">
-
-                    @foreach (var review in Model.Reviews)
+                    @if (Model.Reviews.Any())
                     {
-                        var branch =
-                            Model.Branches.FirstOrDefault(
-                                branch =>
-                                    branch.BranchId ==
-                                    review.BranchId
-                            );
+                        <div class="qrv-review-grid">
 
-                        var stars =
-                            new string(
-                                '★',
-                                review.Rating
-                            )
-                            +
-                            new string(
-                                '☆',
-                                5 - review.Rating
-                            );
+                            @foreach (var review in Model.Reviews)
+                            {
+                                var branch = Model.Branches.FirstOrDefault(
+                                    b => b.BranchId == review.BranchId
+                                );
 
-                        var displayDate =
-                            review.CreatedDate
-                                .ToString("dd MMM yyyy");
+                                var rating = Math.Clamp(review.Rating, 0, 5);
 
-                        <article class="public-review-card">
+                                var stars =
+                                    new string('★', rating)
+                                    + new string('☆', 5 - rating);
 
-                            <div class="review-card-top">
+                                var displayDate =
+                                    review.CreatedDate.ToString("dd MMM yyyy");
 
-                                <span class="review-stars">
-                                    @stars
-                                </span>
+                                <article class="qrv-review-card">
 
-                                <span class="review-branch">
+                                    <div class="qrv-card-header">
 
-                                    @(branch?.BranchName ?? "QPET")
+                                        <span class="qrv-stars"
+                                              aria-label="@rating out of 5 stars">
+                                            @stars
+                                        </span>
 
-                                </span>
+                                        <span class="qrv-branch">
+                                            @(branch?.BranchName ?? "QPET")
+                                        </span>
 
-                            </div>
+                                    </div>
 
-                            <div class="review-quote-mark">
-                                “
-                            </div>
+                                    <div class="qrv-quote-mark" aria-hidden="true">
+                                        “
+                                    </div>
 
-                            <p class="public-review-message">
-                                @review.ReviewMessage
+                                    <p class="qrv-message">
+                                        @review.ReviewMessage
+                                    </p>
+
+                                    <div class="qrv-card-footer">
+
+                                        <div class="qrv-review-author">
+                                            <span class="qrv-author-avatar"
+                                                  aria-hidden="true">
+                                                @(
+                                                    string.IsNullOrWhiteSpace(review.DisplayName)
+                                                    ? "Q"
+                                                    : review.DisplayName.Substring(0, 1).ToUpper()
+                                                )
+                                            </span>
+
+                                            <strong>
+                                                @review.DisplayName
+                                            </strong>
+                                        </div>
+
+                                        <time datetime="@review.CreatedDate.ToString("yyyy-MM-dd")">
+                                            @displayDate
+                                        </time>
+
+                                    </div>
+
+                                </article>
+                            }
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="qrv-empty">
+                            <span class="qrv-empty-icon" aria-hidden="true">
+                                ☆
+                            </span>
+
+                            <h3>No reviews yet</h3>
+
+                            <p>
+                                Be the first to share your experience
+                                with QPET.
                             </p>
-
-                            <div class="review-footer">
-
-                                <strong>
-                                    @review.DisplayName
-                                </strong>
-
-                                <span>
-                                    @displayDate
-                                </span>
-
-                            </div>
-
-                        </article>
+                        </div>
                     }
 
                 </div>
-            }
-            else
-            {
-                <div class="reviews-empty-state">
 
-                    No reviews have been submitted yet.
+                <aside class="qrv-form-card" id="shareReview">
 
-                </div>
-            }
+                    <div class="qrv-form-heading">
+                        <span class="qrv-eyebrow">
+                            SUBMIT A REVIEW
+                        </span>
+
+                        <h2>
+                            Tell us about your
+                            <span class="qrv-gradient">experience.</span>
+                        </h2>
+
+                        <p>
+                            We value your feedback. Let us know how
+                            we did and which QPET branch assisted you.
+                        </p>
+                    </div>
+
+                    @if (TempData["ReviewMessage"] is string successMessage)
+                    {
+                        <div class="qrv-success" role="status">
+                            <span aria-hidden="true">✓</span>
+
+                            <p>@successMessage</p>
+                        </div>
+                    }
+
+                    <form asp-controller="Reviews"
+                          asp-action="SubmitReview"
+                          method="post"
+                          class="qrv-form">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="qrv-validation-summary">
+                        </div>
+
+                        <div class="qrv-field">
+                            <label asp-for="Review.DisplayName">
+                                Display Name
+                            </label>
+
+                            <input asp-for="Review.DisplayName"
+                                   class="qrv-control"
+                                   placeholder="Name displayed with your review"
+                                   autocomplete="name" />
+
+                            <span asp-validation-for="Review.DisplayName"
+                                  class="qrv-validation">
+                            </span>
+                        </div>
+
+                        <div class="qrv-field">
+                            <label asp-for="Review.EmailAddress">
+                                Email Address
+                            </label>
+
+                            <input asp-for="Review.EmailAddress"
+                                   class="qrv-control"
+                                   placeholder="name@example.com"
+                                   autocomplete="email" />
+
+                            <small class="qrv-field-note">
+                                Optional. Your email is not displayed publicly.
+                            </small>
+
+                            <span asp-validation-for="Review.EmailAddress"
+                                  class="qrv-validation">
+                            </span>
+                        </div>
+
+                        <div class="qrv-form-row">
+
+                            <div class="qrv-field">
+                                <label asp-for="Review.BranchId">
+                                    QPET Branch
+                                </label>
+
+                                <select asp-for="Review.BranchId"
+                                        class="qrv-control">
+
+                                    <option value="0">
+                                        Select branch
+                                    </option>
+
+                                    @foreach (var branch in Model.Branches)
+                                    {
+                                        <option value="@branch.BranchId">
+                                            @branch.BranchName
+                                        </option>
+                                    }
+
+                                </select>
+
+                                <span asp-validation-for="Review.BranchId"
+                                      class="qrv-validation">
+                                </span>
+                            </div>
+
+                            <div class="qrv-field">
+                                <label asp-for="Review.Rating">
+                                    Rating
+                                </label>
+
+                                <select asp-for="Review.Rating"
+                                        class="qrv-control">
+
+                                    <option value="0">
+                                        Select rating
+                                    </option>
+
+                                    <option value="5">
+                                        5 - Excellent
+                                    </option>
+
+                                    <option value="4">
+                                        4 - Very Good
+                                    </option>
+
+                                    <option value="3">
+                                        3 - Good
+                                    </option>
+
+                                    <option value="2">
+                                        2 - Fair
+                                    </option>
+
+                                    <option value="1">
+                                        1 - Poor
+                                    </option>
+
+                                </select>
+
+                                <span asp-validation-for="Review.Rating"
+                                      class="qrv-validation">
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="qrv-field">
+                            <label asp-for="Review.ReviewMessage">
+                                Your Review
+                            </label>
+
+                            <textarea asp-for="Review.ReviewMessage"
+                                      class="qrv-control qrv-textarea"
+                                      placeholder="Share your experience with QPET..."></textarea>
+
+                            <span asp-validation-for="Review.ReviewMessage"
+                                  class="qrv-validation">
+                            </span>
+                        </div>
+
+                        <button type="submit" class="qrv-submit">
+                            Submit review
+                            <span aria-hidden="true">→</span>
+                        </button>
+
+                    </form>
+
+                    <p class="qrv-form-note">
+                        Thank you for helping us improve our products
+                        and services.
+                    </p>
+
+                </aside>
+
+            </div>
 
         </div>
+    </section>
 
-        <aside class="reviews-form-card">
-
-            <span class="section-kicker">
-                Submit a review
-            </span>
-
-            <h2>
-                Tell us about your experience.
-            </h2>
-
-            <p>
-                Select the relevant QPET branch
-                and share your feedback.
-            </p>
-
-            @if (
-                TempData["ReviewMessage"]
-                is string successMessage)
-            {
-                <div class="review-success">
-
-                    ✓ @successMessage
-
-                </div>
-            }
-
-            <form asp-controller="Reviews"
-                  asp-action="SubmitReview"
-                  method="post"
-                  class="review-form">
-
-                <div class="contact-form-field">
-
-                    <label asp-for="Review.DisplayName">
-                        Display Name
-                    </label>
-
-                    <input asp-for="Review.DisplayName"
-                           class="contact-control"
-                           placeholder="Name displayed with your review" />
-
-                    <span asp-validation-for="Review.DisplayName"
-                          class="field-validation">
-                    </span>
-
-                </div>
-
-                <div class="contact-form-field">
-
-                    <label asp-for="Review.EmailAddress">
-                        Email Address
-                    </label>
-
-                    <input asp-for="Review.EmailAddress"
-                           class="contact-control"
-                           placeholder="Optional" />
-
-                    <small class="contact-field-note">
-                        Optional and not displayed publicly.
-                    </small>
-
-                    <span asp-validation-for="Review.EmailAddress"
-                          class="field-validation">
-                    </span>
-
-                </div>
-
-                <div class="review-form-row">
-
-                    <div class="contact-form-field">
-
-                        <label asp-for="Review.BranchId">
-                            QPET Branch
-                        </label>
-
-                        <select asp-for="Review.BranchId"
-                                class="contact-control">
-
-                            <option value="0">
-                                Select branch
-                            </option>
-
-                            @foreach (
-                                var branch in Model.Branches)
-                            {
-                                <option value="@branch.BranchId">
-
-                                    @branch.BranchName
-
-                                </option>
-                            }
-
-                        </select>
-
-                        <span asp-validation-for="Review.BranchId"
-                              class="field-validation">
-                        </span>
-
-                    </div>
-
-                    <div class="contact-form-field">
-
-                        <label asp-for="Review.Rating">
-                            Rating
-                        </label>
-
-                        <select asp-for="Review.Rating"
-                                class="contact-control">
-
-                            <option value="0">
-                                Select rating
-                            </option>
-
-                            <option value="5">
-                                5 - Excellent
-                            </option>
-
-                            <option value="4">
-                                4 - Very Good
-                            </option>
-
-                            <option value="3">
-                                3 - Good
-                            </option>
-
-                            <option value="2">
-                                2 - Fair
-                            </option>
-
-                            <option value="1">
-                                1 - Poor
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="Review.Rating"
-                              class="field-validation">
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="contact-form-field">
-
-                    <label asp-for="Review.ReviewMessage">
-                        Review
-                    </label>
-
-                    <textarea asp-for="Review.ReviewMessage"
-                              class="contact-control contact-textarea review-textarea"
-                              placeholder="Share your experience with QPET...">
-                    </textarea>
-
-                    <span asp-validation-for="Review.ReviewMessage"
-                          class="field-validation">
-                    </span>
-
-                </div>
-
-                <button type="submit"
-                        class="btn btn-primary contact-submit-button">
-
-                    Submit review
-
-                    <span aria-hidden="true">
-                        →
-                    </span>
-
-                </button>
-
-            </form>
-
-        </aside>
-
-    </div>
-
-</section>
+</div>

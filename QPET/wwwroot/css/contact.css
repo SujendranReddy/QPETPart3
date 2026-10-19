@@ -1,234 +1,903 @@
-.contact-hero-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: -3;
-    background: linear-gradient(90deg, rgba(3, 9, 24, 0.96), rgba(4, 14, 35, 0.72));
+
+.public-body .qct-page {
+    --qct-navy: #172a42;
+    --qct-blue: #247cff;
+    --qct-green: #619d38;
+    --qct-muted: #60738b;
+    --qct-border: #dce6ef;
+    --qct-light: #f3f7fb;
+    width: 100%;
+    overflow: hidden;
+    background: var(--qct-light);
+    color: var(--qct-navy);
 }
 
-.contact-page-layout {
-    display: grid;
-    grid-template-columns: 0.9fr 1.1fr;
-    align-items: start;
-    gap: 3rem;
-}
-
-.contact-details-card,
-.contact-form-card {
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface);
-}
-
-.contact-details-card {
-    position: sticky;
-    top: 110px;
-    padding: 2rem;
-}
-
-.contact-card-number {
-    display: block;
-    margin-bottom: 1.5rem;
-    color: var(--primary-bright);
-    font-size: 3rem;
-    font-weight: 900;
-}
-
-.contact-details-card h2,
-.contact-form-card h2 {
-    margin: 0.4rem 0 0.8rem;
-    font-size: clamp(2rem, 3.5vw, 3.2rem);
-    line-height: 1.08;
-}
-
-.contact-details-introduction,
-.contact-form-introduction {
-    margin: 0;
-    color: var(--muted);
-}
-
-.contact-details-list {
-    display: grid;
-    gap: 0.8rem;
-    margin-top: 1.5rem;
-}
-
-.contact-detail-item {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 1rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background: var(--bg-deep);
-}
-
-.contact-detail-icon {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    background: rgba(36, 124, 255, 0.12);
-    color: var(--accent-bright);
-    font-weight: 900;
-}
-
-.contact-detail-item span {
-    display: block;
-    color: var(--primary-bright);
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-.contact-detail-item strong {
-    display: block;
-    margin-top: 0.15rem;
-    color: var(--muted-light);
-}
-
-.contact-detail-item a:hover {
-    color: var(--accent-bright);
-}
-
-.contact-information-note {
-    margin-top: 1rem;
-    padding: 1rem;
-    border-left: 3px solid var(--accent);
-    background: var(--accent-soft);
-}
-
-    .contact-information-note p {
-        margin: 0.3rem 0 0;
-        color: var(--muted);
-        font-size: 0.87rem;
+    .public-body .qct-page * {
+        box-sizing: border-box;
     }
 
-.contact-form-card {
-    padding: 2rem;
-}
+    .public-body .qct-page .qct-container {
+        width: min(1160px, calc(100% - 40px));
+        margin-inline: auto;
+    }
 
-.contact-form {
-    margin-top: 1.5rem;
-}
+    .public-body .qct-page .qct-section {
+        padding: 88px 0;
+    }
 
-.contact-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
+    .public-body .qct-page h1,
+    .public-body .qct-page h2,
+    .public-body .qct-page h3 {
+        margin-top: 0;
+        color: var(--qct-navy);
+        letter-spacing: -0.035em;
+    }
 
-.contact-form-field {
-    margin-bottom: 1rem;
-}
+    .public-body .qct-page h2 {
+        font-size: clamp(30px, 3.7vw, 46px);
+        line-height: 1.15;
+    }
 
-    .contact-form-field label {
-        display: block;
-        margin-bottom: 0.4rem;
-        color: var(--muted-light);
+    .public-body .qct-page p {
+        color: var(--qct-muted);
+        line-height: 1.75;
+    }
+
+    .public-body .qct-page .qct-gradient {
+        background: linear-gradient( 90deg, #1d57a4, #247cff 55%, #619d38 );
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: #247cff;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .public-body .qct-page .qct-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        padding: 7px 12px;
+        margin-bottom: 18px;
+        border-radius: 999px;
+        background: #e5f1dd;
+        color: #47852b;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    .public-body .qct-page .qct-eyebrow-light {
+        background: rgba(137, 211, 63, .15);
+        color: #b7ed7d;
+    }
+
+    .public-body .qct-page .qct-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        min-height: 50px;
+        padding: 13px 24px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: var(--qct-blue);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background .2s ease, transform .2s ease;
+    }
+
+        .public-body .qct-page .qct-button:hover {
+            background: #155fcf;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .public-body .qct-page .qct-button:focus-visible,
+        .public-body .qct-page .qct-contact-link:focus-visible,
+        .public-body .qct-page .qct-branch-action:focus-visible {
+            outline: 3px solid #247cff;
+            outline-offset: 3px;
+        }
+
+    /* Hero */
+
+    .public-body .qct-page .qct-hero {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        align-items: center;
+        min-height: 470px;
+        overflow: hidden;
+        background: #0b2549;
+    }
+
+    .public-body .qct-page .qct-hero-video {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .public-body .qct-page .qct-hero-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient( 90deg, rgba(5, 19, 41, .96) 0%, rgba(7, 30, 60, .88) 52%, rgba(9, 30, 58, .45) 100% );
+    }
+
+    .public-body .qct-page .qct-hero-content {
+        position: relative;
+        padding: 85px 0;
+    }
+
+    .public-body .qct-page .qct-hero h1 {
+        max-width: 830px;
+        margin-bottom: 24px;
+        color: #ffffff;
+        font-size: clamp(40px, 5vw, 65px);
+        line-height: 1.07;
+    }
+
+        .public-body .qct-page .qct-hero h1 span {
+            display: block;
+            color: #95c5ff;
+        }
+
+    .public-body .qct-page .qct-hero p {
+        max-width: 660px;
+        margin-bottom: 30px;
+        color: #e0eafa;
+        font-size: 16px;
+    }
+
+    /* Section headings */
+
+    .public-body .qct-page .qct-section-heading {
+        max-width: 770px;
+        margin: 0 auto 48px;
+        text-align: center;
+    }
+
+        .public-body .qct-page .qct-section-heading h2 {
+            margin-bottom: 17px;
+        }
+
+        .public-body .qct-page .qct-section-heading p {
+            max-width: 630px;
+            margin: 0 auto;
+            font-size: 15px;
+        }
+
+    /* Branch cards */
+
+    .public-body .qct-page .qct-branches {
+        background: #f3f7fb;
+    }
+
+    .public-body .qct-page .qct-branch-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 24px;
+    }
+
+    .public-body .qct-page .qct-branch-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 30px 27px;
+        border: 1px solid var(--qct-border);
+        border-radius: 19px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(22, 47, 80, .055);
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+        .public-body .qct-page .qct-branch-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 18px 38px rgba(22, 47, 80, .10);
+        }
+
+        .public-body .qct-page .qct-branch-card:first-child {
+            border-top: 4px solid #247cff;
+        }
+
+        .public-body .qct-page .qct-branch-card:nth-child(2) {
+            border-top: 4px solid #619d38;
+        }
+
+        .public-body .qct-page .qct-branch-card:nth-child(3) {
+            border-top: 4px solid #3994a6;
+        }
+
+    .public-body .qct-page .qct-branch-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 30px;
+        margin-bottom: 18px;
+    }
+
+    .public-body .qct-page .qct-region {
+        color: #2374d0;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.1px;
+    }
+
+    .public-body .qct-page .qct-branch-badge {
+        padding: 6px 9px;
+        border-radius: 6px;
+        background: #e6f2dc;
+        color: #4c852d;
+        font-size: 10px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .public-body .qct-page .qct-branch-card h3 {
+        margin-bottom: 6px;
+        font-size: 25px;
+        line-height: 1.2;
+    }
+
+    .public-body .qct-page .qct-branch-description {
+        min-height: 43px;
+        margin: 0;
+        color: #657a8e;
+        font-size: 13px;
+    }
+
+    .public-body .qct-page .qct-branch-divider {
+        height: 1px;
+        margin: 23px 0;
+        background: #e4ebf2;
+    }
+
+    .public-body .qct-page .qct-detail-group {
+        margin-bottom: 23px;
+    }
+
+    .public-body .qct-page .qct-detail-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 11px;
+    }
+
+    .public-body .qct-page .qct-detail-icon {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+        border-radius: 9px;
+        background: #e8f1ff;
+        color: #2071d3;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .public-body .qct-page .qct-detail-heading strong {
+        color: #263e59;
+        font-size: 13px;
         font-weight: 800;
     }
 
-.contact-control {
-    width: 100%;
-    min-height: 50px;
-    padding: 0.8rem 0.9rem;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--bg-deep);
-    color: var(--text);
-    outline: none;
-}
-
-    .contact-control::placeholder {
-        color: #71819c;
+    .public-body .qct-page .qct-detail-group address {
+        margin: 0 0 0 40px;
+        color: #52677e;
+        font-size: 13px;
+        font-style: normal;
+        line-height: 1.8;
     }
 
-    .contact-control:focus {
-        border-color: var(--primary-bright);
+    .public-body .qct-page .qct-contact-link {
+        display: block;
+        width: fit-content;
+        max-width: calc(100% - 40px);
+        margin: 0 0 7px 40px;
+        color: #1768c9;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.5;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+        transition: color .2s ease;
     }
 
-.contact-textarea {
-    min-height: 180px;
-    resize: vertical;
-}
+        .public-body .qct-page .qct-contact-link:hover {
+            color: #4d932e;
+            text-decoration: underline;
+        }
 
-.review-textarea {
-    min-height: 200px;
-}
+    .public-body .qct-page .qct-email-group {
+        flex: 1;
+    }
 
-.field-validation,
-.validation-summary {
-    color: #ff8992;
-    font-size: 0.84rem;
-}
+    .public-body .qct-page .qct-branch-action {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+        min-height: 49px;
+        margin-top: auto;
+        padding: 13px 15px;
+        border: 1px solid #cddff6;
+        border-radius: 10px;
+        background: #eef5ff;
+        color: #1768c9;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: background .2s ease;
+    }
 
-.field-validation {
-    display: block;
-    margin-top: 0.3rem;
-}
+        .public-body .qct-page .qct-branch-action:hover {
+            background: #dbeaff;
+            color: #104b9e;
+        }
 
-.validation-summary ul {
-    margin: 0 0 1rem;
-    padding-left: 1.2rem;
-}
+        .public-body .qct-page .qct-branch-action span {
+            font-size: 20px;
+        }
 
-.contact-submit-button {
-    width: 100%;
-}
+    /* Enquiry section */
 
-.contact-success-message {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    margin-top: 1rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid rgba(100, 227, 155, 0.38);
-    border-radius: 10px;
-    background: rgba(100, 227, 155, 0.10);
-    color: #bcffd7;
-}
+    .public-body .qct-page .qct-enquiry-section {
+        background: #ffffff;
+    }
 
-    .contact-success-message p {
+    .public-body .qct-page .qct-enquiry-layout {
+        display: grid;
+        grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+        align-items: start;
+        gap: 60px;
+    }
+
+    .public-body .qct-page .qct-enquiry-intro h2 {
+        max-width: 420px;
+        margin-bottom: 19px;
+    }
+
+    .public-body .qct-page .qct-enquiry-intro > p {
+        max-width: 440px;
+        font-size: 15px;
+    }
+
+    .public-body .qct-page .qct-enquiry-help {
+        margin-top: 36px;
+        padding: 30px;
+        border: 1px solid #dce9d5;
+        border-radius: 17px;
+        background: linear-gradient(135deg, #edf7e7, #f8fcf6);
+    }
+
+    .public-body .qct-page .qct-help-icon {
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        background: #dbeed1;
+        color: #528d32;
+        font-size: 23px;
+    }
+
+    .public-body .qct-page .qct-enquiry-help h3 {
+        margin-bottom: 12px;
+        font-size: 21px;
+    }
+
+    .public-body .qct-page .qct-enquiry-help p {
+        margin-bottom: 14px;
+        font-size: 13px;
+    }
+
+    .public-body .qct-page .qct-enquiry-help ul {
         margin: 0;
+        padding-left: 20px;
+        color: #526c4d;
+        font-size: 13px;
+        line-height: 2;
     }
 
-.contact-field-note {
-    display: block;
-    margin-top: 0.4rem;
-    color: var(--muted);
-    font-size: 0.78rem;
+    /* Enquiry form */
+
+    .public-body .qct-page .qct-form-card {
+        min-width: 0;
+        padding: 35px;
+        border: 1px solid var(--qct-border);
+        border-radius: 20px;
+        background: #f8fafc;
+        box-shadow: 0 14px 35px rgba(22, 47, 80, .055);
+    }
+
+    .public-body .qct-page .qct-form-heading {
+        margin-bottom: 28px;
+    }
+
+        .public-body .qct-page .qct-form-heading h3 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .public-body .qct-page .qct-form-heading p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+    .public-body .qct-page .qct-form-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .public-body .qct-page .qct-field {
+        min-width: 0;
+        margin-bottom: 20px;
+    }
+
+        .public-body .qct-page .qct-field label {
+            display: block;
+            margin-bottom: 9px;
+            color: #263e59;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+    .public-body .qct-page .qct-control {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        min-height: 49px;
+        padding: 12px 14px;
+        border: 1px solid #cdd9e4;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #172a42;
+        font-family: inherit;
+        font-size: 14px;
+        line-height: 1.5;
+        outline: none;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .public-body .qct-page .qct-control::placeholder {
+            color: #8a99aa;
+        }
+
+        .public-body .qct-page .qct-control:focus {
+            border-color: #247cff;
+            box-shadow: 0 0 0 3px rgba(36, 124, 255, .13);
+        }
+
+        .public-body .qct-page .qct-control.input-validation-error {
+            border-color: #c9374d;
+        }
+
+    .public-body .qct-page .qct-textarea {
+        min-height: 155px;
+        resize: vertical;
+    }
+
+    .public-body .qct-page .qct-file-control {
+        height: auto;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+        .public-body .qct-page .qct-file-control::file-selector-button {
+            margin-right: 13px;
+            padding: 9px 13px;
+            border: 0;
+            border-radius: 7px;
+            background: #e8f1ff;
+            color: #1768c9;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+    .public-body .qct-page .qct-field-note {
+        display: block;
+        margin-top: 9px;
+        color: #73869a;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .public-body .qct-page .qct-field-validation {
+        display: block;
+        margin-top: 6px;
+        color: #ba233c;
+        font-size: 12px;
+    }
+
+        .public-body .qct-page .qct-field-validation:empty {
+            display: none;
+        }
+
+    .public-body .qct-page .qct-validation-summary {
+        color: #ba233c;
+        font-size: 13px;
+    }
+
+        .public-body .qct-page .qct-validation-summary ul {
+            margin: 0 0 18px;
+            padding-left: 20px;
+        }
+
+        .public-body .qct-page .qct-validation-summary.validation-summary-valid {
+            display: none;
+        }
+
+    .public-body .qct-page .qct-submit {
+        width: 100%;
+        min-height: 53px;
+        margin-top: 4px;
+        font-size: 15px;
+    }
+
+    /* Confirmation */
+
+    .public-body .qct-page .qct-confirmation {
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .public-body .qct-page .qct-success-icon {
+        display: grid;
+        place-items: center;
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 25px;
+        border-radius: 50%;
+        background: #e2f3dc;
+        color: #478c31;
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    .public-body .qct-page .qct-confirmation h3 {
+        margin-bottom: 15px;
+        font-size: 28px;
+    }
+
+    .public-body .qct-page .qct-confirmation > p {
+        max-width: 430px;
+        margin: 0 auto 25px;
+        font-size: 14px;
+    }
+
+    .public-body .qct-page .qct-confirmation-details {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 27px;
+        text-align: left;
+    }
+
+        .public-body .qct-page .qct-confirmation-details > div {
+            padding: 16px 18px;
+            border: 1px solid #dce6ef;
+            border-radius: 11px;
+            background: #ffffff;
+        }
+
+        .public-body .qct-page .qct-confirmation-details span {
+            display: block;
+            margin-bottom: 7px;
+            color: #71849a;
+            font-size: 12px;
+        }
+
+        .public-body .qct-page .qct-confirmation-details strong {
+            color: #172a42;
+            font-size: 17px;
+        }
+
+    /* Bottom banner */
+
+    .public-body .qct-page .qct-bottom-banner {
+        padding: 75px 0;
+        background: linear-gradient(115deg, #0c2851, #1554a0);
+    }
+
+    .public-body .qct-page .qct-bottom-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 45px;
+    }
+
+        .public-body .qct-page .qct-bottom-content h2 {
+            max-width: 680px;
+            margin: 0 0 15px;
+            color: #ffffff;
+            font-size: clamp(29px, 3.5vw, 42px);
+            line-height: 1.2;
+        }
+
+        .public-body .qct-page .qct-bottom-content p {
+            max-width: 580px;
+            margin: 0;
+            color: #d9e7fa;
+            font-size: 15px;
+        }
+
+    .public-body .qct-page .qct-button-light {
+        flex: 0 0 auto;
+        background: #ffffff;
+        color: #1554a0;
+    }
+
+        .public-body .qct-page .qct-button-light:hover {
+            background: #e5f0ff;
+            color: #104886;
+        }
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .public-body .qct-page .qct-branch-grid {
+        gap: 16px;
+    }
+
+    .public-body .qct-page .qct-branch-card {
+        padding: 25px 20px;
+    }
+
+        .public-body .qct-page .qct-branch-card h3 {
+            font-size: 22px;
+        }
+
+    .public-body .qct-page .qct-enquiry-layout {
+        gap: 35px;
+    }
 }
 
-@media (max-width: 1080px) {
-    .contact-page-layout {
-        grid-template-columns: 1fr;
+@media (max-width: 900px) {
+    .public-body .qct-page .qct-section {
+        padding: 68px 0;
     }
 
-    .contact-details-card {
-        position: static;
-    }
-}
-
-@media (max-width: 800px) {
-    .contact-hero {
-        min-height: 540px;
-        padding: 5rem 0 4rem;
+    .public-body .qct-page .qct-branch-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
     }
 
-    .contact-bottom-content {
+    .public-body .qct-page .qct-enquiry-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 35px;
+    }
+
+    .public-body .qct-page .qct-enquiry-intro > p {
+        max-width: 650px;
+    }
+
+    .public-body .qct-page .qct-enquiry-help {
+        max-width: 100%;
+    }
+
+    .public-body .qct-page .qct-bottom-content {
         align-items: flex-start;
         flex-direction: column;
+        gap: 26px;
     }
 }
 
-@media (max-width: 620px) {
-    .contact-form-row {
-        grid-template-columns: 1fr;
+@media (max-width: 650px) {
+    .public-body .qct-page .qct-container {
+        width: min(100% - 30px, 1160px);
     }
 
-    .contact-bottom-content .btn {
+    .public-body .qct-page .qct-section {
+        padding: 55px 0;
+    }
+
+    .public-body .qct-page .qct-hero {
+        min-height: 460px;
+    }
+
+    .public-body .qct-page .qct-hero-content {
+        padding: 65px 0;
+    }
+
+    .public-body .qct-page .qct-hero h1 {
+        font-size: clamp(35px, 8vw, 46px);
+    }
+
+    .public-body .qct-page .qct-hero p {
+        font-size: 14px;
+    }
+
+    .public-body .qct-page h2 {
+        font-size: clamp(28px, 7vw, 36px);
+    }
+
+    .public-body .qct-page .qct-section-heading {
+        margin-bottom: 32px;
+    }
+
+    .public-body .qct-page .qct-branch-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .public-body .qct-page .qct-branch-card {
+        padding: 27px 23px;
+    }
+
+    .public-body .qct-page .qct-branch-description {
+        min-height: 0;
+    }
+
+    .public-body .qct-page .qct-form-card {
+        padding: 25px 20px;
+    }
+
+    .public-body .qct-page .qct-form-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
+
+    .public-body .qct-page .qct-enquiry-help {
+        padding: 25px 22px;
+    }
+
+    .public-body .qct-page .qct-bottom-banner {
+        padding: 55px 0;
+    }
+
+    .public-body .qct-page .qct-bottom-content h2 {
+        font-size: 29px;
+    }
+
+    .public-body .qct-page .qct-button-light {
         width: 100%;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .public-body .qct-page .qct-button,
+    .public-body .qct-page .qct-branch-card,
+    .public-body .qct-page .qct-branch-action,
+    .public-body .qct-page .qct-contact-link {
+        transition: none;
+    }
+
+    .public-body .qct-page .qct-hero-video {
+        display: none;
+    }
+}
+
+
+/* Compact expandable mobile contact cards */
+
+.public-body .qct-page .qct-branch-toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.public-body .qct-page .qct-mobile-toggle {
+    display: none;
+}
+
+.public-body .qct-page .qct-toggle-close {
+    display: none;
+}
+
+@media (max-width: 650px) {
+
+    .public-body .qct-page .qct-branch-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .public-body .qct-page .qct-branch-card {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .public-body .qct-page .qct-branch-top {
+        margin-bottom: 9px;
+        min-height: 25px;
+    }
+
+    .public-body .qct-page .qct-branch-card h3 {
+        margin-bottom: 5px;
+        font-size: 21px;
+    }
+
+    .public-body .qct-page .qct-branch-description {
+        min-height: 0;
+        margin-bottom: 0;
+        font-size: 12px;
+    }
+
+    .public-body .qct-page .qct-mobile-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        min-height: 42px;
+        margin-top: 15px;
+        padding: 10px 13px;
+        border: 1px solid #cddff6;
+        border-radius: 9px;
+        background: #eef5ff;
+        color: #1768c9;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .public-body .qct-page .qct-toggle-arrow {
+        font-size: 21px;
+        transition: transform .2s ease;
+    }
+
+    .public-body .qct-page .qct-branch-toggle:focus-visible + .qct-mobile-toggle {
+        outline: 3px solid #247cff;
+        outline-offset: 3px;
+    }
+
+    .public-body .qct-page .qct-branch-card .qct-branch-divider,
+    .public-body .qct-page .qct-branch-card .qct-detail-group,
+    .public-body .qct-page .qct-branch-card .qct-branch-action {
+        display: none;
+    }
+
+    .public-body .qct-page .qct-branch-toggle:checked ~ .qct-branch-divider {
+        display: block;
+    }
+
+    .public-body .qct-page .qct-branch-toggle:checked ~ .qct-detail-group {
+        display: block;
+    }
+
+    .public-body .qct-page .qct-branch-toggle:checked ~ .qct-branch-action {
+        display: flex;
+    }
+
+    .public-body .qct-page .qct-branch-toggle:checked + .qct-mobile-toggle .qct-toggle-open {
+        display: none;
+    }
+
+    .public-body .qct-page .qct-branch-toggle:checked + .qct-mobile-toggle .qct-toggle-close {
+        display: inline;
+    }
+
+    .public-body .qct-page .qct-branch-toggle:checked + .qct-mobile-toggle .qct-toggle-arrow {
+        transform: rotate(180deg);
+    }
+
+    .public-body .qct-page .qct-branch-divider {
+        margin: 17px 0;
+    }
+
+    .public-body .qct-page .qct-detail-group {
+        margin-bottom: 18px;
+    }
+
+    .public-body .qct-page .qct-branch-action {
+        margin-top: 10px;
+    }
+}
+

@@ -2,484 +2,641 @@
     ViewData["Title"] = "About Us";
 }
 
+<div class="qa-about">
 
-<section class="about-hero">
+    <svg class="qa-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <symbol id="qa-factory-icon" viewBox="0 0 160 110">
+                <path d="M12 96V48L46 65V48L80 65V26H129V96Z" />
+                <path d="M92 26V9H111V26" />
+                <path d="M26 78H40M56 78H70M90 78H104M115 78H126" />
+                <path d="M7 97H150" />
+            </symbol>
 
-    <div class="about-hero-background">
+            <symbol id="qa-warehouse-icon" viewBox="0 0 160 110">
+                <path d="M12 96V38L80 11L148 38V96Z" />
+                <path d="M12 38H148" />
+                <path d="M48 96V52H112V96" />
+                <path d="M57 64H103M57 76H103M57 88H103" />
+                <path d="M7 97H153" />
+            </symbol>
 
-        <img src="@Url.Content("~/media/images/preforms-production.jpg")"
-             alt="PET preforms prepared for packaging production" />
+            <symbol id="qa-preform-icon" viewBox="0 0 160 110">
+                <path d="M22 20H49V31H45V84Q45 96 35 96Q25 96 25 84V31H22Z" />
+                <path d="M66 13H93V24H89V84Q89 96 79 96Q69 96 69 84V24H66Z" />
+                <path d="M110 20H137V31H133V84Q133 96 123 96Q113 96 113 84V31H110Z" />
+                <path d="M25 38H45M69 31H89M113 38H133" />
+            </symbol>
 
+            <symbol id="qa-bottle-icon" viewBox="0 0 160 110">
+                <path d="M39 12H61V25L67 36V88Q67 97 58 97H42Q33 97 33 88V36L39 25Z" />
+                <path d="M99 12H121V25L127 36V88Q127 97 118 97H102Q93 97 93 88V36L99 25Z" />
+                <path d="M38 50H62M98 50H122" />
+                <path d="M38 70H62M98 70H122" />
+                <path d="M39 18H61M99 18H121" />
+            </symbol>
+
+            <symbol id="qa-jar-icon" viewBox="0 0 160 110">
+                <path d="M24 25H72V39H67V90Q67 97 60 97H36Q29 97 29 90V39H24Z" />
+                <path d="M88 18H141V34H136V89Q136 97 128 97H101Q93 97 93 89V34H88Z" />
+                <path d="M29 53H67M93 51H136" />
+                <path d="M29 76H67M93 76H136" />
+            </symbol>
+
+            <symbol id="qa-closure-icon" viewBox="0 0 160 110">
+                <path d="M19 42Q19 25 53 25Q87 25 87 42V73Q87 88 53 88Q19 88 19 73Z" />
+                <path d="M19 42Q19 58 53 58Q87 58 87 42" />
+                <path d="M31 59V81M43 61V86M55 61V87M67 59V85M79 55V80" />
+                <path d="M101 35Q101 23 123 23Q145 23 145 35V67Q145 80 123 80Q101 80 101 67Z" />
+                <path d="M101 35Q101 46 123 46Q145 46 145 35" />
+                <path d="M110 47V74M121 48V78M133 47V75" />
+            </symbol>
+
+            <symbol id="qa-custom-icon" viewBox="0 0 160 110">
+                <path d="M18 40H58V93H18Z" />
+                <path d="M24 30H52V40H24Z" />
+                <path d="M76 20H98V32L105 44V93H69V44L76 32Z" />
+                <path d="M119 43H147V93H119Z" />
+                <path d="M123 31H143V43H123Z" />
+                <path d="M23 59H53M74 62H100M123 64H143" />
+            </symbol>
+        </defs>
+    </svg>
+
+    <section class="qa-hero" aria-labelledby="qaHeroTitle">
+        <img class="qa-hero-image"
+             src="@Url.Content("~/media/images/preforms-production.jpg")"
+             alt=""
+             aria-hidden="true" />
+
+        <div class="qa-container qa-hero-content">
+            <span class="qa-eyebrow qa-eyebrow-light">ABOUT QPET</span>
+
+            <h1 id="qaHeroTitle">
+                Your trusted partner in
+                <span>liquid packaging.</span>
+            </h1>
+
+            <p>
+                A family-owned South African PET converter, manufacturing
+                since 1988. From edible oil to water, juice, sauces and
+                dairy, QPET delivers reliable supply, premium quality
+                and packaging built to grow with your business.
+            </p>
+
+            <a href="#aboutStory" class="qa-button">
+                Discover our story
+                <span aria-hidden="true">↓</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="qa-stats" aria-label="QPET key numbers">
+        <div class="qa-container">
+            <div class="qa-stats-grid">
+
+                <div class="qa-stat">
+                    <strong>1988</strong>
+                    <span>Manufacturing since</span>
+                </div>
+
+                <div class="qa-stat">
+                    <strong>35 000 m²</strong>
+                    <span>Manufacturing and warehousing space nationally</span>
+                </div>
+
+                <div class="qa-stat">
+                    <strong>3 Sites</strong>
+                    <span>Pietermaritzburg, Johannesburg and Cape Town</span>
+                </div>
+
+                <div class="qa-stat">
+                    <strong>20 000+ t</strong>
+                    <span>PET converted annually across the group</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="qa-section qa-story" id="aboutStory">
+        <div class="qa-container qa-story-grid">
+
+            <div class="qa-story-copy">
+                <span class="qa-eyebrow">WHO WE ARE</span>
+
+                <h2>
+                    Family-owned.
+                    <span class="qa-gradient">Industry-proven.</span>
+                </h2>
+
+                <p>
+                    QPET began as a group of entrepreneurs who built their
+                    careers at the Willowton Oil Mills plant and grew from
+                    there into an independently run PET packaging business.
+                    Today, QPET is one of the larger independently owned
+                    PET converters in South Africa.
+                </p>
+
+                <p>
+                    We manufacture injection-moulded preforms, blown bottles,
+                    jars and closures. We are a leading supplier to the edible
+                    oil industry, and now also serve the mineral water, cold
+                    drink, juice, spice and sauce markets.
+                </p>
+
+                <p>
+                    Innovation, high-quality standards and competitive pricing
+                    have kept QPET at the forefront of the edible oil packaging
+                    market for over 30 years.
+                </p>
+            </div>
+
+            <aside class="qa-focus">
+                <span class="qa-eyebrow">OUR FOCUS</span>
+
+                <h3>Built around quality and responsibility.</h3>
+
+                <ul class="qa-focus-list">
+                    <li>
+                        <span class="qa-check" aria-hidden="true">✓</span>
+                        <span>FSSC 22000 food-safety certification</span>
+                    </li>
+
+                    <li>
+                        <span class="qa-check" aria-hidden="true">✓</span>
+                        <span>Level 2 B-BBEE supplier</span>
+                    </li>
+
+                    <li>
+                        <span class="qa-check" aria-hidden="true">✓</span>
+                        <span>
+                            Responsible Plastics Converter, registered with
+                            DFFE and compliant with EWASA as our PRO
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="qa-check" aria-hidden="true">✓</span>
+                        <span>Competitive, low-cost production</span>
+                    </li>
+
+                    <li>
+                        <span class="qa-check" aria-hidden="true">✓</span>
+                        <span>Latest high-speed manufacturing technology</span>
+                    </li>
+                </ul>
+            </aside>
+
+        </div>
+    </section>
+
+    <section class="qa-section qa-purpose">
+        <div class="qa-container">
+
+            <div class="qa-heading">
+                <span class="qa-eyebrow">MISSION &amp; VISION</span>
+
+                <h2>
+                    Where we are today.
+                    <span class="qa-gradient">Where we're going.</span>
+                </h2>
+            </div>
+
+            <div class="qa-purpose-grid">
+
+                <article class="qa-purpose-card">
+                    <span class="qa-purpose-label">OUR MISSION</span>
+
+                    <h3>The preferred PET packaging supplier.</h3>
+
+                    <p>
+                        To be the preferred supplier of PET bottles to the
+                        edible oil, mineral water, fruit juice and beverage
+                        markets.
+                    </p>
+                </article>
+
+                <article class="qa-purpose-card qa-purpose-vision">
+                    <span class="qa-purpose-label">OUR VISION</span>
+
+                    <h3>Growing into new markets.</h3>
+
+                    <p>
+                        To take our pricing advantage and long-standing
+                        technical expertise into new growth sectors,
+                        including food, dairy and beverage, while building
+                        sustainability into everything we offer.
+                    </p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="qa-section qa-manufacturing">
+        <div class="qa-container qa-manufacturing-grid">
+
+            <div class="qa-video-card">
+                <video autoplay
+                       muted
+                       loop
+                       playsinline
+                       preload="metadata"
+                       poster="@Url.Content("~/media/images/preforms-production.jpg")"
+                       aria-label="QPET manufacturing equipment">
+
+                    <source src="@Url.Content("~/media/videos/manufacturing-machine.mp4")"
+                            type="video/mp4" />
+                </video>
+
+                <div class="qa-video-caption">
+                    <span>MANUFACTURING CAPABILITY</span>
+                    <strong>Engineering quality at scale.</strong>
+                </div>
+            </div>
+
+            <div class="qa-manufacturing-copy">
+                <span class="qa-eyebrow">HOW WE WORK</span>
+
+                <h2>
+                    Modern capability with
+                    <span class="qa-gradient">efficient production.</span>
+                </h2>
+
+                <p class="qa-manufacturing-intro">
+                    QPET pairs leading European equipment with decades
+                    of technical know-how, giving customers consistent
+                    quality, speed and competitive supply.
+                </p>
+
+                <div class="qa-process-list">
+
+                    <article class="qa-process-item">
+                        <span class="qa-process-mark" aria-hidden="true">✦</span>
+
+                        <div>
+                            <h3>Advanced manufacturing technology</h3>
+                            <p>
+                                We work with world-leading machine suppliers
+                                and expanded our preform, blowing and closure
+                                capacity with the latest technology in 2024.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="qa-process-item">
+                        <span class="qa-process-mark" aria-hidden="true">↗</span>
+
+                        <div>
+                            <h3>Competitive production</h3>
+                            <p>
+                                As one of the largest independent buyers of PET
+                                in the local market, and a low-cost producer,
+                                we offer competitive pricing without
+                                compromising quality.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="qa-process-item">
+                        <span class="qa-process-mark" aria-hidden="true">◇</span>
+
+                        <div>
+                            <h3>Local manufacturing innovation</h3>
+                            <p>
+                                QPET is the first company in South Africa to
+                                locally produce both 28mm and 38mm tethered
+                                closures.
+                            </p>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+   
+<section class="qa-section qa-footprint" id="ourFootprint">
+    <div class="qa-container">
+
+        <div class="qa-heading">
+            <span class="qa-eyebrow">OUR FOOTPRINT</span>
+
+            <h2>
+                A national presence that
+                <span class="qa-gradient">responds quickly.</span>
+            </h2>
+
+            <p>
+                Production and distribution sites positioned to support
+                customers across South Africa.
+            </p>
+        </div>
+
+        <div class="qa-location-grid">
+
+            <article class="qa-location-card">
+
+                <div class="qa-location-visual qa-location-photo">
+                    <img src="@Url.Content("~/media/about/pmb-branch.jpg")"
+                         alt="Pietermaritzburg manufacturing facility"
+                         loading="lazy"
+                         decoding="async" />
+                </div>
+
+                <div class="qa-location-content">
+                    <span class="qa-location-region">
+                        KWAZULU-NATAL
+                    </span>
+
+                    <h3>Pietermaritzburg</h3>
+
+                    <strong>
+                        Head office &amp; main production facility
+                    </strong>
+
+                    <p>
+                        Preform and closure injection moulding,
+                        bottle blowing, jar production and recycling.
+                    </p>
+                </div>
+
+            </article>
+
+            <article class="qa-location-card">
+
+                <div class="qa-location-visual qa-location-photo">
+                    <img src="@Url.Content("~/media/about/jhb-branch.jpg")"
+                         alt="Johannesburg industrial manufacturing facility"
+                         loading="lazy"
+                         decoding="async" />
+                </div>
+
+                <div class="qa-location-content">
+                    <span class="qa-location-region">
+                        GAUTENG
+                    </span>
+
+                    <h3>Isando, Johannesburg</h3>
+
+                    <strong>
+                        Production facility
+                    </strong>
+
+                    <p>
+                        Preform injection and bottle blowing,
+                        serving customers across the Gauteng region.
+                    </p>
+                </div>
+
+            </article>
+
+            <article class="qa-location-card">
+
+                <div class="qa-location-visual qa-location-photo">
+                    <img src="@Url.Content("~/media/about/cpt-branch.jpg")"
+                         alt="Industrial production machinery representing Cape Town operations"
+                         loading="lazy"
+                         decoding="async" />
+                </div>
+
+                <div class="qa-location-content">
+                    <span class="qa-location-region">
+                        WESTERN CAPE
+                    </span>
+
+                    <h3>Maitland, Cape Town</h3>
+
+                    <strong>
+                        Distribution site
+                    </strong>
+
+                    <p>
+                        Storage and distribution, bringing QPET
+                        closer to customers in the Western Cape.
+                    </p>
+                </div>
+
+            </article>
+
+        </div>
+    </div>
+</section>
+
+    <section class="qa-section qa-values">
+        <div class="qa-container">
+
+            <div class="qa-heading">
+                <span class="qa-eyebrow">WHAT DEFINES QPET</span>
+
+                <h2>
+                    Standards and capabilities
+                    <span class="qa-gradient">that set us apart.</span>
+                </h2>
+            </div>
+
+            <div class="qa-values-grid">
+
+                <article class="qa-value-card">
+                    <span class="qa-value-icon" aria-hidden="true">✓</span>
+
+                    <h3>Food Safety</h3>
+                    <p>
+                        FSSC 22000 certification reflects our commitment to
+                        recognised food-safety standards in packaging
+                        manufacturing.
+                    </p>
+                </article>
+
+                <article class="qa-value-card">
+                    <span class="qa-value-icon" aria-hidden="true">♻</span>
+
+                    <h3>Responsibility</h3>
+                    <p>
+                        A Responsible Plastics Converter, registered with
+                        DFFE and compliant with EWASA as our PRO, with a
+                        clear focus on a sustainable future.
+                    </p>
+                </article>
+
+                <article class="qa-value-card">
+                    <span class="qa-value-icon" aria-hidden="true">◎</span>
+
+                    <h3>Reliability</h3>
+                    <p>
+                        A national footprint and local production mean
+                        that when you need us, we deliver, from small
+                        runs to large-scale production.
+                    </p>
+                </article>
+
+                <article class="qa-value-card">
+                    <span class="qa-value-icon" aria-hidden="true">✧</span>
+
+                    <h3>Innovation</h3>
+                    <p>
+                        Our injection moulding technology and locally
+                        made 28mm and 38mm tethered closures show what
+                        South African manufacturing can do.
+                    </p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    
+<section class="qa-section qa-offer" id="whatWeOffer">
+    <div class="qa-container">
+
+        <div class="qa-heading">
+            <span class="qa-eyebrow">WHAT WE OFFER</span>
+
+            <h2>
+                Packaging solutions
+                <span class="qa-gradient">from preform to closure.</span>
+            </h2>
+
+            <p>
+                A complete PET range for edible oil, water, juice,
+                sauce, spice, dairy and beverage customers.
+            </p>
+        </div>
+
+        <div class="qa-product-grid">
+
+            <article class="qa-product-card">
+
+                <div class="qa-product-visual qa-product-photo qa-photo-preforms">
+                    <img src="@Url.Content("~/media/about/preforms.png")"
+                         alt="Coloured PET preforms"
+                         loading="lazy"
+                         decoding="async" />
+                </div>
+
+                <div class="qa-product-content">
+                    <h3>PET Preforms</h3>
+
+                    <p>
+                        Injection-moulded preforms for consistent,
+                        high-quality bottle production.
+                    </p>
+                </div>
+
+            </article>
+
+            <article class="qa-product-card">
+
+                <div class="qa-product-visual qa-product-photo qa-photo-bottles">
+                    <img src="@Url.Content("~/media/about/bottles.jpeg")"
+                         alt="A selection of plastic beverage bottles"
+                         loading="lazy"
+                         decoding="async" />
+                </div>
+
+                <div class="qa-product-content">
+                    <h3>PET Bottles</h3>
+
+                    <p>
+                        Lightweight, durable and recyclable bottles
+                        for liquid packaging.
+                    </p>
+                </div>
+
+            </article>
+
+            <article class="qa-product-card">
+
+                <div class="qa-product-visual qa-product-photo qa-photo-jars">
+                    <img src="@Url.Content("~/media/about/jars.png")"
+                         alt="Clear PET jars in different sizes"
+                         loading="lazy"
+                         decoding="async" />
+                </div>
+
+                <div class="qa-product-content">
+                    <h3>PET Jars</h3>
+
+                    <p>
+                        Strong, clear and versatile jars for food
+                        products such as pickles and sauces.
+                    </p>
+                </div>
+
+            </article>
+
+            <article class="qa-product-card">
+
+                <div class="qa-product-visual qa-product-photo qa-photo-closures">
+                    <img src="@Url.Content("~/media/about/closures.png")"
+                         alt="Different styles of plastic caps and closures"
+                         loading="lazy"
+                         decoding="async" />
+                </div>
+
+                <div class="qa-product-content">
+                    <h3>Caps &amp; Closures</h3>
+
+                    <p>
+                        Secure, tamper-evident closures, including
+                        28mm and 38mm tethered options.
+                    </p>
+                </div>
+
+            </article>
+
+            <article class="qa-product-card">
+
+    <div class="qa-product-visual qa-product-photo qa-photo-custom">
+        <img src="@Url.Content("~/media/about/custom-solutions.jpg")"
+             alt="Custom PET packaging solutions"
+             loading="lazy"
+             decoding="async" />
     </div>
 
-
-    <div class="about-hero-overlay"></div>
-    <div class="about-hero-grid"></div>
-
-
-    <div class="container about-hero-content">
-
-        <span class="eyebrow">
-            About QPET
-        </span>
-
-
-        <h1>
-            Packaging expertise built around
-
-            <span class="text-gradient">
-                quality and innovation.
-            </span>
-        </h1>
-
+    <div class="qa-product-content">
+        <h3>Custom Solutions</h3>
 
         <p>
-            QPET is a South African PET packaging company combining
-            food-safety standards, responsible plastics practices,
-            advanced manufacturing technology and competitive production.
+            Packaging tailored to your product,
+            volume and brand requirements.
         </p>
-
     </div>
 
+</article>
+
+        </div>
+    </div>
 </section>
 
 
+    <section class="qa-cta">
+        <div class="qa-container qa-cta-grid">
 
-<section class="section">
-
-    <div class="container about-story-grid">
-
-
-
-        <div class="about-story-copy">
-
-            <span class="eyebrow">
-                Who we are
-            </span>
-
-
-            <h2>
-                A modern approach to
-
-                <span class="text-gradient">
-                    liquid packaging.
-                </span>
-            </h2>
-
-
-            <p>
-                QPET provides PET packaging solutions for businesses
-                operating across beverage, food, household and
-                industrial markets.
-            </p>
-
-
-            <p>
-                Through efficient local production, modern technology
-                and a focus on consistent quality, QPET supports
-                customers requiring dependable packaging solutions
-                at competitive commercial pricing.
-            </p>
-
-
-            <div class="about-highlight">
-
-                <span>
-                    “
+            <div>
+                <span class="qa-eyebrow qa-eyebrow-light">
+                    LET'S WORK TOGETHER
                 </span>
 
+                <h2>Have a packaging requirement in mind?</h2>
 
                 <p>
-                    High-quality packaging should combine safety,
-                    manufacturing efficiency, innovation and value.
+                    Our team is ready to help you find the right
+                    packaging solution for your business.
                 </p>
-
             </div>
-
-        </div>
-
-
-
-
-        <div class="about-information-panel">
-
-            <div class="panel-glow"></div>
-
-
-            <span class="about-panel-number">
-                01
-            </span>
-
-
-            <h3>
-                Our focus
-            </h3>
-
-
-            <ul class="about-check-list">
-
-                <li>
-                    FSSC 22000 food-safety accreditation
-                </li>
-
-                <li>
-                    Responsible Plastics Converter
-                </li>
-
-                <li>
-                    Registered with EWASA, a registered PRO
-                </li>
-
-                <li>
-                    Competitive low-cost production
-                </li>
-
-                <li>
-                    Advanced high-speed manufacturing technology
-                </li>
-
-            </ul>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="section about-manufacturing-section">
-
-    <div class="container about-manufacturing-grid">
-
-
-
-        <div class="about-video-card">
-
-            <video autoplay
-                   muted
-                   loop
-                   playsinline
-                   preload="metadata"
-                   poster="@Url.Content("~/media/images/preforms-production.jpg")">
-
-                <source src="@Url.Content("~/media/videos/manufacturing-machine.mp4")"
-                        type="video/mp4" />
-
-            </video>
-
-
-            <div class="about-video-overlay"></div>
-
-
-            <div class="about-video-caption">
-
-                <span>
-                    Manufacturing capability
-                </span>
-
-                <strong>
-                    High-speed technology. Consistent quality.
-                </strong>
-
-            </div>
-
-        </div>
-
-
-
-
-        <div class="about-manufacturing-copy">
-
-            <span class="eyebrow">
-                How we work
-            </span>
-
-
-            <h2>
-                Modern capability with
-
-                <span class="text-gradient">
-                    efficient production.
-                </span>
-            </h2>
-
-
-            <p>
-                QPET combines advanced production technology with
-                efficient manufacturing processes to support quality,
-                speed and competitive commercial supply.
-            </p>
-
-
-
-            <div class="about-process-list">
-
-
-
-                <article>
-
-                    <span>
-                        01
-                    </span>
-
-
-                    <div>
-
-                        <h3>
-                            Advanced manufacturing technology
-                        </h3>
-
-                        <p>
-                            QPET uses the latest production technology
-                            to support high-speed manufacturing while
-                            maintaining consistent, high-quality output.
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-
-
-                <article>
-
-                    <span>
-                        02
-                    </span>
-
-
-                    <div>
-
-                        <h3>
-                            Competitive production
-                        </h3>
-
-                        <p>
-                            QPET prides itself on being a low-cost producer,
-                            allowing the company to maintain efficient
-                            production and offer competitive pricing.
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-
-
-                <article>
-
-                    <span>
-                        03
-                    </span>
-
-
-                    <div>
-
-                        <h3>
-                            Local manufacturing innovation
-                        </h3>
-
-                        <p>
-                            QPET is the first company in South Africa
-                            to locally produce both 28mm and 38mm
-                            tethered closures.
-                        </p>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<section class="section">
-
-    <div class="container">
-
-
-        <div class="about-section-heading">
-
-            <span class="eyebrow">
-                What defines QPET
-            </span>
-
-
-            <h2>
-                Standards and capabilities that
-
-                <span class="text-gradient">
-                    set QPET apart.
-                </span>
-            </h2>
-
-        </div>
-
-
-
-        <div class="about-values-grid">
-
-
-
-            <article class="about-value-card">
-
-                <span>
-                    01
-                </span>
-
-
-                <h3>
-                    Food Safety
-                </h3>
-
-
-                <p>
-                    FSSC 22000 accreditation supports QPET's
-                    commitment to recognised food-safety standards
-                    for packaging manufacturing.
-                </p>
-
-            </article>
-
-
-
-
-            <article class="about-value-card">
-
-                <span>
-                    02
-                </span>
-
-
-                <h3>
-                    Responsibility
-                </h3>
-
-
-                <p>
-                    QPET is a Responsible Plastics Converter and is
-                    registered with EWASA, a registered PRO,
-                    supporting responsible plastics practices.
-                </p>
-
-            </article>
-
-
-
-
-            <article class="about-value-card">
-
-                <span>
-                    03
-                </span>
-
-
-                <h3>
-                    Competitiveness
-                </h3>
-
-
-                <p>
-                    Efficient low-cost production allows QPET to
-                    offer customers competitive pricing while
-                    maintaining manufacturing quality.
-                </p>
-
-            </article>
-
-
-
-
-            <article class="about-value-card">
-
-                <span>
-                    04
-                </span>
-
-
-                <h3>
-                    Innovation
-                </h3>
-
-
-                <p>
-                    Advanced technology supports high-speed,
-                    high-quality output, while local production of
-                    28mm and 38mm tethered closures demonstrates
-                    South African manufacturing innovation.
-                </p>
-
-            </article>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-
-<section class="about-cta">
-
-    <div class="about-cta-glow"></div>
-
-
-    <div class="container about-cta-content">
-
-
-        <div>
-
-            <span class="eyebrow">
-                Start a conversation
-            </span>
-
-
-            <h2>
-                Need reliable packaging at competitive commercial pricing?
-            </h2>
-
-
-            <p>
-                Explore the QPET product catalogue or contact the team
-                to discuss your capacity, closure, material and
-                packaging requirements.
-            </p>
-
-        </div>
-
-
-
-        <div class="about-cta-actions">
-
-
-            <a asp-controller="Products"
-               asp-action="Index"
-               class="btn btn-light">
-
-                Explore products
-
-            </a>
-
 
             <a asp-controller="Contact"
                asp-action="Index"
-               class="btn btn-secondary">
-
-                Contact QPET
-
+               class="qa-button qa-button-light">
+                Want to know more about our services? Contact us
+                <span aria-hidden="true">→</span>
             </a>
 
         </div>
+    </section>
 
-    </div>
-
-</section>
+</div>

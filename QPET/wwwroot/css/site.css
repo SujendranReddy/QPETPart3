@@ -60,3 +60,106 @@ Available at:
 https://www.w3.org/TR/css-grid/
 [Accessed August 2026].
 */
+
+
+.public-body .brand-logo-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 0 0 auto;
+    gap: 0;
+    padding: 0;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.public-body .qpet-logo {
+    display: block;
+    height: auto;
+    object-fit: contain;
+}
+
+.public-body .qpet-header-logo {
+    width: 118px;
+    max-height: 61px;
+}
+
+.public-body .brand-logo-link:hover .qpet-header-logo {
+    opacity: 0.85;
+}
+
+.public-body .qpet-footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.public-body .qpet-footer-logo-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 13px;
+    border-radius: 12px;
+    background: #f3f7fb;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+    .public-body .qpet-footer-logo-link:hover {
+        background: #ffffff;
+    }
+
+.public-body .qpet-footer-logo {
+    width: 135px;
+    height: auto;
+}
+
+.public-body .qpet-footer-brand p {
+    max-width: 320px;
+    margin: 0;
+    color: #aebdd1;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.public-body .qpet-footer-copyright p {
+    margin: 0;
+    color: #aebdd1;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.public-body .brand-logo-link:focus-visible,
+.public-body .qpet-footer-logo-link:focus-visible {
+    outline: 3px solid #247cff;
+    outline-offset: 4px;
+}
+
+@media (max-width: 800px) {
+    .public-body .qpet-header-logo {
+        width: 105px;
+        max-height: 54px;
+    }
+}
+
+@media (max-width: 600px) {
+    .public-body .qpet-header-logo {
+        width: 94px;
+        max-height: 48px;
+    }
+
+    .public-body .qpet-footer-logo {
+        width: 120px;
+    }
+
+    .public-body .qpet-footer-brand {
+        gap: 10px;
+    }
+
+        .public-body .qpet-footer-brand p,
+        .public-body .qpet-footer-copyright p {
+            font-size: 12px;
+        }
+}

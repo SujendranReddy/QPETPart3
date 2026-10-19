@@ -310,9 +310,13 @@ The deployment process also supports safer redeployment by retaining the previou
 
 The `/health` endpoint is used to verify that the application has started successfully and can communicate with the production database.
 
+> *Note: The current repository configuration prevents the GitHub Actions workflows from completing successfully due to payment/billing-related errors. Successful tests were completed in our private repository, with proof included below.*
+> 
+
 **GitHub Actions:** <br/>
 <img width="959" height="542" alt="image" src="https://github.com/user-attachments/assets/65c17dc7-4731-418f-a468-a37e8c2361ae" /> <br/>
 Figure 2: Proof of successful GitHub Actions
+
 
 ---------------------
 ## 12. HOSTING/DEPLOYMENT EXPLANATION 
@@ -331,8 +335,9 @@ The production environment consists of:
 
 #### Production Architecture
 
-<img width="178" height="300" alt="Screenshot 2026-10-05 120539" src="https://github.com/user-attachments/assets/90c5edfe-9d60-4dc9-b51f-be89f55dfe9b" />
-<br/>
+<img width="178" height="300" alt="image" src="https://github.com/user-attachments/assets/37c69853-af52-4bc7-a257-f9d7916ff845" /> <br/>
+Figure 3: Flow of production architecture <br/>
+
 
 Nginx handles public HTTPS traffic and forwards requests to the ASP.NET Core application, which runs internally on `127.0.0.1:5000`. SQL Server is not directly exposed to the public Internet.
 
@@ -344,7 +349,7 @@ The hosted application uses HTTPS through a **Let's Encrypt SSL certificate**. N
 
 The server firewall allows only the required services:
 
-```
+```text
 22   SSH
 80   HTTP
 443  HTTPS

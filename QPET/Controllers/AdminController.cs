@@ -412,27 +412,135 @@ namespace QPET.Controllers
             );
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> Products()
+        public async Task<IActionResult> Products(
+            string? search = null,
+            int? categoryId = null,
+            int? subCategoryId = null,
+            string? capacity = null,
+            string? neckFinish = null,
+            string? status = null)
         {
-            var model =
-                new ProductCatalogueViewModel
-                {
-                    Products =
-                        await _productService
-                            .GetProductsAsync(),
+            var products = await _productService.GetProductsAsync();
+            var categories = await _productService.GetCategoriesAsync();
+            var subCategories = await _productService.GetSubCategoriesAsync();
 
-                    Categories =
-                        await _productService
-                            .GetCategoriesAsync(),
+            search = search?.Trim();
+            capacity = capacity?.Trim();
+            neckFinish = neckFinish?.Trim();
+            status = status?.Trim().ToLowerInvariant();
 
-                    SubCategories =
-                        await _productService
-                            .GetSubCategoriesAsync()
-                };
+            if (status != "active" && status != "inactive")
+            {
+                status = null;
+            }
+
+            if (categoryId <= 0)
+            {
+                categoryId = null;
+            }
+
+            if (subCategoryId <= 0)
+            {
+                subCategoryId = null;
+            }
+
+            IEnumerable<QPET.Data.Entities.Product> filteredProducts = products;
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.ProductName.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.Description.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.NeckFinish.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.CapacityVolume.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.ProductId.ToString() == search);
+            }
+
+            if (categoryId.HasValue)
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.CategoryId == categoryId.Value);
+            }
+
+            if (subCategoryId.HasValue)
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.SubCategoryId == subCategoryId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(capacity))
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    string.Equals(
+                        product.CapacityVolume.Trim(),
+                        capacity,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(neckFinish))
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    string.Equals(
+                        product.NeckFinish.Trim(),
+                        neckFinish,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (status == "active")
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.IsActive);
+            }
+            else if (status == "inactive")
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    !product.IsActive);
+            }
+
+            var model = new ProductCatalogueViewModel
+            {
+                Products = filteredProducts
+                    .OrderBy(product => product.ProductName)
+                    .ToList(),
+
+                Categories = categories,
+                SubCategories = subCategories,
+
+                Capacities = products
+                    .Select(product => product.CapacityVolume.Trim())
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(value => value)
+                    .ToList(),
+
+                NeckFinishes = products
+                    .Select(product => product.NeckFinish.Trim())
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(value => value)
+                    .ToList(),
+
+                Search = search,
+                SelectedCategoryId = categoryId,
+                SelectedSubCategoryId = subCategoryId,
+                SelectedCapacity = capacity,
+                SelectedNeckFinish = neckFinish,
+                SelectedStatus = status,
+
+                TotalProductCount = products.Count,
+                ActiveProductCount = products.Count(product => product.IsActive),
+                InactiveProductCount = products.Count(product => !product.IsActive)
+            };
 
             return View(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> CreateProduct()

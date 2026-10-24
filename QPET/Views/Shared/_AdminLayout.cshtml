@@ -17,9 +17,11 @@
     <title>@ViewData["Title"] | QPET Admin</title>
 
 
-    <link rel="stylesheet"
-          href="~/css/site.css"
-          asp-append-version="true" />
+  <link rel="stylesheet"
+      href="~/css/site.css"
+      asp-append-version="true" />
+
+@await RenderSectionAsync("Styles", required: false)
 
 </head>
 
@@ -36,28 +38,20 @@
 
 
             <a asp-controller="Admin"
-               asp-action="Dashboard"
-               class="admin-brand">
+   asp-action="Dashboard"
+   class="admin-brand"
+   aria-label="QPET Administration Dashboard">
 
+    <img src="~/media/images/qpet-logo.png"
+         asp-append-version="true"
+         alt="QPET"
+         class="admin-brand-logo" />
 
-                <div class="admin-brand-mark">
-                    Q
-                </div>
+    <span class="admin-brand-subtitle">
+        Administration
+    </span>
 
-
-                <div class="admin-brand-copy">
-
-                    <span class="admin-brand-title">
-                        QPET
-                    </span>
-
-                    <span class="admin-brand-subtitle">
-                        Administration
-                    </span>
-
-                </div>
-
-            </a>
+</a>
 
 
 
@@ -177,8 +171,8 @@
 
 
                 <span class="admin-prototype-label">
-                    Interactive system prototype
-                </span>
+    QPET Management System
+</span>
 
 
                 <form asp-controller="Admin"
@@ -211,8 +205,21 @@
         <div class="admin-main">
 
 
+            <div class="admin-mobile-navigation">
 
-            <header class="admin-topbar">
+    <button type="button"
+            class="admin-menu-toggle"
+            id="adminMenuToggle"
+            aria-label="Open admin navigation"
+            aria-expanded="false">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </button>
+
+</div>
 
 
                 <div class="admin-topbar-left">
@@ -231,45 +238,7 @@
                     </button>
 
 
-                    <div class="admin-topbar-title">
 
-                        <strong>
-                            QPET Administration
-                        </strong>
-
-                        <span>
-                            Prototype management interface
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="admin-user">
-
-
-                    <div class="admin-user-avatar">
-                        A
-                    </div>
-
-
-                    <div class="admin-user-copy">
-
-                        <strong>
-                            Administrator
-                        </strong>
-
-                        <span>
-                            @(User.Identity?.Name ?? "Administrator")
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </header>
 
 
 

@@ -260,62 +260,133 @@ namespace QPET.Controllers
             return View(model);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Enquiries(
-            string? status = null)
+            string? status = null,
+            string? search = null,
+            int? branchId = null,
+            DateTime? fromDate = null,
+            DateTime? toDate = null)
         {
-            var allowedStatuses =
-                new[]
-                {
-                    "New",
-                    "InProgress",
-                    "Resolved",
-                    "Closed"
-                };
+            var allowedStatuses = new[]
+            {
+        "New",
+        "InProgress",
+        "Resolved",
+        "Closed"
+    };
 
-            if (
-                !string.IsNullOrWhiteSpace(status) &&
+            if (!string.IsNullOrWhiteSpace(status) &&
                 !allowedStatuses.Contains(status))
             {
                 status = null;
             }
 
-            var enquiries =
-                await _enquiryService
-                    .GetEnquiriesAsync();
+            search = search?.Trim();
+
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                search = null;
+            }
+
+            if (branchId <= 0)
+            {
+                branchId = null;
+            }
+
+            var enquiries = await _enquiryService
+                .GetEnquiriesAsync();
+
+            var branches = await _branchService
+                .GetBranchesAsync();
+
+            var customers = await _enquiryService
+                .GetCustomersAsync();
+
+            IEnumerable<QPET.Data.Entities.Enquiry> filtered = enquiries;
 
             if (!string.IsNullOrWhiteSpace(status))
             {
-                enquiries =
-                    enquiries
-                        .Where(
-                            enquiry =>
-                                enquiry.Status ==
-                                status
-                        )
-                        .ToList();
+                filtered = filtered.Where(
+                    enquiry => enquiry.Status == status);
             }
 
-            ViewBag.Customers =
-                await _enquiryService
-                    .GetCustomersAsync();
+            if (branchId.HasValue)
+            {
+                filtered = filtered.Where(
+                    enquiry => enquiry.BranchId == branchId.Value);
+            }
 
-            ViewBag.Branches =
-                await _branchService
-                    .GetBranchesAsync();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var idSearch = search.StartsWith(
+                    "ENQ-",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? search.Substring(4).Trim()
+                    : search;
 
-            var model =
-                new AdminEnquiryListViewModel
+                var isId = int.TryParse(
+                    idSearch,
+                    out var searchedId);
+
+                filtered = filtered.Where(enquiry =>
+                    (isId && enquiry.EnquiryId == searchedId) ||
+                    enquiry.Customer.FullName.Contains(
+                        search,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    enquiry.Customer.EmailAddress.Contains(
+                        search,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    enquiry.Subject.Contains(
+                        search,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            string? filterError = null;
+
+            if (fromDate.HasValue &&
+                toDate.HasValue &&
+                fromDate.Value.Date > toDate.Value.Date)
+            {
+                filterError =
+                    "The start date cannot be later than the end date.";
+
+                filtered = Enumerable.Empty<QPET.Data.Entities.Enquiry>();
+            }
+            else
+            {
+                if (fromDate.HasValue)
                 {
-                    Enquiries =
-                        enquiries,
+                    filtered = filtered.Where(enquiry =>
+                        enquiry.CreatedDate.Date >= fromDate.Value.Date);
+                }
 
-                    SelectedStatus =
-                        status
-                };
+                if (toDate.HasValue)
+                {
+                    filtered = filtered.Where(enquiry =>
+                        enquiry.CreatedDate.Date <= toDate.Value.Date);
+                }
+            }
+
+            ViewBag.Customers = customers;
+            ViewBag.Branches = branches;
+
+            var model = new AdminEnquiryListViewModel
+            {
+                Enquiries = filtered.ToList(),
+                TotalCount = enquiries.Count,
+                Search = search,
+                SelectedStatus = status,
+                SelectedBranchId = branchId,
+                FromDate = fromDate,
+                ToDate = toDate,
+                FilterError = filterError
+            };
 
             return View(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> EnquiryDetails(

@@ -948,28 +948,66 @@ namespace QPET.Controllers
             );
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> Reviews()
+        public async Task<IActionResult> Reviews(
+            int? rating = null,
+            string? search = null)
         {
-            var reviews =
-                await _reviewService
-                    .GetReviewsAsync();
+            var reviews = await _reviewService.GetReviewsAsync();
+
+            var totalCount = reviews.Count;
+
+            if (rating.HasValue &&
+                (rating.Value < 1 || rating.Value > 5))
+            {
+                rating = null;
+            }
+
+            search = search?.Trim();
+
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                search = null;
+            }
+
+            if (rating.HasValue)
+            {
+                reviews = reviews
+                    .Where(review => review.Rating == rating.Value)
+                    .ToList();
+            }
+
+            if (search != null)
+            {
+                reviews = reviews
+                    .Where(review =>
+                        review.ReviewMessage.Contains(
+                            search,
+                            StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
 
             ViewBag.Branches =
-                await _branchService
-                    .GetBranchesAsync();
+                await _branchService.GetBranchesAsync();
+
+            ViewBag.SelectedRating = rating;
+            ViewBag.ReviewSearch = search;
+            ViewBag.TotalReviewCount = totalCount;
 
             return View(reviews);
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReview(
-            int id)
+            int id,
+            int? rating = null,
+            string? search = null)
         {
-            var deleted =
-                await _reviewService
-                    .DeleteReviewAsync(id);
+            var deleted = await _reviewService.DeleteReviewAsync(id);
 
             TempData["ReviewMessage"] =
                 deleted
@@ -977,9 +1015,15 @@ namespace QPET.Controllers
                     : "The review could not be found.";
 
             return RedirectToAction(
-                nameof(Reviews)
+                nameof(Reviews),
+                new
+                {
+                    rating,
+                    search
+                }
             );
         }
+
 
         private async Task PopulateProductLookupsAsync()
         {

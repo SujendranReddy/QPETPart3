@@ -1,79 +1,145 @@
-﻿@model IEnumerable<QPET.Data.Entities.Review>
+﻿
+@model IEnumerable<QPET.Data.Entities.Review>
 
 @{
     ViewData["Title"] = "Reviews";
 
-    var reviews =
-        Model.ToList();
+    var reviews = Model.ToList();
 
     var branches =
         ViewBag.Branches as List<QPET.Data.Entities.Branch>
         ?? new List<QPET.Data.Entities.Branch>();
-}
 
+    int? selectedRating = ViewBag.SelectedRating as int?;
+
+    var reviewSearch =
+        ViewBag.ReviewSearch as string ?? string.Empty;
+
+    var totalCount =
+        ViewBag.TotalReviewCount is int count
+            ? count
+            : reviews.Count;
+
+    var hasFilters =
+        selectedRating.HasValue ||
+        !string.IsNullOrWhiteSpace(reviewSearch);
+}
 
 <div id="adminReviewsPage">
 
     <div class="admin-page-heading">
-
         <div>
-
             <span class="eyebrow">
                 Customer feedback
             </span>
 
-
-            <h1>
-                Reviews
-            </h1>
-
+            <h1>Reviews</h1>
 
             <p>
                 View and moderate customer reviews submitted
                 through the public QPET website.
             </p>
-
         </div>
-
     </div>
 
-
-    @if (
-        TempData["ReviewMessage"]
-        is string message)
+    @if (TempData["ReviewMessage"] is string message)
     {
-        <div class="contact-success-message">
-
+        <div class="contact-success-message" role="status">
             @message
-
         </div>
     }
-
 
     <section class="admin-table-panel">
 
         <div class="admin-table-toolbar">
-
             <div>
-
-                <h2>
-                    Published reviews
-                </h2>
-
+                <h2>Customer Reviews</h2>
 
                 <p>
-
-                    @reviews.Count
-                    @(reviews.Count == 1
-                                        ? "review"
-                                        : "reviews")
-
+                    @if (hasFilters)
+                    {
+                        <text>
+                            Showing @reviews.Count of
+                            @totalCount reviews
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                            @reviews.Count
+                            @(reviews.Count == 1 ? "review" : "reviews")
+                        </text>
+                    }
                 </p>
-
             </div>
-
         </div>
 
+        <form asp-controller="Admin"
+              asp-action="Reviews"
+              method="get"
+              class="ap-filters">
+
+            <div class="ap-field">
+                <label for="reviewSearch">
+                    Search Review Text
+                </label>
+
+                <input id="reviewSearch"
+                       name="search"
+                       type="search"
+                       value="@reviewSearch"
+                       placeholder="Search for words or phrases" />
+            </div>
+
+            <div class="ap-field">
+                <label for="reviewRating">
+                    Star Rating
+                </label>
+
+                <select id="reviewRating"
+                        name="rating"
+                        class="admin-filter-control">
+
+                    <option value=""
+                            selected="@(!selectedRating.HasValue)">
+                        All Ratings
+                    </option>
+
+                    @for (var starRating = 5;
+                          starRating >= 1;
+                          starRating--)
+                    {
+                        <option value="@starRating"
+                                selected="@(selectedRating == starRating)">
+                            @starRating
+                            @(starRating == 1 ? "Star" : "Stars")
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="ap-field">
+                <label>
+                    Filter Actions
+                </label>
+
+                <div class="ap-filter-actions">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Apply Filters
+                    </button>
+
+                    <a asp-controller="Admin"
+                       asp-action="Reviews"
+                       class="btn btn-secondary">
+                        Reset
+                    </a>
+
+                </div>
+            </div>
+
+        </form>
 
         @if (reviews.Any())
         {
@@ -82,148 +148,101 @@
                 <table class="admin-table">
 
                     <thead>
-
                         <tr>
-
-                            <th>
-                                Customer
-                            </th>
-
-                            <th>
-                                Branch
-                            </th>
-
-                            <th>
-                                Rating
-                            </th>
-
-                            <th>
-                                Review
-                            </th>
-
-                            <th>
-                                Submitted
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
+                            <th>Customer</th>
+                            <th>Branch</th>
+                            <th>Rating</th>
+                            <th>Review</th>
+                            <th>Submitted</th>
+                            <th>Action</th>
                         </tr>
-
                     </thead>
-
 
                     <tbody>
 
                         @foreach (var review in reviews)
                         {
-                            var branch =
-                            branches.FirstOrDefault(
-                            branch =>
-                            branch.BranchId ==
-                            review.BranchId
+                            var branch = branches.FirstOrDefault(
+                                item =>
+                                    item.BranchId == review.BranchId
                             );
 
+                            var rating =
+                                Math.Clamp(review.Rating, 0, 5);
 
                             var stars =
-                            new string(
-                            '★',
-                            review.Rating
-                            )
-                            +
-                            new string(
-                            '☆',
-                            5 - review.Rating
-                            );
-
+                                new string('★', rating)
+                                + new string('☆', 5 - rating);
 
                             var displayDate =
-    review.CreatedDate
-        .ToString("dd MMM yyyy");
-
+                                review.CreatedDate.ToString("dd MMM yyyy");
 
                             <tr>
 
                                 <td>
-
                                     <div class="admin-table-primary">
 
                                         <strong>
                                             @review.DisplayName
                                         </strong>
 
-
                                         <span>
-
                                             @(string.IsNullOrWhiteSpace(
-                                                                                review.EmailAddress)
-                                                                                ? "Email not supplied"
-                                                                                : review.EmailAddress)
-
-                                </span>
+                                                review.EmailAddress)
+                                                ? "Email not supplied"
+                                                : review.EmailAddress)
+                                        </span>
 
                                     </div>
-
                                 </td>
 
-
                                 <td>
-
                                     @(branch?.BranchName ?? "—")
-
                                 </td>
 
-
                                 <td>
-
-                                    <span class="admin-review-stars">
-
+                                    <span class="admin-review-stars"
+                                          aria-label="@review.Rating out of 5 stars">
                                         @stars
-
                                     </span>
-
                                 </td>
-
 
                                 <td>
-
                                     <span class="admin-review-message">
-
                                         @review.ReviewMessage
-
                                     </span>
-
                                 </td>
-
 
                                 <td>
                                     @displayDate
                                 </td>
 
-
                                 <td>
-
                                     <form asp-controller="Admin"
                                           asp-action="DeleteReview"
                                           asp-route-id="@review.ReviewId"
+                                          asp-antiforgery="true"
                                           method="post"
                                           onsubmit="return confirm('Delete this review?');">
 
+                                        <input type="hidden"
+                                               name="rating"
+                                               value="@selectedRating" />
 
-                                        <button type="submit"
-                                                class="admin-action-button admin-action-danger">
+                                        <input type="hidden"
+                                               name="search"
+                                               value="@reviewSearch" />
 
-                                            Delete
-
-                                        </button>
+                                       <button type="submit"
+        class="ap-delete-button">
+    Delete
+</button>
 
                                     </form>
-
                                 </td>
 
                             </tr>
-                                        }
+                        }
 
                     </tbody>
 
@@ -235,7 +254,24 @@
         {
             <div class="admin-table-empty">
 
-                No customer reviews have been submitted.
+                @if (hasFilters)
+                {
+                    <p>
+                        No reviews match your selected filters.
+                    </p>
+
+                    <a asp-controller="Admin"
+                       asp-action="Reviews"
+                       class="btn btn-secondary">
+                        Clear Filters
+                    </a>
+                }
+                else
+                {
+                    <p>
+                        No customer reviews have been submitted yet.
+                    </p>
+                }
 
             </div>
         }

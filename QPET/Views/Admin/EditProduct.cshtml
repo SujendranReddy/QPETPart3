@@ -1,4 +1,6 @@
-﻿@model QPET.Models.AdminProductViewModel
+﻿
+@model QPET.Models.AdminProductViewModel
+
 @{
     ViewData["Title"] = "Edit Product";
 
@@ -11,293 +13,260 @@
         ?? new List<QPET.Data.Entities.SubCategory>();
 }
 
-
 @if (ViewBag.ProductNotFound == true)
 {
-    <div class="admin-page-heading">
+    <div class="ap-page">
+        <div class="ap-card ap-not-found">
+            <h1>Product Not Found</h1>
+            <p>The requested product could not be located.</p>
 
-        <div>
-
-            <span class="eyebrow">
-                Catalogue management
-            </span>
-
-            <h1>
-                Product Not Found
-            </h1>
-
-            <p>
-                The requested prototype product could not be located.
-            </p>
-
+            <a asp-controller="Admin"
+               asp-action="Products"
+               class="btn btn-primary">
+                Return to Products
+            </a>
         </div>
-
-    </div>
-
-    <div class="admin-panel admin-detail-section">
-
-        <a asp-controller="Admin"
-           asp-action="Products"
-           class="btn btn-primary">
-
-            Return to Products
-
-        </a>
-
     </div>
 }
 else
 {
-    <div id="editProductPage">
+    <div id="editProductPage" class="ap-page">
 
-        <div class="admin-page-heading">
-
+        <div class="admin-page-heading ap-heading">
             <div>
-
-                <span class="eyebrow">
-                    Catalogue management
-                </span>
-
-                <h1>
-                    Edit Product
-                </h1>
-
-                <p>
-                    Update product information displayed in the
-                    QPET prototype catalogue.
-                </p>
-
+                <span class="eyebrow">CATALOGUE MANAGEMENT</span>
+                <h1>Edit Product</h1>
+                <p>Update product details, specifications and visibility.</p>
             </div>
 
             <a asp-controller="Admin"
                asp-action="Products"
                class="btn btn-secondary">
-
                 ← Back to Products
-
             </a>
-
         </div>
 
+        <div class="ap-edit-reference">
+            Editing Product #@Model.ProductId
+        </div>
 
-        <div class="admin-panel">
+        <form asp-controller="Admin"
+              asp-action="EditProduct"
+              asp-route-id="@Model.ProductId"
+              method="post"
+              enctype="multipart/form-data"
+              id="productForm">
 
-            <div class="admin-detail-section">
+            <input asp-for="ProductId" type="hidden" />
 
-                <form asp-controller="Admin"
-                      asp-action="EditProduct"
-                      asp-route-id="@Model.ProductId"
-                      method="post"
-                      enctype="multipart/form-data"
-                      id="productForm"
-                      class="contact-form">
+            <div asp-validation-summary="ModelOnly"
+                 class="ap-validation"
+                 role="alert"></div>
 
-                    <input asp-for="ProductId"
-                           type="hidden" />
+            <div class="ap-editor-grid">
 
-                    <input asp-for="ExistingImageUrl"
-                           type="hidden" />
+                <div class="ap-editor-main">
 
+                    <section class="ap-card ap-form-card">
+                        <div class="ap-card-heading">
+                            <div>
+                                <h2>Product Information</h2>
+                                <p>Update the product's name and classification.</p>
+                            </div>
+                        </div>
 
-                    <div class="contact-form-field">
+                        <div class="ap-form-content">
+                            <div class="ap-field">
+                                <label asp-for="ProductName"></label>
 
-                        <label asp-for="ProductName">
-                            Product Name
-                        </label>
+                                <input asp-for="ProductName" />
 
-                        <input asp-for="ProductName"
-                               class="contact-control" />
+                                <span asp-validation-for="ProductName"
+                                      class="ap-field-error"></span>
+                            </div>
 
-                        <span asp-validation-for="ProductName"
-                              class="field-validation">
-                        </span>
+                            <div class="ap-form-row">
+                                <div class="ap-field">
+                                    <label asp-for="CategoryId"></label>
 
-                    </div>
+                                    <select asp-for="CategoryId"
+                                            id="productCategory">
+                                        <option value="0">Select Category</option>
 
+                                        @foreach (var category in categories)
+                                        {
+                                            <option value="@category.CategoryId">
+                                                @category.CategoryName
+                                            </option>
+                                        }
+                                    </select>
 
-                    <div class="contact-form-row">
+                                    <span asp-validation-for="CategoryId"
+                                          class="ap-field-error"></span>
+                                </div>
 
-                        <div class="contact-form-field">
+                                <div class="ap-field">
+                                    <label asp-for="SubCategoryId"></label>
 
-                            <label asp-for="CategoryId">
-                                Category
-                            </label>
+                                    <select asp-for="SubCategoryId"
+                                            id="productSubCategory"
+                                            data-selected-subcategory="@Model.SubCategoryId">
+                                        <option value="">Select Subcategory</option>
 
-                            <select asp-for="CategoryId"
-                                    id="productCategory"
-                                    class="contact-control">
+                                        @foreach (var subCategory in subCategories)
+                                        {
+                                            <option value="@subCategory.SubCategoryId"
+                                                    data-category-id="@subCategory.CategoryId">
+                                                @subCategory.SubCategoryName
+                                            </option>
+                                        }
+                                    </select>
 
-                                <option value="0">
-                                    Select Category
-                                </option>
+                                    <span asp-validation-for="SubCategoryId"
+                                          class="ap-field-error"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-                                @foreach (var category in categories)
+                    <section class="ap-card ap-form-card">
+                        <div class="ap-card-heading">
+                            <div>
+                                <h2>Product Specifications</h2>
+                                <p>Maintain accurate measurements and descriptions.</p>
+                            </div>
+                        </div>
+
+                        <div class="ap-form-content">
+                            <div class="ap-form-row">
+                                <div class="ap-field">
+                                    <label asp-for="CapacityVolume"></label>
+
+                                    <input asp-for="CapacityVolume"
+                                           placeholder="e.g. 500ml" />
+
+                                    <span asp-validation-for="CapacityVolume"
+                                          class="ap-field-error"></span>
+                                </div>
+
+                                <div class="ap-field">
+                                    <label asp-for="NeckFinish"></label>
+
+                                    <input asp-for="NeckFinish"
+                                           placeholder="e.g. 28mm" />
+
+                                    <span asp-validation-for="NeckFinish"
+                                          class="ap-field-error"></span>
+                                </div>
+                            </div>
+
+                            <div class="ap-field">
+                                <label asp-for="Description"></label>
+
+                                <textarea asp-for="Description"
+                                          rows="6"></textarea>
+
+                                <span asp-validation-for="Description"
+                                      class="ap-field-error"></span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="ap-editor-side">
+
+                    <section class="ap-card ap-form-card">
+                        <div class="ap-card-heading">
+                            <div>
+                                <h2>Product Image</h2>
+                                <p>Keep the existing image or upload a replacement.</p>
+                            </div>
+                        </div>
+
+                        <div class="ap-form-content">
+                            <div class="ap-image-preview">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingImageUrl))
                                 {
-                                    <option value="@category.CategoryId">
-                                        @category.CategoryName
-                                    </option>
+                                    <img id="productImagePreview"
+                                         src="@Model.ExistingImageUrl"
+                                         data-original-src="@Model.ExistingImageUrl"
+                                         alt="Current product image" />
+                                }
+                                else
+                                {
+                                    <img id="productImagePreview"
+                                         alt="Selected product preview"
+                                         hidden />
                                 }
 
-                            </select>
+                                <span id="productImagePlaceholder"
+                                      hidden="@(!string.IsNullOrWhiteSpace(Model.ExistingImageUrl))">
+                                    No image available
+                                </span>
+                            </div>
 
-                            <span asp-validation-for="CategoryId"
-                                  class="field-validation">
-                            </span>
+                            <div class="ap-field">
+                                <label asp-for="Image">Replace Image</label>
 
+                                <input asp-for="Image"
+                                       id="productImageInput"
+                                       type="file"
+                                       accept=".jpg,.jpeg,.png,.webp" />
+
+                                <small>
+                                    Leave this empty to keep the current image.
+                                    JPG, PNG and WebP are supported.
+                                </small>
+
+                                <span asp-validation-for="Image"
+                                      class="ap-field-error"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="ap-card ap-form-card">
+                        <div class="ap-card-heading">
+                            <div>
+                                <h2>Visibility</h2>
+                                <p>Control whether customers can see this product.</p>
+                            </div>
                         </div>
 
+                        <div class="ap-form-content">
+                            <label class="ap-toggle-row">
+                                <input asp-for="IsActive" />
 
-                        <div class="contact-form-field">
-
-                            <label asp-for="SubCategoryId">
-                                Subcategory
+                                <span>
+                                    <strong>Active Product</strong>
+                                    <small>
+                                        Inactive products remain in the admin
+                                        catalogue but are hidden from customers.
+                                    </small>
+                                </span>
                             </label>
-
-                            <select asp-for="SubCategoryId"
-                                    id="productSubCategory"
-                                    data-selected-subcategory="@Model.SubCategoryId"
-                                    class="contact-control">
-
-                                <option value="">
-                                    Select Subcategory
-                                </option>
-
-                                @foreach (var subCategory in subCategories)
-                                {
-                                    <option value="@subCategory.SubCategoryId"
-                                            data-category-id="@subCategory.CategoryId">
-
-                                        @subCategory.SubCategoryName
-
-                                    </option>
-                                }
-
-                            </select>
-
-                            <span asp-validation-for="SubCategoryId"
-                                  class="field-validation">
-                            </span>
-
                         </div>
-
-                    </div>
-
-
-                    <div class="contact-form-row">
-
-                        <div class="contact-form-field">
-
-                            <label asp-for="NeckFinish">
-                                Neck Finish
-                            </label>
-
-                            <input asp-for="NeckFinish"
-                                   class="contact-control" />
-
-                            <span asp-validation-for="NeckFinish"
-                                  class="field-validation">
-                            </span>
-
-                        </div>
-
-
-                        <div class="contact-form-field">
-
-                            <label asp-for="CapacityVolume">
-                                Capacity / Volume
-                            </label>
-
-                            <input asp-for="CapacityVolume"
-                                   class="contact-control" />
-
-                            <span asp-validation-for="CapacityVolume"
-                                  class="field-validation">
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="contact-form-field">
-
-                        <label asp-for="Description">
-                            Description
-                        </label>
-
-                        <textarea asp-for="Description"
-                                  class="contact-control contact-textarea"
-                                  rows="5">
-                            </textarea>
-
-                        <span asp-validation-for="Description"
-                              class="field-validation">
-                        </span>
-
-                    </div>
-
-
-                    <div class="contact-form-field">
-
-                        <label>
-
-                            <input asp-for="IsActive" />
-
-                            Active Product
-
-                        </label>
-
-                        <small class="contact-field-note">
-                            Inactive products remain in the admin catalogue
-                            but are hidden from the public Products page.
-                        </small>
-
-                    </div>
-
-
-                    <div class="contact-form-field">
-
-                        <label asp-for="Image">
-                            Replace Product Image
-                        </label>
-
-                        <input asp-for="Image"
-                               type="file"
-                               class="contact-control"
-                               accept=".jpg,.jpeg,.png,.webp" />
-
-                        <small class="contact-field-note">
-                            Prototype only — selected images are validated
-                            but the existing placeholder image is retained.
-                        </small>
-
-                        <span asp-validation-for="Image"
-                              class="field-validation">
-                        </span>
-
-                    </div>
-
-
-                    <button type="submit"
-                            class="btn btn-primary">
-
-                        Save Changes
-
-                    </button>
-
-                </form>
+                    </section>
+                </aside>
 
             </div>
 
-        </div>
+            <div class="ap-form-footer">
+                <a asp-controller="Admin"
+                   asp-action="Products"
+                   class="btn btn-secondary">
+                    Cancel
+                </a>
 
+                <button type="submit" class="btn btn-primary">
+                    Save Changes →
+                </button>
+            </div>
+        </form>
     </div>
 }
 
-
 @section Scripts {
-
-    <script src="~/js/admin-product-form.js"
+    <script src="~/js/admin-products-form.js"
             asp-append-version="true"></script>
-
 }

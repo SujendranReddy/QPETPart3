@@ -1,4 +1,5 @@
-﻿@model QPET.Models.ProductCatalogueViewModel
+﻿
+@model QPET.Models.ProductCatalogueViewModel
 
 @{
     ViewData["Title"] = "Products";
@@ -53,7 +54,7 @@
 
                 <p>
                     Browse our range of PET packaging products
-                    by category and subcategory.
+                    by category, subcategory and capacity.
                 </p>
             </div>
 
@@ -96,6 +97,26 @@
                             <option value="@subCategory.SubCategoryId"
                                     data-category-id="@subCategory.CategoryId">
                                 @subCategory.SubCategoryName
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-field">
+                    <label for="capacityFilter">
+                        Capacity
+                    </label>
+
+                    <select id="capacityFilter"
+                            class="product-filter-control">
+                        <option value="">
+                            All capacities
+                        </option>
+
+                        @foreach (var capacity in Model.Capacities)
+                        {
+                            <option value="@capacity">
+                                @capacity
                             </option>
                         }
                     </select>
@@ -169,7 +190,8 @@
 
                 <article class="catalogue-product-card"
                          data-category-id="@product.CategoryId"
-                         data-subcategory-id="@product.SubCategoryId">
+                         data-subcategory-id="@product.SubCategoryId"
+                         data-capacity="@product.CapacityVolume">
 
                     <div class="catalogue-product-image">
 
@@ -260,8 +282,7 @@
             </h2>
 
             <p>
-                Try clearing the selected category or
-                subcategory filters.
+                Try changing or clearing your selected filters.
             </p>
 
             <button type="button"

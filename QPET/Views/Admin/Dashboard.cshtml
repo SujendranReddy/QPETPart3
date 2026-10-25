@@ -1,498 +1,529 @@
-﻿@model QPET.Models.AdminDashboardViewModel
+﻿
+@model QPET.Models.AdminDashboardViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
 }
 
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-dashboard.css"
+          asp-append-version="true" />
+}
 
-<div id="adminDashboard"
-     class="admin-dashboard">
+<div id="adminDashboard" class="qpet-dashboard">
 
-
-    <div class="admin-page-heading">
-
-        <div>
-
-            <span class="eyebrow">
-                Administration overview
+    <header class="qd-hero">
+        <div class="qd-hero-content">
+            <span class="qd-hero-label">
+                <span class="qd-hero-dot"></span>
+                QPET MANAGEMENT PORTAL
             </span>
 
-
-            <h1>
-                Dashboard
-            </h1>
-
+            <h1>Welcome to your workspace.</h1>
 
             <p>
-                Review the current QPET catalogue, customer enquiries
-                and feedback activity from one management interface.
+                Your central place to manage products,
+                monitor customer enquiries and oversee
+                website feedback.
             </p>
-
         </div>
 
+        <div class="qd-hero-actions">
+            <a asp-controller="Admin"
+               asp-action="CreateProduct"
+               class="qd-button qd-button-white">
+                <span aria-hidden="true">+</span>
+                Add Product
+            </a>
 
-        <a asp-controller="Home"
-           asp-action="Index"
-           target="_blank"
-           class="btn btn-secondary">
+            <a asp-controller="Home"
+               asp-action="Index"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="qd-button qd-button-outline">
+                View Website
+                <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+    </header>
 
-            View public website
+    @if (Model.NewEnquiryCount > 0)
+    {
+        <div class="qd-alert">
+            <div class="qd-alert-icon" aria-hidden="true">
+                !
+            </div>
 
-            <span aria-hidden="true">
-                ↗
-            </span>
+            <div class="qd-alert-text">
+                <strong>
+                    Customer enquiries need attention
+                </strong>
 
-        </a>
+                <p>
+                    You have @Model.NewEnquiryCount new
+                    @(Model.NewEnquiryCount == 1
+                        ? "enquiry"
+                        : "enquiries")
+                    awaiting review.
+                </p>
+            </div>
 
+            <a asp-controller="Admin"
+               asp-action="Enquiries"
+               asp-route-status="New"
+               class="qd-alert-action">
+                Review Enquiries →
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="qd-alert qd-alert-clear">
+            <div class="qd-alert-icon" aria-hidden="true">
+                ✓
+            </div>
+
+            <div class="qd-alert-text">
+                <strong>No new enquiries awaiting review</strong>
+                <p>
+                    You are all caught up with new customer requests.
+                </p>
+            </div>
+
+            <a asp-controller="Admin"
+               asp-action="Enquiries"
+               class="qd-alert-action">
+                View Enquiries →
+            </a>
+        </div>
+    }
+
+    <div class="qd-section-heading">
+        <div>
+            <span class="qd-section-label">OVERVIEW</span>
+            <h2>Business at a glance</h2>
+            <p>Current figures from your QPET application.</p>
+        </div>
     </div>
 
+    <section class="qd-stats" aria-label="Dashboard statistics">
 
+        <a asp-controller="Admin"
+           asp-action="Products"
+           class="qd-stat-card">
 
-    <section class="admin-stat-grid">
-
-
-        <article class="admin-stat-card">
-
-            <div class="admin-stat-top">
-
-                <span class="admin-stat-label">
-                    Active Products
+            <div class="qd-stat-header">
+                <span class="qd-stat-icon qd-icon-blue">
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                    </svg>
                 </span>
 
-
-                <span class="admin-stat-icon">
-                    ◫
-                </span>
-
+                <span class="qd-stat-arrow" aria-hidden="true">↗</span>
             </div>
 
-
-            <strong class="admin-stat-value">
-
+            <div class="qd-stat-number">
                 @Model.ActiveProductCount
-
-            </strong>
-
-
-            <div class="admin-stat-footer">
-
-                <span class="admin-stat-indicator"></span>
-
-                Available in public catalogue
-
             </div>
 
-        </article>
+            <h3>Active Products</h3>
 
+            <p>Available in the public catalogue</p>
 
+            <span class="qd-stat-bottom">
+                Manage products →
+            </span>
+        </a>
 
-        <article class="admin-stat-card">
+        <a asp-controller="Admin"
+           asp-action="Enquiries"
+           asp-route-status="New"
+           class="qd-stat-card">
 
-            <div class="admin-stat-top">
-
-                <span class="admin-stat-label">
-                    New Enquiries
+            <div class="qd-stat-header">
+                <span class="qd-stat-icon qd-icon-orange">
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                        <path d="m3 7 9 6 9-6" />
+                    </svg>
                 </span>
 
-
-                <span class="admin-stat-icon">
-                    ✉
-                </span>
-
+                <span class="qd-stat-arrow" aria-hidden="true">↗</span>
             </div>
 
-
-            <strong class="admin-stat-value">
-
+            <div class="qd-stat-number">
                 @Model.NewEnquiryCount
-
-            </strong>
-
-
-            <div class="admin-stat-footer">
-
-                <span class="admin-stat-indicator"></span>
-
-                Awaiting administrator action
-
             </div>
 
-        </article>
+            <h3>New Enquiries</h3>
 
+            <p>Customer requests awaiting review</p>
 
+            <span class="qd-stat-bottom">
+                Review new requests →
+            </span>
+        </a>
 
-        <article class="admin-stat-card">
+        <a asp-controller="Admin"
+           asp-action="Enquiries"
+           class="qd-stat-card">
 
-            <div class="admin-stat-top">
-
-                <span class="admin-stat-label">
-                    Open Enquiries
+            <div class="qd-stat-header">
+                <span class="qd-stat-icon qd-icon-purple">
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 7v5l3.5 2" />
+                    </svg>
                 </span>
 
-
-                <span class="admin-stat-icon">
-                    ◈
-                </span>
-
+                <span class="qd-stat-arrow" aria-hidden="true">↗</span>
             </div>
 
-
-            <strong class="admin-stat-value">
-
+            <div class="qd-stat-number">
                 @Model.OpenEnquiryCount
-
-            </strong>
-
-
-            <div class="admin-stat-footer">
-
-                <span class="admin-stat-indicator"></span>
-
-                New or currently in progress
-
             </div>
 
-        </article>
+            <h3>Open Enquiries</h3>
 
+            <p>New and in-progress requests</p>
 
+            <span class="qd-stat-bottom">
+                Manage enquiries →
+            </span>
+        </a>
 
-        <article class="admin-stat-card">
+        <a asp-controller="Admin"
+           asp-action="Reviews"
+           class="qd-stat-card">
 
-            <div class="admin-stat-top">
-
-                <span class="admin-stat-label">
-                    Customer Reviews
+            <div class="qd-stat-header">
+                <span class="qd-stat-icon qd-icon-green">
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+                        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" />
+                    </svg>
                 </span>
 
-
-                <span class="admin-stat-icon">
-                    ★
-                </span>
-
+                <span class="qd-stat-arrow" aria-hidden="true">↗</span>
             </div>
 
-
-            <strong class="admin-stat-value">
-
+            <div class="qd-stat-number">
                 @Model.ReviewCount
-
-            </strong>
-
-
-            <div class="admin-stat-footer">
-
-                <span class="admin-stat-indicator"></span>
-
-                Published prototype feedback
-
             </div>
 
-        </article>
+            <h3>Customer Reviews</h3>
+
+            <p>Total customer feedback recorded</p>
+
+            <span class="qd-stat-bottom">
+                Manage reviews →
+            </span>
+        </a>
 
     </section>
 
+    <div class="qd-main-grid">
 
+        <section class="qd-panel qd-enquiries">
 
-    <section class="admin-dashboard-grid">
-
-
-        <div class="admin-panel">
-
-
-            <div class="admin-panel-heading">
-
+            <div class="qd-panel-heading">
                 <div>
-
-                    <span class="section-kicker">
-                        Customer activity
+                    <span class="qd-section-label">
+                        CUSTOMER ACTIVITY
                     </span>
 
-
-                    <h2>
-                        Recent enquiries
-                    </h2>
-
+                    <h2>Recent Enquiries</h2>
 
                     <p>
-                        Latest requests submitted through the website.
+                        The five most recently submitted
+                        customer enquiries.
                     </p>
-
                 </div>
-
 
                 <a asp-controller="Admin"
                    asp-action="Enquiries"
-                   class="admin-panel-link">
-
-                    View all →
-
+                   class="qd-view-all">
+                    View All
+                    <span aria-hidden="true">→</span>
                 </a>
-
             </div>
 
+            <div class="qd-table-container">
+                <table class="qd-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Enquiry</th>
+                            <th scope="col">Submitted</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
 
-            @if (Model.RecentEnquiries.Any())
-            {
-                <div class="admin-recent-list">
-
-                    @foreach (
-                                    var enquiry
-                                    in Model.RecentEnquiries)
-                    {
-                        var statusClass =
-                        enquiry.Status switch
+                    <tbody>
+                        @if (Model.RecentEnquiries.Any())
                         {
-                            "New" =>
-                                    "admin-status-new",
+                            @foreach (var enquiry in Model.RecentEnquiries)
+                            {
+                                var statusClass = enquiry.Status switch
+                                {
+                                    "New" => "qd-status-new",
+                                    "InProgress" => "qd-status-progress",
+                                    "Resolved" => "qd-status-resolved",
+                                    "Closed" => "qd-status-closed",
+                                    _ => "qd-status-neutral"
+                                };
 
-                            "InProgress" =>
-                                    "admin-status-inprogress",
+                                var displayStatus =
+                                    enquiry.Status == "InProgress"
+                                        ? "In Progress"
+                                        : enquiry.Status;
 
-                            "Resolved" =>
-                                    "admin-status-resolved",
+                                var customerInitial =
+                                    string.IsNullOrWhiteSpace(enquiry.CustomerName)
+                                        ? "?"
+                                        : enquiry.CustomerName.Trim()
+                                            .Substring(0, 1)
+                                            .ToUpperInvariant();
 
-                            "Closed" =>
-                                    "admin-status-closed",
+                                <tr>
+                                    <td data-label="Customer">
+                                        <div class="qd-customer">
+                                            <span class="qd-customer-avatar">
+                                                @customerInitial
+                                            </span>
 
-                            _ =>
-                                    ""
-                        };
+                                            <div class="qd-customer-info">
+                                                <strong>
+                                                    @enquiry.CustomerName
+                                                </strong>
 
+                                                <span>
+                                                    @enquiry.CustomerEmail
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
 
-                        var displayStatus =
-                        enquiry.Status ==
-                        "InProgress"
-                        ? "In Progress"
-                        : enquiry.Status;
+                                    <td data-label="Enquiry">
+                                        <div class="qd-enquiry-info">
+                                            <strong>
+                                                @enquiry.Subject
+                                            </strong>
 
+                                            <span>
+                                                ENQ-@enquiry.EnquiryId
+                                                ·
+                                                @enquiry.BranchName
+                                            </span>
+                                        </div>
+                                    </td>
 
-                        var displayDate =
-                        DateTime.TryParse(
-                        enquiry.CreatedDate,
-                        out var parsedDate
-                        )
-                        ? parsedDate.ToString(
-                        "dd MMM yyyy"
-                        )
-                        : enquiry.CreatedDate;
+                                    <td data-label="Submitted">
+                                        <span class="qd-date">
+                                            @enquiry.CreatedDate
+                                        </span>
+                                    </td>
 
+                                    <td data-label="Status">
+                                        <span class="qd-status @statusClass">
+                                            <span class="qd-status-dot"></span>
+                                            @displayStatus
+                                        </span>
+                                    </td>
 
-                        <div class="admin-recent-enquiry">
+                                    <td data-label="Action">
+                                        <a asp-controller="Admin"
+                                           asp-action="EnquiryDetails"
+                                           asp-route-id="@enquiry.EnquiryId"
+                                           class="qd-details-link">
+                                            View
+                                            <span aria-hidden="true">→</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="qd-empty-cell">
+                                    <div class="qd-empty-state">
+                                        <span aria-hidden="true">✉</span>
 
+                                        <strong>No enquiries yet</strong>
 
-                            <div class="admin-enquiry-reference">
-
-                                ENQ-@enquiry.EnquiryId
-
-                            </div>
-
-
-                            <div class="admin-enquiry-customer">
-
-                                <strong>
-                                    @enquiry.CustomerName
-                                </strong>
-
-                                <span>
-                                    @enquiry.CustomerEmail
-                                </span>
-
-                            </div>
-
-
-                            <div class="admin-enquiry-subject">
-
-                                <strong>
-                                    @enquiry.Subject
-                                </strong>
-
-                                <span>
-                                    @enquiry.BranchName · @displayDate
-                                </span>
-
-                            </div>
-
-
-                            <a asp-controller="Admin"
-                               asp-action="EnquiryDetails"
-                               asp-route-id="@enquiry.EnquiryId"
-                               class="admin-status-badge @statusClass">
-
-                                @displayStatus
-
-                            </a>
-
-                        </div>
-                    }
-
-                </div>
-            }
-            else
-            {
-                <div class="admin-empty-message">
-
-                    No enquiries have been submitted.
-
-                </div>
-            }
-
-        </div>
-
-
-
-        <aside class="admin-panel">
-
-
-            <div class="admin-panel-heading">
-
-                <div>
-
-                    <span class="section-kicker">
-                        Quick access
-                    </span>
-
-
-                    <h2>
-                        Management
-                    </h2>
-
-                </div>
-
+                                        <p>
+                                            Customer enquiries will
+                                            appear here once submitted.
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
 
-
-
-            <div class="admin-management-list">
-
-
-                <a asp-controller="Admin"
-                   asp-action="Products"
-                   class="admin-management-link">
-
-
-                    <span class="admin-management-icon">
-                        ◫
-                    </span>
-
-
-                    <span class="admin-management-copy">
-
-                        <strong>
-                            Manage Products
-                        </strong>
-
-                        <span>
-                            Create, edit or remove catalogue items.
-                        </span>
-
-                    </span>
-
-
-                    <span class="admin-management-arrow">
-                        →
-                    </span>
-
-                </a>
-
-
+            <div class="qd-panel-footer">
+                <span>
+                    Showing up to 5 recent enquiries
+                </span>
 
                 <a asp-controller="Admin"
-                   asp-action="Enquiries"
-                   class="admin-management-link">
-
-
-                    <span class="admin-management-icon">
-                        ✉
-                    </span>
-
-
-                    <span class="admin-management-copy">
-
-                        <strong>
-                            Manage Enquiries
-                        </strong>
-
-                        <span>
-                            Review requests and update their status.
-                        </span>
-
-                    </span>
-
-
-                    <span class="admin-management-arrow">
-                        →
-                    </span>
-
+                   asp-action="Enquiries">
+                    Manage all enquiries →
                 </a>
-
-
-
-                <a asp-controller="Admin"
-                   asp-action="Reviews"
-                   class="admin-management-link">
-
-
-                    <span class="admin-management-icon">
-                        ★
-                    </span>
-
-
-                    <span class="admin-management-copy">
-
-                        <strong>
-                            Moderate Reviews
-                        </strong>
-
-                        <span>
-                            Review and remove customer feedback.
-                        </span>
-
-                    </span>
-
-
-                    <span class="admin-management-arrow">
-                        →
-                    </span>
-
-                </a>
-
-
-
-                <a asp-controller="Admin"
-                   asp-action="CreateProduct"
-                   class="admin-management-link">
-
-
-                    <span class="admin-management-icon">
-                        +
-                    </span>
-
-
-                    <span class="admin-management-copy">
-
-                        <strong>
-                            Add Product
-                        </strong>
-
-                        <span>
-                            Add another item to the prototype catalogue.
-                        </span>
-
-                    </span>
-
-
-                    <span class="admin-management-arrow">
-                        →
-                    </span>
-
-                </a>
-
             </div>
+        </section>
+
+        <aside class="qd-side-column">
+
+            <section class="qd-panel qd-quick-panel">
+                <div class="qd-panel-heading">
+                    <div>
+                        <span class="qd-section-label">
+                            SHORTCUTS
+                        </span>
+
+                        <h2>Quick Actions</h2>
+
+                        <p>Manage your website efficiently.</p>
+                    </div>
+                </div>
+
+                <div class="qd-quick-list">
+
+                    <a asp-controller="Admin"
+                       asp-action="CreateProduct"
+                       class="qd-quick-action">
+
+                        <span class="qd-quick-icon qd-icon-blue">
+                            <span aria-hidden="true">+</span>
+                        </span>
+
+                        <span class="qd-quick-copy">
+                            <strong>Add New Product</strong>
+                            <small>Create a catalogue listing</small>
+                        </span>
+
+                        <span class="qd-quick-arrow" aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+
+                    <a asp-controller="Admin"
+                       asp-action="Products"
+                       class="qd-quick-action">
+
+                        <span class="qd-quick-icon qd-icon-purple">
+                            <span aria-hidden="true">▦</span>
+                        </span>
+
+                        <span class="qd-quick-copy">
+                            <strong>Manage Products</strong>
+                            <small>Edit and organise products</small>
+                        </span>
+
+                        <span class="qd-quick-arrow" aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+
+                    <a asp-controller="Admin"
+                       asp-action="Enquiries"
+                       class="qd-quick-action">
+
+                        <span class="qd-quick-icon qd-icon-orange">
+                            <span aria-hidden="true">✉</span>
+                        </span>
+
+                        <span class="qd-quick-copy">
+                            <strong>Customer Enquiries</strong>
+                            <small>Process incoming requests</small>
+                        </span>
+
+                        <span class="qd-quick-arrow" aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+
+                    <a asp-controller="Admin"
+                       asp-action="Reviews"
+                       class="qd-quick-action">
+
+                        <span class="qd-quick-icon qd-icon-green">
+                            <span aria-hidden="true">★</span>
+                        </span>
+
+                        <span class="qd-quick-copy">
+                            <strong>Manage Reviews</strong>
+                            <small>Moderate customer feedback</small>
+                        </span>
+
+                        <span class="qd-quick-arrow" aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+
+                </div>
+            </section>
+
+            <section class="qd-help-card">
+                <div class="qd-help-decoration"></div>
+
+                <span class="qd-help-label">
+                    QPET ADMINISTRATION
+                </span>
+
+                <h3>Everything in one place.</h3>
+
+                <p>
+                    Keep your product catalogue accurate,
+                    respond to customer enquiries and
+                    maintain customer feedback through
+                    your management tools.
+                </p>
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Visit QPET Website
+                    <span aria-hidden="true">↗</span>
+                </a>
+            </section>
 
         </aside>
+    </div>
 
-    </section>
-
+    <footer class="qd-footer">
+        <span>© @DateTime.UtcNow.Year QPET. Administration Portal.</span>
+        <span>Authorised personnel only</span>
+    </footer>
 </div>
-
-

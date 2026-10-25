@@ -75,7 +75,7 @@
 
 .product-filter-panel {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
     align-items: end;
     gap: 0.8rem;
     padding: 1rem;
@@ -667,4 +667,11 @@
         margin-top: 0.7rem;
         font-size: 0.68rem;
     }
+}
+
+.catalogue-product-card[hidden],
+.catalogue-product-grid[hidden],
+.products-empty-state[hidden],
+.active-filter-label[hidden] {
+    display: none !important;
 }

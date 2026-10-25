@@ -1,199 +1,340 @@
-﻿@model QPET.Models.ProductCatalogueViewModel
+﻿
+@model QPET.Models.ProductCatalogueViewModel
 
 @{
     ViewData["Title"] = "Products";
+
+    var showing = Model.Products.Count;
+
+    var hasFilters =
+        !string.IsNullOrWhiteSpace(Model.Search) ||
+        Model.SelectedCategoryId.HasValue ||
+        Model.SelectedSubCategoryId.HasValue ||
+        !string.IsNullOrWhiteSpace(Model.SelectedCapacity) ||
+        !string.IsNullOrWhiteSpace(Model.SelectedNeckFinish) ||
+        !string.IsNullOrWhiteSpace(Model.SelectedStatus);
 }
 
-<div id="adminProductsPage">
+<div id="adminProductsPage" class="ap-page">
 
-    <div class="admin-page-heading">
-
+    <div class="admin-page-heading ap-heading">
         <div>
-
-            <span class="eyebrow">
-                Catalogue management
-            </span>
-
-            <h1>
-                Products
-            </h1>
-
-            <p>
-                Manage the products displayed in the public
-                QPET catalogue.
-            </p>
-
+            <span class="eyebrow">CATALOGUE MANAGEMENT</span>
+            <h1>Product Management</h1>
+            <p>Manage product listings, specifications, images and availability.</p>
         </div>
 
         <a asp-controller="Admin"
            asp-action="CreateProduct"
-           class="btn btn-primary">
-
-            + Add Product
-
+           class="btn btn-primary ap-primary-button">
+            + Add New Product
         </a>
-
     </div>
-
 
     @if (TempData["ProductMessage"] is string message)
     {
-        <div class="contact-success-message">
+        <div class="ap-notice" role="status">
+            <span aria-hidden="true">✓</span>
             @message
         </div>
     }
 
-
-    <section class="admin-table-panel">
-
-        <div class="admin-table-toolbar">
-
+    <section class="ap-summary" aria-label="Product summary">
+        <div class="ap-summary-card">
+            <span class="ap-summary-icon ap-blue">▦</span>
             <div>
-
-                <h2>
-                    Product catalogue
-                </h2>
-
-                <p>
-                    @Model.Products.Count
-                    @(Model.Products.Count == 1 ? "product" : "products")
-                </p>
-
+                <span>Total Products</span>
+                <strong>@Model.TotalProductCount</strong>
             </div>
-
         </div>
 
+        <div class="ap-summary-card">
+            <span class="ap-summary-icon ap-green">✓</span>
+            <div>
+                <span>Active Products</span>
+                <strong>@Model.ActiveProductCount</strong>
+            </div>
+        </div>
+
+        <div class="ap-summary-card">
+            <span class="ap-summary-icon ap-gray">○</span>
+            <div>
+                <span>Inactive Products</span>
+                <strong>@Model.InactiveProductCount</strong>
+            </div>
+        </div>
+
+        <div class="ap-summary-card">
+            <span class="ap-summary-icon ap-purple">⌕</span>
+            <div>
+                <span>Matching Results</span>
+                <strong>@showing</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="ap-card">
+        <div class="ap-card-heading">
+            <div>
+                <h2>Search &amp; Filter</h2>
+                <p>Find products using their name, category, volume or specifications.</p>
+            </div>
+
+            @if (hasFilters)
+            {
+                <a asp-action="Products"
+                   asp-controller="Admin"
+                   class="ap-clear-link">
+                    Clear all filters
+                </a>
+            }
+        </div>
+
+        <form asp-controller="Admin"
+              asp-action="Products"
+              method="get"
+              class="ap-filters">
+
+            <div class="ap-field ap-search">
+                <label for="productSearch">Search Products</label>
+                <input id="productSearch"
+                       name="search"
+                       type="search"
+                       value="@Model.Search"
+                       placeholder="Product name, ID or specification..." />
+            </div>
+
+            <div class="ap-field">
+                <label for="productCategory">Category</label>
+
+                <select id="productCategory" name="categoryId">
+                    <option value="">All Categories</option>
+
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.CategoryId"
+                                selected="@(Model.SelectedCategoryId == category.CategoryId)">
+                            @category.CategoryName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="ap-field">
+                <label for="productSubCategory">Subcategory</label>
+
+                <select id="productSubCategory"
+                        name="subCategoryId"
+                        data-selected-subcategory="@Model.SelectedSubCategoryId">
+
+                    <option value="">All Subcategories</option>
+
+                    @foreach (var subCategory in Model.SubCategories)
+                    {
+                        <option value="@subCategory.SubCategoryId"
+                                data-category-id="@subCategory.CategoryId"
+                                selected="@(Model.SelectedSubCategoryId == subCategory.SubCategoryId)">
+                            @subCategory.SubCategoryName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="ap-field">
+                <label for="capacityFilter">Size / Capacity</label>
+
+                <select id="capacityFilter" name="capacity">
+                    <option value="">All Sizes</option>
+
+                    @foreach (var capacity in Model.Capacities)
+                    {
+                        <option value="@capacity"
+                                selected="@(string.Equals(Model.SelectedCapacity, capacity, StringComparison.OrdinalIgnoreCase))">
+                            @capacity
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="ap-field">
+                <label for="neckFilter">Neck Finish</label>
+
+                <select id="neckFilter" name="neckFinish">
+                    <option value="">All Neck Finishes</option>
+
+                    @foreach (var neckFinish in Model.NeckFinishes)
+                    {
+                        <option value="@neckFinish"
+                                selected="@(string.Equals(Model.SelectedNeckFinish, neckFinish, StringComparison.OrdinalIgnoreCase))">
+                            @neckFinish
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="ap-field">
+                <label for="statusFilter">Product Status</label>
+
+                <select id="statusFilter" name="status">
+                    <option value="">All Statuses</option>
+                    <option value="active"
+                            selected="@(Model.SelectedStatus == "active")">
+                        Active
+                    </option>
+                    <option value="inactive"
+                            selected="@(Model.SelectedStatus == "inactive")">
+                        Inactive
+                    </option>
+                </select>
+            </div>
+
+            <div class="ap-filter-actions">
+                <button type="submit" class="btn btn-primary">
+                    Apply Filters
+                </button>
+
+                <a asp-controller="Admin"
+                   asp-action="Products"
+                   class="btn btn-secondary">
+                    Reset
+                </a>
+            </div>
+        </form>
+    </section>
+
+    <section class="ap-card ap-catalogue">
+        <div class="ap-card-heading">
+            <div>
+                <h2>Product Catalogue</h2>
+                <p>
+                    Showing @showing of @Model.TotalProductCount products
+                </p>
+            </div>
+        </div>
 
         @if (Model.Products.Any())
         {
             <div class="admin-table-wrapper">
-
-                <table class="admin-table">
-
+                <table class="admin-table ap-table">
                     <thead>
-
                         <tr>
-                            <th>Product</th>
-                            <th>Category</th>
-                            <th>Subcategory</th>
-                            <th>Capacity</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Neck Finish</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
                         </tr>
-
                     </thead>
 
                     <tbody>
-
                         @foreach (var product in Model.Products)
                         {
-                            var category =
-                            Model.Categories.FirstOrDefault(
-                            category =>
-                            category.CategoryId ==
-                            product.CategoryId
-                            );
+                            var category = Model.Categories.FirstOrDefault(
+                                c => c.CategoryId == product.CategoryId);
 
-                            var subCategory =
-                            Model.SubCategories.FirstOrDefault(
-                            subCategory =>
-                            subCategory.SubCategoryId ==
-                            product.SubCategoryId
-                            );
+                            var subCategory = Model.SubCategories.FirstOrDefault(
+                                c => c.SubCategoryId == product.SubCategoryId);
+
+                            var primaryImage = product.Images.FirstOrDefault(
+                                image => image.IsPrimary)
+                                ?? product.Images.FirstOrDefault();
 
                             <tr>
-
                                 <td>
+                                    <div class="ap-product-cell">
+                                        <div class="ap-thumbnail">
+                                            @if (primaryImage != null)
+                                            {
+                                                <img src="@primaryImage.ImageUrl"
+                                                     alt="@product.ProductName"
+                                                     loading="lazy" />
+                                            }
+                                            else
+                                            {
+                                                <span aria-hidden="true">▦</span>
+                                            }
+                                        </div>
 
-                                    <div class="admin-table-primary">
-
-                                        <strong>
-                                            @product.ProductName
-                                        </strong>
-
-                                        <span>
-                                            Neck: @product.NeckFinish
-                                        </span>
-
+                                        <div class="ap-product-info">
+                                            <strong>@product.ProductName</strong>
+                                            <span>Product #@product.ProductId</span>
+                                        </div>
                                     </div>
-
                                 </td>
 
                                 <td>
-                                    @(category?.CategoryName ?? "—")
+                                    <div class="ap-category">
+                                        <strong>@(category?.CategoryName ?? "Uncategorised")</strong>
+                                        <span>@(subCategory?.SubCategoryName ?? "—")</span>
+                                    </div>
                                 </td>
 
-                                <td>
-                                    @(subCategory?.SubCategoryName ?? "—")
-                                </td>
+                                <td>@product.CapacityVolume</td>
+
+                                <td>@product.NeckFinish</td>
 
                                 <td>
-                                    @product.CapacityVolume
-                                </td>
-
-                                <td>
-
                                     <span class="@(product.IsActive
-                                                                                  ? "admin-product-active"
-                                                                                  : "admin-product-inactive")">
-
-                                        @(product.IsActive
-                                                                        ? "Active"
-                                                                        : "Inactive")
-
-                            </span>
-
+                                        ? "ap-status ap-status-active"
+                                        : "ap-status ap-status-inactive")">
+                                        <span class="ap-status-dot"></span>
+                                        @(product.IsActive ? "Active" : "Inactive")
+                                    </span>
                                 </td>
 
                                 <td>
-
-                                    <div class="admin-table-actions">
-
+                                    <div class="ap-actions">
                                         <a asp-controller="Admin"
                                            asp-action="EditProduct"
                                            asp-route-id="@product.ProductId"
-                                           class="admin-action-button">
-
+                                           class="ap-edit-button">
                                             Edit
-
                                         </a>
-
 
                                         <form asp-controller="Admin"
                                               asp-action="DeleteProduct"
                                               asp-route-id="@product.ProductId"
                                               method="post"
-                                              onsubmit="return confirm('Delete this product?');">
+                                              onsubmit="return confirm('Permanently delete this product? This cannot be undone.');">
 
                                             <button type="submit"
-                                                    class="admin-action-button admin-action-danger">
-
+                                                    class="ap-delete-button">
                                                 Delete
-
                                             </button>
-
                                         </form>
-
                                     </div>
-
                                 </td>
-
                             </tr>
-                                        }
-
+                        }
                     </tbody>
-
                 </table>
-
             </div>
         }
         else
         {
-            <div class="admin-table-empty">
-                No products are currently available.
+            <div class="ap-empty">
+                <div class="ap-empty-icon">⌕</div>
+
+                <h3>No matching products</h3>
+
+                <p>
+                    @(hasFilters
+                        ? "Try adjusting your filters or search terms."
+                        : "Your catalogue is empty. Add your first product to get started.")
+                </p>
+
+                <a asp-controller="Admin"
+                   asp-action="@(hasFilters ? "Products" : "CreateProduct")"
+                   class="btn btn-primary">
+                    @(hasFilters ? "Clear Filters" : "Add Product")
+                </a>
             </div>
         }
-
     </section>
-
 </div>
+
+@section Scripts {
+    <script src="~/js/admin-products-form.js"
+            asp-append-version="true"></script>
+}

@@ -6,237 +6,132 @@ This script provides client side filtering for products.
 
 
 
+
 document.addEventListener("DOMContentLoaded", function () {
+    const categoryFilter = document.getElementById("categoryFilter");
+    const subCategoryFilter = document.getElementById("subCategoryFilter");
+    const capacityFilter = document.getElementById("capacityFilter");
+    const productList = document.getElementById("productList");
+    const productCount = document.getElementById("productCount");
+    const noProductsMessage = document.getElementById("noProductsMessage");
+    const clearButton = document.getElementById("clearProductFilters");
+    const emptyStateClearButton = document.getElementById("emptyStateClearFilters");
+    const activeFilterLabel = document.getElementById("activeFilterLabel");
 
-    const categoryFilter =
-        document.getElementById("categoryFilter");
-
-    const subCategoryFilter =
-        document.getElementById("subCategoryFilter");
-
-    const productList =
-        document.getElementById("productList");
-
-    const productCount =
-        document.getElementById("productCount");
-
-    const noProductsMessage =
-        document.getElementById("noProductsMessage");
-
-    const clearButton =
-        document.getElementById("clearProductFilters");
-
-    const emptyStateClearButton =
-        document.getElementById("emptyStateClearFilters");
-
-    const activeFilterLabel =
-        document.getElementById("activeFilterLabel");
-
-
-    if (
-        !categoryFilter ||
-        !subCategoryFilter ||
-        !productList
-    ) {
+    if (!categoryFilter || !subCategoryFilter || !capacityFilter ||
+        !productList || !productCount || !noProductsMessage ||
+        !clearButton || !emptyStateClearButton || !activeFilterLabel) {
         return;
     }
 
+    const productCards = Array.from(
+        productList.querySelectorAll(".catalogue-product-card")
+    );
 
-    const productCards =
-        Array.from(
-            productList.querySelectorAll(
-                ".catalogue-product-card"
-            )
-        );
+    const subCategories = Array.from(
+        subCategoryFilter.querySelectorAll("option[data-category-id]")
+    ).map(function (option) {
+        return {
+            value: option.value,
+            name: option.textContent.trim(),
+            categoryId: option.dataset.categoryId
+        };
+    });
 
-
-    const subCategories =
-        Array.from(
-            subCategoryFilter.querySelectorAll(
-                "option[data-category-id]"
-            )
-        ).map(function (option) {
-
-            return {
-                value: option.value,
-                text: option.textContent.trim(),
-                categoryId: option.dataset.categoryId
-            };
-
-        });
-
-
-    function loadSubCategories() {
-
-        const categoryId =
-            categoryFilter.value;
-
-        subCategoryFilter.innerHTML =
-            '<option value="">All subcategories</option>';
-
-
-        if (!categoryId) {
-
-            subCategoryFilter.disabled = true;
-
-            return;
-        }
-
-
-        subCategories
-            .filter(function (subCategory) {
-
-                return (
-                    subCategory.categoryId ===
-                    categoryId
-                );
-
-            })
-            .forEach(function (subCategory) {
-
-                const option =
-                    document.createElement("option");
-
-                option.value =
-                    subCategory.value;
-
-                option.textContent =
-                    subCategory.text;
-
-                subCategoryFilter.appendChild(
-                    option
-                );
-
-            });
-
-
-        subCategoryFilter.disabled = false;
+    function normalizeCapacity(value) {
+        return (value || "").replace(/\s+/g, "").toLowerCase();
     }
 
+    function loadSubCategories() {
+        const categoryId = categoryFilter.value;
+
+        const matchingSubCategories = subCategories.filter(function (item) {
+            return item.categoryId === categoryId;
+        });
+
+        subCategoryFilter.replaceChildren(
+            new Option("All subcategories", "")
+        );
+
+        matchingSubCategories.forEach(function (item) {
+            subCategoryFilter.add(new Option(item.name, item.value));
+        });
+
+        subCategoryFilter.disabled =
+            !categoryId || matchingSubCategories.length === 0;
+    }
+
+    function updateActiveFilter() {
+        const selected = [categoryFilter, subCategoryFilter, capacityFilter]
+            .filter(function (filter) {
+                return filter.value !== "";
+            })
+            .map(function (filter) {
+                return filter.options[filter.selectedIndex].textContent.trim();
+            });
+
+        activeFilterLabel.textContent = selected.join(" · ");
+        activeFilterLabel.hidden = selected.length === 0;
+    }
 
     function filterProducts() {
-
-        const categoryId =
-            categoryFilter.value;
-
-        const subCategoryId =
-            subCategoryFilter.value;
+        const categoryId = categoryFilter.value;
+        const subCategoryId = subCategoryFilter.value;
+        const capacity = normalizeCapacity(capacityFilter.value);
 
         let visibleCount = 0;
 
-
         productCards.forEach(function (card) {
-
             const matchesCategory =
-                !categoryId ||
-                card.dataset.categoryId === categoryId;
+                !categoryId || card.dataset.categoryId === categoryId;
 
             const matchesSubCategory =
-                !subCategoryId ||
-                card.dataset.subcategoryId ===
-                subCategoryId;
+                !subCategoryId || card.dataset.subcategoryId === subCategoryId;
 
+            const matchesCapacity =
+                !capacity ||
+                normalizeCapacity(card.dataset.capacity) === capacity;
 
             const visible =
                 matchesCategory &&
-                matchesSubCategory;
+                matchesSubCategory &&
+                matchesCapacity;
 
-
-            card.hidden =
-                !visible;
-
+            card.hidden = !visible;
 
             if (visible) {
                 visibleCount++;
             }
-
         });
 
+        productCount.textContent = visibleCount +
+            (visibleCount === 1 ? " product found" : " products found");
 
-        productCount.textContent =
-            visibleCount +
-            (
-                visibleCount === 1
-                    ? " product found"
-                    : " products found"
-            );
-
-
-        productList.hidden =
-            visibleCount === 0;
-
-        noProductsMessage.hidden =
-            visibleCount !== 0;
-
+        productList.hidden = visibleCount === 0;
+        noProductsMessage.hidden = visibleCount !== 0;
 
         updateActiveFilter();
     }
 
-
-    function updateActiveFilter() {
-
-        if (!categoryFilter.value) {
-
-            activeFilterLabel.hidden =
-                true;
-
-            return;
-        }
-
-
-        activeFilterLabel.textContent =
-            categoryFilter.options[
-                categoryFilter.selectedIndex
-            ].textContent.trim();
-
-        activeFilterLabel.hidden =
-            false;
-    }
-
-
     function clearFilters() {
-
         categoryFilter.value = "";
+        capacityFilter.value = "";
 
-        subCategoryFilter.innerHTML =
-            '<option value="">All subcategories</option>';
-
-        subCategoryFilter.disabled =
-            true;
-
+        loadSubCategories();
         filterProducts();
     }
 
+    categoryFilter.addEventListener("change", function () {
+        loadSubCategories();
+        filterProducts();
+    });
 
-    categoryFilter.addEventListener(
-        "change",
-        function () {
+    subCategoryFilter.addEventListener("change", filterProducts);
+    capacityFilter.addEventListener("change", filterProducts);
 
-            loadSubCategories();
-            filterProducts();
+    clearButton.addEventListener("click", clearFilters);
+    emptyStateClearButton.addEventListener("click", clearFilters);
 
-        }
-    );
-
-
-    subCategoryFilter.addEventListener(
-        "change",
-        filterProducts
-    );
-
-
-    clearButton.addEventListener(
-        "click",
-        clearFilters
-    );
-
-
-    emptyStateClearButton.addEventListener(
-        "click",
-        clearFilters
-    );
-
-
+    loadSubCategories();
     filterProducts();
-
 });

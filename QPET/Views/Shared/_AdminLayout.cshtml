@@ -77,6 +77,20 @@
                     Products
                 </a>
 
+                
+<a asp-controller="Admin"
+   asp-action="Categories"
+   class="@(currentAction == "Categories" ? "active" : "")">
+
+    <span class="admin-nav-icon">
+        ▦
+    </span>
+
+    Categories
+
+</a>
+
+
                 <a asp-controller="Admin"
                    asp-action="Enquiries"
                    class="@(currentAction == "Enquiries" ||

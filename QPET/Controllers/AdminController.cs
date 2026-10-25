@@ -483,6 +483,117 @@ namespace QPET.Controllers
             );
         }
 
+        
+[HttpGet]
+public async Task<IActionResult> Categories(
+    int? editCategoryId = null,
+    int? editSubCategoryId = null)
+{
+    var model = new ProductCatalogueViewModel
+    {
+        Categories = await _productService.GetCategoriesAsync(),
+        SubCategories = await _productService.GetSubCategoriesAsync(),
+        Products = await _productService.GetProductsAsync()
+    };
+
+    ViewBag.EditCategoryId = editCategoryId;
+    ViewBag.EditSubCategoryId = editSubCategoryId;
+
+    return View(model);
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> CreateCategory(
+    string? name,
+    string? description)
+{
+    var result = await _productService.CreateCategoryAsync(
+        name,
+        description);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> UpdateCategory(
+    int id,
+    string? name,
+    string? description)
+{
+    var result = await _productService.UpdateCategoryAsync(
+        id,
+        name,
+        description);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> DeleteCategory(int id)
+{
+    var result = await _productService.DeleteCategoryAsync(id);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> CreateSubCategory(
+    int categoryId,
+    string? name)
+{
+    var result = await _productService.CreateSubCategoryAsync(
+        categoryId,
+        name);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> UpdateSubCategory(
+    int id,
+    int categoryId,
+    string? name)
+{
+    var result = await _productService.UpdateSubCategoryAsync(
+        id,
+        categoryId,
+        name);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> DeleteSubCategory(int id)
+{
+    var result = await _productService.DeleteSubCategoryAsync(id);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
 
         [HttpGet]
         public async Task<IActionResult> Products(

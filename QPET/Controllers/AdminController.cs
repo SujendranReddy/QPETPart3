@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using QPET.Models;
 using QPET.Services.Interfaces;
 using System.Security.Claims;
+using QPET.Data.Entities;
 
 namespace QPET.Controllers
 {
@@ -19,14 +20,16 @@ namespace QPET.Controllers
         private readonly IEnquiryService _enquiryService;
         private readonly IReviewService _reviewService;
         private readonly IEnquiryFileStorageService _enquiryFileStorageService;
+        private readonly IWebHostEnvironment _environment;
 
         public AdminController(
-            IAdminAuthService adminAuthService,
-            IProductService productService,
-            IBranchService branchService,
-            IEnquiryService enquiryService,
-            IReviewService reviewService,
-            IEnquiryFileStorageService enquiryFileStorageService)
+    IAdminAuthService adminAuthService,
+    IProductService productService,
+    IBranchService branchService,
+    IEnquiryService enquiryService,
+    IReviewService reviewService,
+    IEnquiryFileStorageService enquiryFileStorageService,
+    IWebHostEnvironment environment)
         {
             _adminAuthService = adminAuthService;
             _productService = productService;
@@ -34,6 +37,7 @@ namespace QPET.Controllers
             _enquiryService = enquiryService;
             _reviewService = reviewService;
             _enquiryFileStorageService = enquiryFileStorageService;
+            _environment = environment;
         }
 
         [AllowAnonymous]
@@ -256,62 +260,133 @@ namespace QPET.Controllers
             return View(model);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Enquiries(
-            string? status = null)
+            string? status = null,
+            string? search = null,
+            int? branchId = null,
+            DateTime? fromDate = null,
+            DateTime? toDate = null)
         {
-            var allowedStatuses =
-                new[]
-                {
-                    "New",
-                    "InProgress",
-                    "Resolved",
-                    "Closed"
-                };
+            var allowedStatuses = new[]
+            {
+        "New",
+        "InProgress",
+        "Resolved",
+        "Closed"
+    };
 
-            if (
-                !string.IsNullOrWhiteSpace(status) &&
+            if (!string.IsNullOrWhiteSpace(status) &&
                 !allowedStatuses.Contains(status))
             {
                 status = null;
             }
 
-            var enquiries =
-                await _enquiryService
-                    .GetEnquiriesAsync();
+            search = search?.Trim();
+
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                search = null;
+            }
+
+            if (branchId <= 0)
+            {
+                branchId = null;
+            }
+
+            var enquiries = await _enquiryService
+                .GetEnquiriesAsync();
+
+            var branches = await _branchService
+                .GetBranchesAsync();
+
+            var customers = await _enquiryService
+                .GetCustomersAsync();
+
+            IEnumerable<QPET.Data.Entities.Enquiry> filtered = enquiries;
 
             if (!string.IsNullOrWhiteSpace(status))
             {
-                enquiries =
-                    enquiries
-                        .Where(
-                            enquiry =>
-                                enquiry.Status ==
-                                status
-                        )
-                        .ToList();
+                filtered = filtered.Where(
+                    enquiry => enquiry.Status == status);
             }
 
-            ViewBag.Customers =
-                await _enquiryService
-                    .GetCustomersAsync();
+            if (branchId.HasValue)
+            {
+                filtered = filtered.Where(
+                    enquiry => enquiry.BranchId == branchId.Value);
+            }
 
-            ViewBag.Branches =
-                await _branchService
-                    .GetBranchesAsync();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var idSearch = search.StartsWith(
+                    "ENQ-",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? search.Substring(4).Trim()
+                    : search;
 
-            var model =
-                new AdminEnquiryListViewModel
+                var isId = int.TryParse(
+                    idSearch,
+                    out var searchedId);
+
+                filtered = filtered.Where(enquiry =>
+                    (isId && enquiry.EnquiryId == searchedId) ||
+                    enquiry.Customer.FullName.Contains(
+                        search,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    enquiry.Customer.EmailAddress.Contains(
+                        search,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    enquiry.Subject.Contains(
+                        search,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            string? filterError = null;
+
+            if (fromDate.HasValue &&
+                toDate.HasValue &&
+                fromDate.Value.Date > toDate.Value.Date)
+            {
+                filterError =
+                    "The start date cannot be later than the end date.";
+
+                filtered = Enumerable.Empty<QPET.Data.Entities.Enquiry>();
+            }
+            else
+            {
+                if (fromDate.HasValue)
                 {
-                    Enquiries =
-                        enquiries,
+                    filtered = filtered.Where(enquiry =>
+                        enquiry.CreatedDate.Date >= fromDate.Value.Date);
+                }
 
-                    SelectedStatus =
-                        status
-                };
+                if (toDate.HasValue)
+                {
+                    filtered = filtered.Where(enquiry =>
+                        enquiry.CreatedDate.Date <= toDate.Value.Date);
+                }
+            }
+
+            ViewBag.Customers = customers;
+            ViewBag.Branches = branches;
+
+            var model = new AdminEnquiryListViewModel
+            {
+                Enquiries = filtered.ToList(),
+                TotalCount = enquiries.Count,
+                Search = search,
+                SelectedStatus = status,
+                SelectedBranchId = branchId,
+                FromDate = fromDate,
+                ToDate = toDate,
+                FilterError = filterError
+            };
 
             return View(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> EnquiryDetails(
@@ -408,27 +483,246 @@ namespace QPET.Controllers
             );
         }
 
+        
+[HttpGet]
+public async Task<IActionResult> Categories(
+    int? editCategoryId = null,
+    int? editSubCategoryId = null)
+{
+    var model = new ProductCatalogueViewModel
+    {
+        Categories = await _productService.GetCategoriesAsync(),
+        SubCategories = await _productService.GetSubCategoriesAsync(),
+        Products = await _productService.GetProductsAsync()
+    };
+
+    ViewBag.EditCategoryId = editCategoryId;
+    ViewBag.EditSubCategoryId = editSubCategoryId;
+
+    return View(model);
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> CreateCategory(
+    string? name,
+    string? description)
+{
+    var result = await _productService.CreateCategoryAsync(
+        name,
+        description);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> UpdateCategory(
+    int id,
+    string? name,
+    string? description)
+{
+    var result = await _productService.UpdateCategoryAsync(
+        id,
+        name,
+        description);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> DeleteCategory(int id)
+{
+    var result = await _productService.DeleteCategoryAsync(id);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> CreateSubCategory(
+    int categoryId,
+    string? name)
+{
+    var result = await _productService.CreateSubCategoryAsync(
+        categoryId,
+        name);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> UpdateSubCategory(
+    int id,
+    int categoryId,
+    string? name)
+{
+    var result = await _productService.UpdateSubCategoryAsync(
+        id,
+        categoryId,
+        name);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> DeleteSubCategory(int id)
+{
+    var result = await _productService.DeleteSubCategoryAsync(id);
+
+    TempData["CatalogMessage"] = result.Message;
+    TempData["CatalogSuccess"] = result.Success;
+
+    return RedirectToAction(nameof(Categories));
+}
+
+
         [HttpGet]
-        public async Task<IActionResult> Products()
+        public async Task<IActionResult> Products(
+            string? search = null,
+            int? categoryId = null,
+            int? subCategoryId = null,
+            string? capacity = null,
+            string? neckFinish = null,
+            string? status = null)
         {
-            var model =
-                new ProductCatalogueViewModel
-                {
-                    Products =
-                        await _productService
-                            .GetProductsAsync(),
+            var products = await _productService.GetProductsAsync();
+            var categories = await _productService.GetCategoriesAsync();
+            var subCategories = await _productService.GetSubCategoriesAsync();
 
-                    Categories =
-                        await _productService
-                            .GetCategoriesAsync(),
+            search = search?.Trim();
+            capacity = capacity?.Trim();
+            neckFinish = neckFinish?.Trim();
+            status = status?.Trim().ToLowerInvariant();
 
-                    SubCategories =
-                        await _productService
-                            .GetSubCategoriesAsync()
-                };
+            if (status != "active" && status != "inactive")
+            {
+                status = null;
+            }
+
+            if (categoryId <= 0)
+            {
+                categoryId = null;
+            }
+
+            if (subCategoryId <= 0)
+            {
+                subCategoryId = null;
+            }
+
+            IEnumerable<QPET.Data.Entities.Product> filteredProducts = products;
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.ProductName.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.Description.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.NeckFinish.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.CapacityVolume.Contains(
+                        search, StringComparison.OrdinalIgnoreCase) ||
+                    product.ProductId.ToString() == search);
+            }
+
+            if (categoryId.HasValue)
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.CategoryId == categoryId.Value);
+            }
+
+            if (subCategoryId.HasValue)
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.SubCategoryId == subCategoryId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(capacity))
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    string.Equals(
+                        product.CapacityVolume.Trim(),
+                        capacity,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(neckFinish))
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    string.Equals(
+                        product.NeckFinish.Trim(),
+                        neckFinish,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (status == "active")
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    product.IsActive);
+            }
+            else if (status == "inactive")
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    !product.IsActive);
+            }
+
+            var model = new ProductCatalogueViewModel
+            {
+                Products = filteredProducts
+                    .OrderBy(product => product.ProductName)
+                    .ToList(),
+
+                Categories = categories,
+                SubCategories = subCategories,
+
+                Capacities = products
+                    .Select(product => product.CapacityVolume.Trim())
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(value => value)
+                    .ToList(),
+
+                NeckFinishes = products
+                    .Select(product => product.NeckFinish.Trim())
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(value => value)
+                    .ToList(),
+
+                Search = search,
+                SelectedCategoryId = categoryId,
+                SelectedSubCategoryId = subCategoryId,
+                SelectedCapacity = capacity,
+                SelectedNeckFinish = neckFinish,
+                SelectedStatus = status,
+
+                TotalProductCount = products.Count,
+                ActiveProductCount = products.Count(product => product.IsActive),
+                InactiveProductCount = products.Count(product => !product.IsActive)
+            };
 
             return View(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> CreateProduct()
@@ -446,21 +740,27 @@ namespace QPET.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProduct(
-            AdminProductViewModel model)
+    AdminProductViewModel model)
         {
-            await ValidateProductSelectionAsync(
-                model
-            );
+            await ValidateProductSelectionAsync(model);
 
-            ValidateProductImage(
-                model
-            );
+            ValidateProductImage(model);
 
             if (!ModelState.IsValid)
             {
                 await PopulateProductLookupsAsync();
 
                 return View(model);
+            }
+
+            string? imageUrl = null;
+
+            if (model.Image != null)
+            {
+                imageUrl =
+                    await SaveProductImageAsync(
+                        model.Image
+                    );
             }
 
             var product =
@@ -488,18 +788,39 @@ namespace QPET.Controllers
                         model.IsActive
                 };
 
-            var createdProduct =
-                await _productService
-                    .AddProductAsync(
-                        product
+            if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                product.Images.Add(
+                    new QPET.Data.Entities.ProductImage
+                    {
+                        ImageUrl = imageUrl,
+                        IsPrimary = true
+                        }
                     );
+            }
 
-            TempData["ProductMessage"] =
-                $"Product created successfully. Product ID: {createdProduct.ProductId}";
+            try
+            {
+                var createdProduct =
+                    await _productService
+                        .AddProductAsync(product);
 
-            return RedirectToAction(
-                nameof(Products)
-            );
+                TempData["ProductMessage"] =
+                    $"Product created successfully. Product ID: {createdProduct.ProductId}";
+
+                return RedirectToAction(
+                    nameof(Products)
+                );
+            }
+            catch
+            {
+                if (!string.IsNullOrWhiteSpace(imageUrl))
+                {
+                    DeleteProductImageFile(imageUrl);
+                }
+
+                throw;
+            }
         }
 
         [HttpGet]
@@ -566,8 +887,8 @@ namespace QPET.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProduct(
-            int id,
-            AdminProductViewModel model)
+    int id,
+    AdminProductViewModel model)
         {
             var existingProduct =
                 await _productService
@@ -578,16 +899,13 @@ namespace QPET.Controllers
                 return NotFound();
             }
 
-            model.ProductId =
-                id;
+            model.ProductId = id;
 
             await ValidateProductSelectionAsync(
                 model
             );
 
-            ValidateProductImage(
-                model
-            );
+            ValidateProductImage(model);
 
             if (!ModelState.IsValid)
             {
@@ -603,6 +921,16 @@ namespace QPET.Controllers
                         ?.ImageUrl;
 
                 return View(model);
+            }
+
+            string? newImageUrl = null;
+
+            if (model.Image != null)
+            {
+                newImageUrl =
+                    await SaveProductImageAsync(
+                        model.Image
+                    );
             }
 
             var updatedProduct =
@@ -633,20 +961,83 @@ namespace QPET.Controllers
                         model.IsActive
                 };
 
-            var updated =
-                await _productService
-                    .UpdateProductAsync(
-                        updatedProduct
+            if (!string.IsNullOrWhiteSpace(newImageUrl))
+            {
+                updatedProduct.Images.Add(
+                    new QPET.Data.Entities.ProductImage
+                    {
+                        ImageUrl = newImageUrl,
+                        IsPrimary = true
+                    }
+                );
+            }
+
+            var oldImageUrl =
+                existingProduct
+                    .Images
+                    .FirstOrDefault(
+                        image =>
+                            image.IsPrimary
+                    )
+                    ?.ImageUrl;
+
+            try
+            {
+                var updated =
+                    await _productService
+                        .UpdateProductAsync(
+                            updatedProduct
+                        );
+
+                if (!updated)
+                {
+                    if (!string.IsNullOrWhiteSpace(newImageUrl))
+                    {
+                        DeleteProductImageFile(
+                            newImageUrl
+                        );
+                    }
+
+                    TempData["ProductMessage"] =
+                        "The product could not be updated.";
+
+                    return RedirectToAction(
+                        nameof(Products)
                     );
+                }
 
-            TempData["ProductMessage"] =
-                updated
-                    ? "Product updated successfully."
-                    : "The product could not be updated.";
+                if (
+                    !string.IsNullOrWhiteSpace(
+                        newImageUrl
+                    ) &&
+                    !string.IsNullOrWhiteSpace(
+                        oldImageUrl
+                    )
+                )
+                {
+                    DeleteProductImageFile(
+                        oldImageUrl
+                    );
+                }
 
-            return RedirectToAction(
-                nameof(Products)
-            );
+                TempData["ProductMessage"] =
+                    "Product updated successfully.";
+
+                return RedirectToAction(
+                    nameof(Products)
+                );
+            }
+            catch
+            {
+                if (!string.IsNullOrWhiteSpace(newImageUrl))
+                {
+                    DeleteProductImageFile(
+                        newImageUrl
+                    );
+                }
+
+                throw;
+            }
         }
 
         [HttpPost]
@@ -668,28 +1059,66 @@ namespace QPET.Controllers
             );
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> Reviews()
+        public async Task<IActionResult> Reviews(
+            int? rating = null,
+            string? search = null)
         {
-            var reviews =
-                await _reviewService
-                    .GetReviewsAsync();
+            var reviews = await _reviewService.GetReviewsAsync();
+
+            var totalCount = reviews.Count;
+
+            if (rating.HasValue &&
+                (rating.Value < 1 || rating.Value > 5))
+            {
+                rating = null;
+            }
+
+            search = search?.Trim();
+
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                search = null;
+            }
+
+            if (rating.HasValue)
+            {
+                reviews = reviews
+                    .Where(review => review.Rating == rating.Value)
+                    .ToList();
+            }
+
+            if (search != null)
+            {
+                reviews = reviews
+                    .Where(review =>
+                        review.ReviewMessage.Contains(
+                            search,
+                            StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
 
             ViewBag.Branches =
-                await _branchService
-                    .GetBranchesAsync();
+                await _branchService.GetBranchesAsync();
+
+            ViewBag.SelectedRating = rating;
+            ViewBag.ReviewSearch = search;
+            ViewBag.TotalReviewCount = totalCount;
 
             return View(reviews);
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReview(
-            int id)
+            int id,
+            int? rating = null,
+            string? search = null)
         {
-            var deleted =
-                await _reviewService
-                    .DeleteReviewAsync(id);
+            var deleted = await _reviewService.DeleteReviewAsync(id);
 
             TempData["ReviewMessage"] =
                 deleted
@@ -697,9 +1126,15 @@ namespace QPET.Controllers
                     : "The review could not be found.";
 
             return RedirectToAction(
-                nameof(Reviews)
+                nameof(Reviews),
+                new
+                {
+                    rating,
+                    search
+                }
             );
         }
+
 
         private async Task PopulateProductLookupsAsync()
         {
@@ -752,7 +1187,108 @@ namespace QPET.Controllers
                 );
             }
         }
+        private async Task<string> SaveProductImageAsync(
+    IFormFile image)
+        {
+            var imageDirectory =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "media",
+                    "images"
+                );
 
+            Directory.CreateDirectory(
+                imageDirectory
+            );
+
+            var extension =
+                Path.GetExtension(
+                    image.FileName
+                )
+                .ToLowerInvariant();
+
+            var fileName =
+                $"{Guid.NewGuid():N}{extension}";
+
+            var physicalPath =
+                Path.Combine(
+                    imageDirectory,
+                    fileName
+                );
+
+            await using (
+                var stream =
+                    new FileStream(
+                        physicalPath,
+                        FileMode.CreateNew
+                    ))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            return $"/media/images/{fileName}";
+        }
+
+        private void DeleteProductImageFile(
+     string imageUrl)
+        {
+            if (
+                string.IsNullOrWhiteSpace(
+                    imageUrl
+                )
+            )
+            {
+                return;
+            }
+
+            if (
+                !imageUrl.StartsWith(
+                    "/media/images/",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            {
+                return;
+            }
+
+            var fileName =
+                Path.GetFileName(
+                    imageUrl
+                );
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    fileName
+                )
+            )
+            {
+                return;
+            }
+
+            var imageDirectory =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "media",
+                    "images"
+                );
+
+            var physicalPath =
+                Path.Combine(
+                    imageDirectory,
+                    fileName
+                );
+
+            if (
+                System.IO.File.Exists(
+                    physicalPath
+                )
+            )
+            {
+                System.IO.File.Delete(
+                    physicalPath
+                );
+            }
+        }
         private void ValidateProductImage(
             AdminProductViewModel model)
         {

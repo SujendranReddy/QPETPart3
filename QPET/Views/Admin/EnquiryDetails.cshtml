@@ -1,388 +1,485 @@
-﻿@model QPET.Data.Entities.Enquiry
+﻿
+@model QPET.Data.Entities.Enquiry
 
 @{
     ViewData["Title"] = "Enquiry Details";
 
-    var notFound =
-        ViewBag.EnquiryNotFound == true;
+    var notFound = ViewBag.EnquiryNotFound == true || Model == null;
 
-   var customer =
-    ViewBag.Customer as QPET.Data.Entities.Customer;
+    var customer = ViewBag.Customer as QPET.Data.Entities.Customer;
+    var branch = ViewBag.Branch as QPET.Data.Entities.Branch;
 
-var branch =
-    ViewBag.Branch as QPET.Data.Entities.Branch;
+    var currentStatus = Model?.Status ?? "";
 
-    var displayStatus =
-        Model.Status == "InProgress"
-            ? "In Progress"
-            : Model.Status;
+    var displayStatus = currentStatus == "InProgress"
+        ? "In Progress"
+        : currentStatus;
 
+    var statusClass = currentStatus switch
+    {
+        "New" => "ed-status-new",
+        "InProgress" => "ed-status-progress",
+        "Resolved" => "ed-status-resolved",
+        "Closed" => "ed-status-closed",
+        _ => "ed-status-closed"
+    };
 
-    string? nextStatus =
-        Model.Status switch
-        {
-            "New" =>
-                "InProgress",
+    string? nextStatus = currentStatus switch
+    {
+        "New" => "InProgress",
+        "InProgress" => "Resolved",
+        "Resolved" => "Closed",
+        _ => null
+    };
 
-            "InProgress" =>
-                "Resolved",
+    string? buttonText = currentStatus switch
+    {
+        "New" => "Start Processing",
+        "InProgress" => "Mark as Resolved",
+        "Resolved" => "Close Enquiry",
+        _ => null
+    };
 
-            "Resolved" =>
-                "Closed",
+    var lifecycle = new[]
+    {
+        "New",
+        "InProgress",
+        "Resolved",
+        "Closed"
+    };
 
-            _ =>
-                null
-        };
+    var currentStep = Array.IndexOf(lifecycle, currentStatus);
 
-
-    string? buttonText =
-        Model.Status switch
-        {
-            "New" =>
-                "Start Processing",
-
-            "InProgress" =>
-                "Mark as Resolved",
-
-            "Resolved" =>
-                "Close Enquiry",
-
-            _ =>
-                null
-        };
-
-
-    var lifecycle =
-        new[]
-        {
-            "New",
-            "InProgress",
-            "Resolved",
-            "Closed"
-        };
-
-
-    var statusFlow =
-        string.Join(
-            " → ",
-            lifecycle.Select(
-                status =>
-                {
-                    var formatted =
-                        status == "InProgress"
-                            ? "In Progress"
-                            : status;
-
-                    return status == Model.Status
-                        ? $"[{formatted}]"
-                        : formatted;
-                }
-            )
-        );
+    var attachmentCount = Model?.Attachments?.Count ?? 0;
 }
-
 
 @if (notFound)
 {
-    <div class="admin-page-heading">
-
-        <div>
-
-            <h1>
-                Enquiry Not Found
-            </h1>
-
-            <p>
-                The requested enquiry could not be found.
-            </p>
-
+    <div id="adminEnquiryDetailsPage" class="ed-page">
+        <div class="admin-page-heading">
+            <div>
+                <span class="eyebrow">CUSTOMER REQUESTS</span>
+                <h1>Enquiry Not Found</h1>
+                <p>The requested enquiry could not be found.</p>
+            </div>
         </div>
 
+        <section class="ed-card ed-not-found">
+            <span class="ed-empty-icon">!</span>
+            <h2>Enquiry unavailable</h2>
+            <p>
+                This enquiry may no longer exist or the
+                reference may be incorrect.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="Enquiries"
+               class="btn btn-primary">
+                Return to Enquiries
+            </a>
+        </section>
     </div>
-
-
-    <a asp-controller="Admin"
-       asp-action="Enquiries"
-       class="btn btn-primary">
-
-        Return to Enquiries
-
-    </a>
 }
 else
 {
-    <div id="adminEnquiryDetailsPage">
+    <div id="adminEnquiryDetailsPage" class="ed-page">
 
-        <div class="admin-page-heading">
-
+        <div class="admin-page-heading ed-page-heading">
             <div>
+                <span class="eyebrow">CUSTOMER REQUESTS</span>
 
-                <span class="eyebrow">
-                    Customer request
-                </span>
-
-                <h1>
-                    Enquiry Details
-                </h1>
+                <h1>Enquiry Details</h1>
 
                 <p>
-                    Review the submitted enquiry and
-                    update its current status.
+                    View customer information, review the
+                    enquiry and manage its progress.
                 </p>
-
             </div>
-
 
             <a asp-controller="Admin"
                asp-action="Enquiries"
                class="btn btn-secondary">
-
                 ← Back to Enquiries
-
             </a>
-
         </div>
 
-
-        <div class="admin-panel">
-
-
-            <div class="admin-detail-section">
-
-                <span class="section-kicker">
-                    Reference
+        <section class="ed-overview">
+            <div class="ed-overview-content">
+                <span class="ed-overview-label">
+                    ENQUIRY REFERENCE
                 </span>
 
-                <h2>
-                    ENQ-@Model.EnquiryId
-                </h2>
+                <h2>ENQ-@Model.EnquiryId</h2>
 
+                <p>@Model.Subject</p>
+
+                <div class="ed-overview-meta">
+                    <span>
+                        Received @Model.CreatedDate.ToString("dd MMM yyyy")
+                    </span>
+
+                    <span class="ed-meta-separator"
+                          aria-hidden="true"></span>
+
+                    <span>
+                        @(branch?.BranchName ?? "Unknown branch")
+                    </span>
+                </div>
             </div>
 
-
-            <div class="admin-detail-section">
-
-                <h2>
-                    Customer
-                </h2>
-
-
-                <div class="admin-detail-list">
-
-                    <div class="admin-detail-row">
-
-                        <span>
-                            Name
-                        </span>
-
-                        <strong>
-                            @(customer?.FullName
-                                                    ?? "Unknown")
-                                                             </strong>
-
-                    </div>
-
-
-                    <div class="admin-detail-row">
-
-                        <span>
-                            Email
-                        </span>
-
-                        <strong>
-                            @(customer?.EmailAddress
-                                                    ?? "Not available")
-                                                                   </strong>
-
-                    </div>
-
-
-                    <div class="admin-detail-row">
-
-                        <span>
-                            Phone
-                        </span>
-
-                        <strong>
-                            @(customer?.PhoneNumber
-                                                    ?? "Not available")
-                                                                   </strong>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="admin-detail-section">
-
-                <h2>
-                    Enquiry
-                </h2>
-
-
-                <div class="admin-detail-list">
-
-                    <div class="admin-detail-row">
-
-                        <span>
-                            Branch
-                        </span>
-
-                        <strong>
-                            @(branch?.BranchName
-                                                    ?? "Unknown")
-                    </strong>
-
-                    </div>
-
-
-                    <div class="admin-detail-row">
-
-                        <span>
-                            Subject
-                        </span>
-
-                        <strong>
-                            @Model.Subject
-                        </strong>
-
-                    </div>
-
-
-                    <div class="admin-detail-row">
-
-                        <span>
-                            Date
-                        </span>
-
-                        <strong>
-                            @Model.CreatedDate.ToString("dd MMM yyyy")
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <br />
-
-
-                <span class="section-kicker">
-                    Message
+            <div class="ed-overview-status">
+                <span class="ed-overview-status-label">
+                    CURRENT STATUS
                 </span>
 
-                <p class="admin-enquiry-message">
-                    @Model.Message
-                </p>
+                <span class="ed-status @statusClass">
+                    <span class="ed-status-dot"></span>
+                    @displayStatus
+                </span>
+            </div>
+        </section>
+
+        @if (TempData["EnquiryMessage"] is string statusMessage)
+        {
+            <div class="ed-notice" role="status">
+                <span aria-hidden="true">✓</span>
+                <p>@statusMessage</p>
+            </div>
+        }
+
+        <div class="ed-layout">
+
+            <div class="ed-main-column">
+
+                <section class="ed-card">
+                    <div class="ed-card-heading">
+                        <div>
+                            <span class="ed-card-kicker">
+                                CUSTOMER MESSAGE
+                            </span>
+
+                            <h2>Enquiry Message</h2>
+
+                            <p>
+                                The message submitted by
+                                the customer.
+                            </p>
+                        </div>
+
+                        <span class="ed-card-icon" aria-hidden="true">
+                            ✉
+                        </span>
+                    </div>
+
+                    <div class="ed-message-content">
+                        <div class="ed-message-subject">
+                            <span>SUBJECT</span>
+                            <strong>@Model.Subject</strong>
+                        </div>
+
+                        <div class="ed-message-body">
+                            <span>MESSAGE</span>
+
+                            <p>@Model.Message</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ed-card">
+                    <div class="ed-card-heading">
+                        <div>
+                            <span class="ed-card-kicker">
+                                SUPPORTING FILES
+                            </span>
+
+                            <h2>Attachments</h2>
+
+                            <p>
+                                Files provided with this enquiry.
+                            </p>
+                        </div>
+
+                        <span class="ed-count">
+                            @attachmentCount
+                        </span>
+                    </div>
+
+                    <div class="ed-attachments">
+                        @if (Model.Attachments == null ||
+                             Model.Attachments.Count == 0)
+                        {
+                            <div class="ed-empty-attachments">
+                                <span aria-hidden="true">▤</span>
+
+                                <strong>No attachments</strong>
+
+                                <p>
+                                    The customer did not attach
+                                    any files to this enquiry.
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var attachment in Model.Attachments)
+                            {
+                                <div class="ed-attachment">
+                                    <div class="ed-file-icon"
+                                         aria-hidden="true">
+                                        ▤
+                                    </div>
+
+                                    <div class="ed-file-details">
+                                        <strong>
+                                            @attachment.OriginalFileName
+                                        </strong>
+
+                                        <span>
+                                            Customer attachment
+                                        </span>
+                                    </div>
+
+                                    <a asp-controller="Admin"
+                                       asp-action="DownloadEnquiryAttachment"
+                                       asp-route-id="@attachment.AttachmentId"
+                                       class="ed-download-link">
+                                        Download
+                                        <span aria-hidden="true">↓</span>
+                                    </a>
+                                </div>
+                            }
+                        }
+                    </div>
+                </section>
 
             </div>
 
+            <div class="ed-side-column">
 
-            <div class="admin-detail-section">
+                <section class="ed-card ed-status-card">
+                    <div class="ed-card-heading">
+                        <div>
+                            <span class="ed-card-kicker">
+                                ENQUIRY MANAGEMENT
+                            </span>
 
-                <h2>
-                    Attachments
-                </h2>
+                            <h2>Status Progress</h2>
 
+                            <p>
+                                Track and update this enquiry.
+                            </p>
+                        </div>
+                    </div>
 
-                <div class="admin-attachment-list">
+                    <div class="ed-status-content">
 
-                @if (
-                                Model.Attachments == null ||
-                                Model.Attachments.Count == 0)
-                    {
-                        <p>
-                            No attachments.
-                        </p>
-                    }
-                    else
-                    {
-                        @foreach (
-    var attachment
-    in Model.Attachments)
-{
-    <p>
-        <a asp-controller="Admin"
-           asp-action="DownloadEnquiryAttachment"
-           asp-route-id="@attachment.AttachmentId">
-            @attachment.OriginalFileName
-        </a>
-    </p>
-}
-                    }
+                        <div class="ed-current-status">
+                            <span>Current Status</span>
 
-                </div>
+                            <strong class="ed-status @statusClass">
+                                <span class="ed-status-dot"></span>
+                                @displayStatus
+                            </strong>
+                        </div>
 
-            </div>
+                        <div class="ed-timeline">
+                            @for (var i = 0; i < lifecycle.Length; i++)
+                            {
+                                var step = lifecycle[i];
 
+                                var stepName = step == "InProgress"
+                                    ? "In Progress"
+                                    : step;
 
-            <div class="admin-detail-section">
+                                var stepClass = i < currentStep
+                                    ? "ed-step-completed"
+                                    : i == currentStep
+                                        ? "ed-step-current"
+                                        : "ed-step-upcoming";
 
-                <h2>
-                    Enquiry Status
-                </h2>
+                                <div class="ed-step @stepClass">
+                                    <div class="ed-step-marker">
+                                        @if (i < currentStep)
+                                        {
+                                            <span>✓</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@(i + 1)</span>
+                                        }
+                                    </div>
 
+                                    <div class="ed-step-content">
+                                        <strong>@stepName</strong>
 
-                <p>
-                    Current Status:
+                                        @if (i < currentStep)
+                                        {
+                                            <span>Completed</span>
+                                        }
+                                        else if (i == currentStep)
+                                        {
+                                            <span>Current stage</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Upcoming</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
 
-                    <strong>
-                        @displayStatus
-                    </strong>
-                </p>
+                        <div class="ed-status-action">
+                            @if (nextStatus != null)
+                            {
+                                <form asp-controller="Admin"
+                                      asp-action="UpdateEnquiryStatus"
+                                      asp-antiforgery="true"
+                                      method="post">
 
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@Model.EnquiryId" />
 
-                <p>
-                    @statusFlow
-                </p>
+                                    <input type="hidden"
+                                           name="status"
+                                           value="@nextStatus" />
 
+                                    <button type="submit"
+                                            class="btn btn-primary ed-update-button">
+                                        @buttonText
+                                        <span aria-hidden="true">→</span>
+                                    </button>
+                                </form>
 
-                @if (
-                            TempData["EnquiryMessage"]
-                            is string statusMessage)
-                {
-                    <p class="admin-status-message">
+                                <p>
+                                    This will move the enquiry
+                                    to the next stage.
+                                </p>
+                            }
+                            else if (currentStatus == "Closed")
+                            {
+                                <div class="ed-completed-message">
+                                    <span aria-hidden="true">✓</span>
 
-                        @statusMessage
+                                    <div>
+                                        <strong>Enquiry Closed</strong>
 
-                    </p>
-                }
+                                        <p>
+                                            This enquiry has completed
+                                            all processing stages.
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <p>
+                                    No further status transition
+                                    is available.
+                                </p>
+                            }
+                        </div>
 
+                    </div>
+                </section>
 
-                @if (nextStatus != null)
-                {
-                    <form asp-controller="Admin"
-                          asp-action="UpdateEnquiryStatus"
-                          method="post">
+                <section class="ed-card">
+                    <div class="ed-card-heading">
+                        <div>
+                            <span class="ed-card-kicker">
+                                CONTACT INFORMATION
+                            </span>
 
-                        <input type="hidden"
-                               name="id"
-                               value="@Model.EnquiryId" />
+                            <h2>Customer Details</h2>
+                        </div>
 
-                        <input type="hidden"
-                               name="status"
-                               value="@nextStatus" />
+                        <span class="ed-card-icon" aria-hidden="true">
+                            ♙
+                        </span>
+                    </div>
 
+                    <div class="ed-info-list">
+                        <div class="ed-info-row">
+                            <span>Full Name</span>
 
-                        <button type="submit"
-                                class="btn btn-primary">
+                            <strong>
+                                @(customer?.FullName ?? "Unknown")
+                            </strong>
+                        </div>
 
-                            @buttonText
+                        <div class="ed-info-row">
+                            <span>Email Address</span>
 
-                        </button>
+                            @if (!string.IsNullOrWhiteSpace(
+                                customer?.EmailAddress))
+                            {
+                                <a href="mailto:@customer.EmailAddress">
+                                    @customer.EmailAddress
+                                </a>
+                            }
+                            else
+                            {
+                                <strong>Not available</strong>
+                            }
+                        </div>
 
-                    </form>
-                }
-                else
-                {
-                    <p class="admin-status-message">
+                        <div class="ed-info-row">
+                            <span>Phone Number</span>
 
-                        This enquiry has been closed.
+                            @if (!string.IsNullOrWhiteSpace(
+                                customer?.PhoneNumber))
+                            {
+                                <a href="tel:@customer.PhoneNumber">
+                                    @customer.PhoneNumber
+                                </a>
+                            }
+                            else
+                            {
+                                <strong>Not available</strong>
+                            }
+                        </div>
+                    </div>
+                </section>
 
-                    </p>
-                }
+                <section class="ed-card">
+                    <div class="ed-card-heading">
+                        <div>
+                            <span class="ed-card-kicker">
+                                ENQUIRY INFORMATION
+                            </span>
+
+                            <h2>Request Details</h2>
+                        </div>
+
+                        <span class="ed-card-icon" aria-hidden="true">
+                            ▤
+                        </span>
+                    </div>
+
+                    <div class="ed-info-list">
+                        <div class="ed-info-row">
+                            <span>Reference</span>
+                            <strong>ENQ-@Model.EnquiryId</strong>
+                        </div>
+
+                        <div class="ed-info-row">
+                            <span>Branch</span>
+
+                            <strong>
+                                @(branch?.BranchName ?? "Unknown")
+                            </strong>
+                        </div>
+
+                        <div class="ed-info-row">
+                            <span>Submitted</span>
+
+                            <strong>
+                                @Model.CreatedDate.ToString("dd MMM yyyy")
+                            </strong>
+                        </div>
+                    </div>
+                </section>
 
             </div>
 

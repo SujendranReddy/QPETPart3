@@ -1,0 +1,480 @@
+﻿
+@model QPET.Models.ProductCatalogueViewModel
+
+@{
+    ViewData["Title"] = "Categories";
+
+    int? editCategoryId = ViewBag.EditCategoryId as int?;
+    int? editSubCategoryId = ViewBag.EditSubCategoryId as int?;
+
+    var editCategory = Model.Categories.FirstOrDefault(
+        item => item.CategoryId == editCategoryId);
+
+    var editSubCategory = Model.SubCategories.FirstOrDefault(
+        item => item.SubCategoryId == editSubCategoryId);
+
+    var success =
+        TempData["CatalogSuccess"] is bool result && result;
+}
+
+<div id="adminCategoriesPage" class="ap-page">
+
+    <div class="admin-page-heading ap-heading">
+        <div>
+            <span class="eyebrow">CATALOGUE MANAGEMENT</span>
+            <h1>Categories &amp; Subcategories</h1>
+            <p>
+                Organise the product catalogue by managing
+                categories and their related subcategories.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Products"
+           class="btn btn-secondary">
+            ← Back to Products
+        </a>
+    </div>
+
+    @if (TempData["CatalogMessage"] is string message)
+    {
+        <div class="@(success ? "ap-notice" : "validation-summary")"
+             role="status">
+            @message
+        </div>
+    }
+
+    @if (editCategory != null)
+    {
+        <section class="ap-card" id="editCategoryForm">
+
+            <div class="ap-card-heading">
+                <div>
+                    <h2>Edit Category</h2>
+                    <p>Update the category name or description.</p>
+                </div>
+
+                <a asp-controller="Admin"
+                   asp-action="Categories"
+                   class="ap-clear-link">
+                    Cancel
+                </a>
+            </div>
+
+            <form asp-controller="Admin"
+                  asp-action="UpdateCategory"
+                  method="post"
+                  class="ap-filters">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="id"
+                       value="@editCategory.CategoryId" />
+
+                <div class="ap-field">
+                    <label for="editCategoryName">
+                        Category Name
+                    </label>
+
+                    <input id="editCategoryName"
+                           name="name"
+                           value="@editCategory.CategoryName"
+                           maxlength="100"
+                           required />
+                </div>
+
+                <div class="ap-field">
+                    <label for="editCategoryDescription">
+                        Description
+                    </label>
+
+                    <input id="editCategoryDescription"
+                           name="description"
+                           value="@editCategory.Description"
+                           maxlength="500"
+                           required />
+                </div>
+
+                <div class="ap-filter-actions">
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Save Category
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+    }
+
+    @if (editSubCategory != null)
+    {
+        <section class="ap-card" id="editSubCategoryForm">
+
+            <div class="ap-card-heading">
+                <div>
+                    <h2>Edit Subcategory</h2>
+                    <p>
+                        Update the name or parent category.
+                        Subcategories used by products cannot
+                        be moved to another category.
+                    </p>
+                </div>
+
+                <a asp-controller="Admin"
+                   asp-action="Categories"
+                   class="ap-clear-link">
+                    Cancel
+                </a>
+            </div>
+
+            <form asp-controller="Admin"
+                  asp-action="UpdateSubCategory"
+                  method="post"
+                  class="ap-filters">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="id"
+                       value="@editSubCategory.SubCategoryId" />
+
+                <div class="ap-field">
+                    <label for="editSubCategoryName">
+                        Subcategory Name
+                    </label>
+
+                    <input id="editSubCategoryName"
+                           name="name"
+                           value="@editSubCategory.SubCategoryName"
+                           maxlength="100"
+                           required />
+                </div>
+
+                <div class="ap-field">
+                    <label for="editSubCategoryCategory">
+                        Parent Category
+                    </label>
+
+                    <select id="editSubCategoryCategory"
+                            name="categoryId"
+                            required>
+
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.CategoryId"
+                                    selected="@(category.CategoryId == editSubCategory.CategoryId)">
+                                @category.CategoryName
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="ap-filter-actions">
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Save Subcategory
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+    }
+
+    <section class="ap-card">
+
+        <div class="ap-card-heading">
+            <div>
+                <h2>Categories</h2>
+                <p>
+                    @Model.Categories.Count
+                    @(Model.Categories.Count == 1
+                        ? "category"
+                        : "categories")
+                    in the catalogue.
+                </p>
+            </div>
+        </div>
+
+        <form asp-controller="Admin"
+              asp-action="CreateCategory"
+              method="post"
+              class="ap-filters">
+
+            @Html.AntiForgeryToken()
+
+            <div class="ap-field">
+                <label for="newCategoryName">
+                    New Category Name
+                </label>
+
+                <input id="newCategoryName"
+                       name="name"
+                       maxlength="100"
+                       placeholder="e.g. Containers"
+                       required />
+            </div>
+
+            <div class="ap-field">
+                <label for="newCategoryDescription">
+                    Description
+                </label>
+
+                <input id="newCategoryDescription"
+                       name="description"
+                       maxlength="500"
+                       placeholder="Describe this category"
+                       required />
+            </div>
+
+            <div class="ap-filter-actions">
+                <button type="submit"
+                        class="btn btn-primary">
+                    + Add Category
+                </button>
+            </div>
+
+        </form>
+
+        @if (Model.Categories.Any())
+        {
+            <div class="admin-table-wrapper">
+
+                <table class="ap-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Subcategories</th>
+                            <th>Products</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var category in Model.Categories)
+                        {
+                            var subCategoryCount =
+                                Model.SubCategories.Count(
+                                    item =>
+                                        item.CategoryId == category.CategoryId);
+
+                            var productCount =
+                                Model.Products.Count(
+                                    item =>
+                                        item.CategoryId == category.CategoryId);
+
+                            <tr>
+                                <td>
+                                    <strong>@category.CategoryName</strong>
+                                </td>
+
+                                <td>@category.Description</td>
+
+                                <td>@subCategoryCount</td>
+
+                                <td>@productCount</td>
+
+                                <td>
+                                    <div class="ap-actions">
+
+                                        <a asp-controller="Admin"
+                                           asp-action="Categories"
+                                           asp-route-editCategoryId="@category.CategoryId"
+                                           asp-fragment="editCategoryForm"
+                                           class="ap-edit-button">
+                                            Edit
+                                        </a>
+
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteCategory"
+                                              asp-route-id="@category.CategoryId"
+                                              method="post"
+                                              onsubmit="return confirm('Delete this category?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="ap-delete-button"
+                                                    disabled="@(subCategoryCount > 0 || productCount > 0)"
+                                                    title="@(subCategoryCount > 0 || productCount > 0 ? "Remove related subcategories and products first." : "Delete category")">
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="ap-empty">
+                <h3>No categories yet</h3>
+                <p>Add a category to begin organising products.</p>
+            </div>
+        }
+
+    </section>
+
+    <section class="ap-card">
+
+        <div class="ap-card-heading">
+            <div>
+                <h2>Subcategories</h2>
+                <p>
+                    @Model.SubCategories.Count
+                    @(Model.SubCategories.Count == 1
+                        ? "subcategory"
+                        : "subcategories")
+                    across all categories.
+                </p>
+            </div>
+        </div>
+
+        <form asp-controller="Admin"
+              asp-action="CreateSubCategory"
+              method="post"
+              class="ap-filters">
+
+            @Html.AntiForgeryToken()
+
+            <div class="ap-field">
+                <label for="newSubCategoryName">
+                    New Subcategory Name
+                </label>
+
+                <input id="newSubCategoryName"
+                       name="name"
+                       maxlength="100"
+                       placeholder="e.g. Cosmetic Jars"
+                       required />
+            </div>
+
+            <div class="ap-field">
+                <label for="newSubCategoryCategory">
+                    Parent Category
+                </label>
+
+                <select id="newSubCategoryCategory"
+                        name="categoryId"
+                        required>
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.CategoryId">
+                            @category.CategoryName
+                        </option>
+                    }
+
+                </select>
+            </div>
+
+            <div class="ap-filter-actions">
+                <button type="submit"
+                        class="btn btn-primary"
+                        disabled="@(!Model.Categories.Any())">
+                    + Add Subcategory
+                </button>
+            </div>
+
+        </form>
+
+        @if (Model.SubCategories.Any())
+        {
+            <div class="admin-table-wrapper">
+
+                <table class="ap-table">
+                    <thead>
+                        <tr>
+                            <th>Subcategory</th>
+                            <th>Parent Category</th>
+                            <th>Products</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var subCategory in Model.SubCategories)
+                        {
+                            var parent = Model.Categories.FirstOrDefault(
+                                item =>
+                                    item.CategoryId == subCategory.CategoryId);
+
+                            var productCount = Model.Products.Count(
+                                item =>
+                                    item.SubCategoryId == subCategory.SubCategoryId);
+
+                            <tr>
+                                <td>
+                                    <strong>
+                                        @subCategory.SubCategoryName
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @(parent?.CategoryName ?? "Unknown")
+                                </td>
+
+                                <td>@productCount</td>
+
+                                <td>
+                                    <div class="ap-actions">
+
+                                        <a asp-controller="Admin"
+                                           asp-action="Categories"
+                                           asp-route-editSubCategoryId="@subCategory.SubCategoryId"
+                                           asp-fragment="editSubCategoryForm"
+                                           class="ap-edit-button">
+                                            Edit
+                                        </a>
+
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteSubCategory"
+                                              asp-route-id="@subCategory.SubCategoryId"
+                                              method="post"
+                                              onsubmit="return confirm('Delete this subcategory?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="ap-delete-button"
+                                                    disabled="@(productCount > 0)"
+                                                    title="@(productCount > 0 ? "Remove related products first." : "Delete subcategory")">
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="ap-empty">
+                <h3>No subcategories yet</h3>
+                <p>
+                    Add a subcategory and assign it to a
+                    parent category.
+                </p>
+            </div>
+        }
+
+    </section>
+
+</div>

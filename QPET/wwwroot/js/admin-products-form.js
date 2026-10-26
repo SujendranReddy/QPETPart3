@@ -5,101 +5,134 @@ admin selects a category
  */
 
 
-document.addEventListener("DOMContentLoaded", function () {
 
+document.addEventListener("DOMContentLoaded", function () {
     const categorySelect =
         document.getElementById("productCategory");
 
     const subCategorySelect =
         document.getElementById("productSubCategory");
 
+    if (categorySelect && subCategorySelect) {
+        const placeholder =
+            subCategorySelect.querySelector('option[value=""]')
+                ?.textContent.trim() || "Select Subcategory";
 
-    if (!categorySelect || !subCategorySelect) {
-        return;
-    }
-
-
-    const subCategories =
-        Array.from(
+        const subCategories = Array.from(
             subCategorySelect.querySelectorAll(
                 "option[data-category-id]"
             )
         ).map(function (option) {
-
             return {
                 value: option.value,
                 text: option.textContent.trim(),
                 categoryId: option.dataset.categoryId
             };
-
         });
 
+        const selectedSubCategory =
+            subCategorySelect.dataset.selectedSubcategory || "";
 
-    const selectedSubCategory =
-        subCategorySelect.dataset.selectedSubcategory || "";
+        function loadSubCategories(selectedValue = "") {
+            const categoryId = categorySelect.value;
 
+            subCategorySelect.replaceChildren();
 
-    function loadSubCategories(selectedValue = "") {
+            const defaultOption =
+                document.createElement("option");
 
-        const categoryId =
-            categorySelect.value;
+            defaultOption.value = "";
+            defaultOption.textContent = placeholder;
 
-        subCategorySelect.innerHTML =
-            '<option value="">Select Subcategory</option>';
+            subCategorySelect.appendChild(defaultOption);
 
+            if (!categoryId || categoryId === "0") {
+                subCategorySelect.disabled = true;
+                return;
+            }
 
-        if (!categoryId || categoryId === "0") {
+            subCategories
+                .filter(function (subCategory) {
+                    return subCategory.categoryId === categoryId;
+                })
+                .forEach(function (subCategory) {
+                    const option =
+                        document.createElement("option");
 
-            subCategorySelect.disabled = true;
+                    option.value = subCategory.value;
+                    option.textContent = subCategory.text;
 
-            return;
+                    subCategorySelect.appendChild(option);
+                });
+
+            subCategorySelect.disabled = false;
+
+            if (selectedValue) {
+                subCategorySelect.value = selectedValue;
+            }
         }
 
+        categorySelect.addEventListener("change", function () {
+            loadSubCategories();
+        });
 
-        subCategories
-            .filter(function (subCategory) {
-
-                return (
-                    subCategory.categoryId ===
-                    categoryId
-                );
-
-            })
-            .forEach(function (subCategory) {
-
-                const option =
-                    document.createElement("option");
-
-                option.value =
-                    subCategory.value;
-
-                option.textContent =
-                    subCategory.text;
-
-                subCategorySelect.appendChild(option);
-
-            });
-
-
-        subCategorySelect.disabled = false;
-
-
-        if (selectedValue) {
-            subCategorySelect.value = selectedValue;
-        }
+        loadSubCategories(selectedSubCategory);
     }
 
+    const imageInput =
+        document.getElementById("productImageInput");
 
-    categorySelect.addEventListener(
-        "change",
-        function () {
+    const imagePreview =
+        document.getElementById("productImagePreview");
 
-            loadSubCategories();
+    const imagePlaceholder =
+        document.getElementById("productImagePlaceholder");
 
-        }
-    );
+    if (imageInput && imagePreview) {
+        let previewUrl = null;
 
+        const originalSrc =
+            imagePreview.dataset.originalSrc || "";
 
-    loadSubCategories(selectedSubCategory);
+        imageInput.addEventListener("change", function () {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
 
+            const file = imageInput.files?.[0];
+
+            if (file && file.type.startsWith("image/")) {
+                previewUrl = URL.createObjectURL(file);
+                imagePreview.src = previewUrl;
+                imagePreview.hidden = false;
+
+                if (imagePlaceholder) {
+                    imagePlaceholder.hidden = true;
+                }
+            }
+            else if (originalSrc) {
+                imagePreview.src = originalSrc;
+                imagePreview.hidden = false;
+
+                if (imagePlaceholder) {
+                    imagePlaceholder.hidden = true;
+                }
+            }
+            else {
+                imagePreview.removeAttribute("src");
+                imagePreview.hidden = true;
+
+                if (imagePlaceholder) {
+                    imagePlaceholder.hidden = false;
+                }
+            }
+        });
+
+        window.addEventListener("pagehide", function () {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        });
+    }
 });

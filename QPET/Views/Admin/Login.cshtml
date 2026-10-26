@@ -1,245 +1,122 @@
 ﻿@model QPET.Models.AdminLoginViewModel
 
 @{
-    ViewData["Title"] = "Admin Login";
-
-    Layout = "../Shared/_Layout.cshtml";
+    ViewData["Title"] = "Administrator Sign In";
+    Layout = "~/Views/Shared/_AdminLoginLayout.cshtml";
 }
 
-
-<section class="section">
-
-    <div class="container">
-
-
-        <div class="contact-page-layout">
-
-
-            <aside class="contact-details-card">
-
-                <div class="contact-card-glow"></div>
-
-
-                <span class="contact-card-number">
-                    01
-                </span>
-
-
-                <span class="section-kicker">
-                    Administration
-                </span>
-
-
-                <h2>
-                    QPET Management Portal
-                </h2>
-
-
-                <p class="contact-details-introduction">
-                    Administrator access provides prototype management
-                    functionality for products, enquiries and customer
-                    reviews.
-                </p>
-
-
-                <div class="contact-details-list">
-
-
-                    <article class="contact-detail-item">
-
-                        <div class="contact-detail-icon">
-                            ◫
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Products
-                            </span>
-
-                            <strong>
-                                Manage catalogue information
-                            </strong>
-
-                        </div>
-
-                    </article>
-
-
-                    <article class="contact-detail-item">
-
-                        <div class="contact-detail-icon">
-                            ✉
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Enquiries
-                            </span>
-
-                            <strong>
-                                Process customer requests
-                            </strong>
-
-                        </div>
-
-                    </article>
-
-
-                    <article class="contact-detail-item">
-
-                        <div class="contact-detail-icon">
-                            ★
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Reviews
-                            </span>
-
-                            <strong>
-                                Moderate customer feedback
-                            </strong>
-
-                        </div>
-
-                    </article>
-
-                </div>
-
-            </aside>
-
-
-            <div class="contact-form-card">
-
-
-                <span class="section-kicker">
-                    Administrator login
-                </span>
-
-
-                <h2>
-                    Sign in to QPET.
-                </h2>
-
-
-                <p class="contact-form-introduction">
-                    Enter the prototype administrator credentials
-                    to access the management dashboard.
-                </p>
-
-
-                <form asp-controller="Admin"
-                      asp-action="Login"
-                      method="post"
-                      class="contact-form"
-                      novalidate>
-
-
-                    <input asp-for="ReturnUrl"
-                           type="hidden" />
-
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="validation-summary">
-                    </div>
-
-
-                    <div class="contact-form-field">
-
-                        <label asp-for="EmailAddress">
-                            Email Address
-                        </label>
-
-
-                        <input asp-for="EmailAddress"
-                               class="contact-control"
-                               placeholder="admin@qpet.co.za" />
-
-
-                        <span asp-validation-for="EmailAddress"
-                              class="field-validation">
-                        </span>
-
-                    </div>
-
-
-                    <div class="contact-form-field">
-
-                        <label asp-for="Password">
-                            Password
-                        </label>
-
-
-                        <input asp-for="Password"
-                               class="contact-control"
-                               placeholder="Enter password" />
-
-
-                        <span asp-validation-for="Password"
-                              class="field-validation">
-                        </span>
-
-                    </div>
-
-
-                    <div class="contact-form-field">
-
-                        <label>
-
-                            <input asp-for="RememberMe" />
-
-                            Remember Me
-
-                        </label>
-
-                    </div>
-
-
-                    <button type="submit"
-                            class="btn btn-primary contact-submit-button">
-
-                        Sign In
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-
-                    </button>
-
-                </form>
-
-
-                <div class="contact-information-note">
-
-                    <strong>
-                        Prototype credentials
-                    </strong>
-
-
-                    <p>
-                        Email:
-                        <strong>
-                            admin@qpet.co.za
-                        </strong>
-                    </p>
-
-
-                    <p>
-                        Password:
-                        <strong>
-                            Admin123!
-                        </strong>
-                    </p>
-
-                </div>
-
-            </div>
-
+<main class="login-shell" id="main-content">
+    <section class="login-showcase" aria-labelledby="showcase-title">
+        <div class="showcase-top">
+            <a asp-controller="Home" asp-action="Index" class="login-wordmark" aria-label="QPET home">
+                <span class="wordmark-q">Q</span>PET
+            </a>
+            <span class="showcase-tag">MANAGEMENT PORTAL</span>
         </div>
 
-    </div>
+        <div class="showcase-content">
+            <span class="showcase-eyebrow"><span class="status-dot"></span> QPET ADMINISTRATION</span>
+            <h1 id="showcase-title">Everything your team needs. <span>One secure space.</span></h1>
+            <p>Manage the work behind QPET's customer experience through a dedicated administration portal.</p>
 
-</section>
+            <div class="showcase-services" aria-label="Management areas">
+                <span>Products</span>
+                <span>Enquiries</span>
+                <span>Reviews</span>
+            </div>
+        </div>
+
+        <div class="showcase-bottom">
+            <span class="showcase-bottom-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="10" width="14" height="11" rx="2" />
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+            </span>
+            <div><strong>Restricted access</strong><span>For authorised administrators only</span></div>
+        </div>
+    </section>
+
+    <section class="login-panel" aria-labelledby="login-title">
+        <div class="login-panel-top">
+            <span class="login-panel-label">ADMINISTRATOR ACCESS</span>
+            <a asp-controller="Home" asp-action="Index" class="back-link">
+                <span aria-hidden="true">&larr;</span> Back to website
+            </a>
+        </div>
+
+        <div class="login-form-container">
+            <div class="login-heading">
+                <div class="login-heading-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="5" y="10" width="14" height="11" rx="2" />
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    </svg>
+                </div>
+                <h2 id="login-title">Welcome back</h2>
+                <p>Sign in with your administrator credentials to continue.</p>
+            </div>
+
+            <form asp-controller="Admin" asp-action="Login" asp-antiforgery="true" method="post" class="login-form">
+                <input asp-for="ReturnUrl" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="login-errors" role="alert"></div>
+
+                <div class="login-field">
+                    <label asp-for="EmailAddress">Email address</label>
+                    <input asp-for="EmailAddress" type="email" placeholder="Enter your email address"
+                           autocomplete="username" inputmode="email" autocapitalize="none"
+                           spellcheck="false" required />
+                    <span asp-validation-for="EmailAddress" class="field-error"></span>
+                </div>
+
+                <div class="login-field">
+                    <label asp-for="Password">Password</label>
+                    <div class="password-control">
+                        <input asp-for="Password" id="Password" type="password"
+                               placeholder="Enter your password" autocomplete="current-password" required />
+                        <button type="button" id="togglePassword" class="password-toggle"
+                                aria-controls="Password" aria-pressed="false" aria-label="Show password">
+                            Show
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="field-error"></span>
+                </div>
+
+                <label class="remember-option">
+                    <input asp-for="RememberMe" type="checkbox" />
+                    <span>Keep me signed in</span>
+                </label>
+
+                <button type="submit" class="sign-in-button">
+                    Sign in to dashboard
+                    <span aria-hidden="true">&rarr;</span>
+                </button>
+            </form>
+
+            <p class="login-help">Having trouble signing in? Contact your QPET system administrator.</p>
+        </div>
+
+        <div class="login-panel-bottom">
+            <span>&copy; @DateTime.UtcNow.Year QPET</span>
+            <span>Secure administrator portal</span>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script>
+        (() => {
+            const button = document.getElementById('togglePassword');
+            const password = document.getElementById('Password');
+            if (!button || !password) return;
+
+            button.addEventListener('click', () => {
+                const visible = password.type === 'password';
+                password.type = visible ? 'text' : 'password';
+                button.textContent = visible ? 'Hide' : 'Show';
+                button.setAttribute('aria-pressed', String(visible));
+                button.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+            });
+        })();
+    </script>
+}
